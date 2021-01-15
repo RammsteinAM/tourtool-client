@@ -5,6 +5,10 @@ export interface UserLoginReqData {
     password: string;
 }
 
+export interface UserGoogleLoginReqData {
+    token: string;
+}
+
 export interface UserLoginResData {
     accessToken: string;
     refreshToken: string;

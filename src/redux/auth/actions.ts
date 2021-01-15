@@ -1,5 +1,5 @@
 import { actionCreator, payloadedActionCreator } from "../helpers";
-import { UserLoginReqData } from "../../types/user";
+import { UserGoogleLoginReqData, UserLoginReqData } from "../../types/user";
 
 import { LoginActionParams, LoginFailureActionParams, LoginRequestActionParams, LoginSuccessActionParams, LOGIN_REQUEST, LOGIN_FAILURE, LOGIN_SUCCESS } from "./types"
 import { userServices } from "../../services/user";
@@ -31,6 +31,44 @@ const login = (data: UserLoginReqData) => {
     };
 }
 
+const googleLogin = (token: string) => {
+    return (dispatch: Dispatch<LoginActionParams>) => {
+        dispatch(loginRequest());
+
+        userServices.googleLogin(token)
+            .then(
+                (user: AxiosResponse) => {
+                    dispatch(loginSuccess(user.data));
+                    //history.push(from);
+                },
+                (error: AxiosError) => {
+                    dispatch(loginFailure({ error: error.message }));
+                    //dispatch(alertActions.error(error.toString()));
+                }
+            );
+    };
+}
+
+const facebookLogin = (token: string) => {
+    return (dispatch: Dispatch<LoginActionParams>) => {
+        dispatch(loginRequest());
+
+        userServices.facebookLogin(token)
+            .then(
+                (user: AxiosResponse) => {
+                    dispatch(loginSuccess(user.data));
+                    //history.push(from);
+                },
+                (error: AxiosError) => {
+                    dispatch(loginFailure({ error: error.message }));
+                    //dispatch(alertActions.error(error.toString()));
+                }
+            );
+    };
+}
+
 export const authActions = {
-    login
+    login,
+    googleLogin,
+    facebookLogin,
 };

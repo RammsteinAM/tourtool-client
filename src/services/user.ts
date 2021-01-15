@@ -1,19 +1,31 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { DispatchProp } from 'react-redux';
-import { UserLoginReqData } from '../types/user';
+import { UserGoogleLoginReqData, UserLoginReqData } from '../types/user';
 import { endpoint } from './../config'
 import * as loginActionTypes from "../redux/auth/types"
 import { HttpError } from '../utils/error';
 import { asyncActionWrapper } from '../utils/asyncActionWrapper';
 
-const login = asyncActionWrapper<AxiosResponse>(async (data: UserLoginReqData): Promise<any> => {
+const login = asyncActionWrapper<AxiosResponse>(async (data: UserLoginReqData): Promise<AxiosResponse> => {
     const { email, password } = data;
-    const response: AxiosRequestConfig = await axios.post(`${endpoint}/auth/login`, { email, password });
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/login`, { email, password });
+    return response;
+})
+
+const googleLogin = asyncActionWrapper<AxiosResponse>(async (token: string): Promise<AxiosResponse> => {
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/social/google`, { token });
+    return response;
+})
+
+const facebookLogin = asyncActionWrapper<AxiosResponse>(async (data: any): Promise<AxiosResponse> => {
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/social/facebook`, data);
     return response;
 })
 
 export const userServices = {
-    login
+    login,
+    googleLogin,
+    facebookLogin,
 }
 
 // import { generateConfigHeaderWithToken } from './localStorageUtils';

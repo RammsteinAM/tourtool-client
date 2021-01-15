@@ -35,14 +35,11 @@ const loginStyles = makeStyles((theme) => ({
         textAlign: 'center'
     },
     button: {
-        boxShadow: 'none',
         margin: theme.spacing(3, 2, 2),
-        textTransform: 'none',
         height: '35px',
         minWidth: '100px',
-        borderRadius: '20px',
+        borderRadius: '2px',
         '&:hover': {
-            boxShadow: 'none',
         },
         '&:active': {
             boxShadow: 'none',

@@ -5,6 +5,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import configureStore from './redux/store';
+import './utils/i18n';
 
 const store = configureStore();
 
