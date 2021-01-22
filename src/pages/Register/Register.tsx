@@ -3,27 +3,19 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import { CircularProgress, Link } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
 import { ErrorMessage, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { authActions } from '../../redux/auth/actions'
-import loginStyles from './loginStyles';
+import { registerActions } from '../../redux/register/actions'
+import registerStyles from './registerStyles';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
-import GoogleLogin from 'react-google-login';
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
-import FacebookButton from '../../components/Buttons/FacebookLogin/FacebookButton';
-import GoogleButton from '../../components/Buttons/GoogleLogin/GoogleButton';
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { appName } from '../../utils/constants';
-import mainStyles from '../../styles/mainStyles';
 import { useSnackbar } from 'notistack';
-
-interface FormikValues {
-    email: string;
-    password: string;
-}
+import mainStyles from '../../styles/mainStyles';
+import { RegisterFormValues } from '../../types/user';
 
 interface IError {
     email?: string;
@@ -31,60 +23,46 @@ interface IError {
 }
 
 interface Props {
-    resetPasswordCallback: () => void
+    onSuccessCallback: (values: RegisterFormValues) => void;
 }
 
-const Login = (props: Props) => {
-    const classes = loginStyles();
+const Register = (props: Props) => {
+    const classes = registerStyles();
     const mainClasses = mainStyles();
     const dispatch = useDispatch();
     const [submitting, setSubmitting] = useState<boolean>(false);
-    const authState = useSelector((state: RootState) => state.auth);
-    const history = useHistory();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [formValues, setFormValues] = useState<RegisterFormValues>();
+    const register = useSelector((state: RootState) => state.register);
+    //const history = useHistory();
+    const { enqueueSnackbar } = useSnackbar();
     const { t } = useTranslation();
 
     useEffect(() => {
-        setSubmitting(authState.status === ActionStatus.Request);
-    }, [authState.status]);
+        setSubmitting(register.status === ActionStatus.Request);
+        if (register.status === ActionStatus.Success && formValues) {
+            props.onSuccessCallback(formValues);
+        }
+    }, [register.status]);
 
-    const handleFormSubmit = (values: FormikValues): void => {
-        dispatch(authActions.login(values));
+    const handleFormSubmit = (values: RegisterFormValues): void => {
+        setFormValues(values);
+        dispatch(registerActions.register(values));
         setSubmitting(true);
     }
 
     const showSnackbars = (errors: IError): void => {
-        if (errors.email) enqueueSnackbar(errors.email, {variant: "error"});
-        if (errors.password) enqueueSnackbar(errors.password, {variant: "error"});
-    }
-
-    const handleForgotPassword = (e: React.MouseEvent): void => {
-        e.preventDefault();
-        props.resetPasswordCallback();
-    }
-
-    const responseGoogle = (response: any) => {
-        debugger
-        dispatch(authActions.googleLogin(response.tokenId));
-    }
-
-    const responseGoogleFailure = (response: any) => {
-        enqueueSnackbar(`${t('Google Login Error:')} ${response?.details}`, {variant: "error"});
-    }
-
-    const responseFacebook = (response: any) => {
-        dispatch(authActions.facebookLogin(response));
-
+        if (errors.email) enqueueSnackbar(errors.email, { variant: "error" });
+        if (errors.password) enqueueSnackbar(errors.password, { variant: "error" });
     }
 
     return (
         <>
             <CssBaseline />
             <Typography>
-                {t("Login to app", { appName })}
+                {t("Register for", { appName })}
             </Typography>
             <Formik
-                initialValues={{ email: '', password: '' }}
+                initialValues={{ email: '', password: '', displayName: '' }}
                 validate={values => {
                     const errors: IError = {};
                     if (!values.email) {
@@ -92,10 +70,15 @@ const Login = (props: Props) => {
                     } else if (
                         !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
                     ) {
-                        errors.email = t('Invalid Email Address');
+
+                        errors.email = t('Invalid Email address');
                     }
                     if (!values.password) {
-                        errors.email = t('Please enter the Password');
+                        errors.password = t('Please enter the Password');
+                    } else if (
+                        !/(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}/.test(values.password)
+                    ) {
+                        errors.password = t('password-validation-error');
                     }
                     return errors;
                 }}
@@ -110,6 +93,23 @@ const Login = (props: Props) => {
                     handleSubmit
                 }) => (
                     <form className={classes.form} onSubmit={handleSubmit}>
+                        <TextField
+                            size="small"
+                            fullWidth
+                            id="displayName"
+                            label={t('Display Name')}
+                            name="displayName"
+                            autoComplete="displayName"
+                            autoFocus
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className={classes.textField}
+                        />
+                        <div className={mainClasses.formErrorContainer}>
+                            {errors.displayName && touched.displayName &&
+                                <ErrorMessage name="displayName" component="div" className={mainClasses.formError} />
+                            }
+                        </div>
                         <TextField
                             error={!!errors.email && touched.email}
                             size="small"
@@ -126,7 +126,8 @@ const Login = (props: Props) => {
                         />
                         <div className={mainClasses.formErrorContainer}>
                             {errors.email && touched.email &&
-                                <ErrorMessage name="email" component="div" className={mainClasses.formError} />}
+                                <ErrorMessage name="email" component="div" className={mainClasses.formError} />
+                            }
                         </div>
                         <TextField
                             error={!!errors.password && touched.password}
@@ -141,10 +142,10 @@ const Login = (props: Props) => {
                             onBlur={handleBlur}
                             className={classes.textField}
                         />
-                        <div className={classes.forgotPasswordLink}>
-                            <Link href="" onClick={handleForgotPassword}>
-                                {t("Forgot Password?")}
-                            </Link>
+                        <div className={mainClasses.formErrorContainer}>
+                            {errors.password && touched.password &&
+                                <ErrorMessage name="password" component="div" className={mainClasses.formError} />
+                            }
                         </div>
                         <br />
                         <Button
@@ -155,36 +156,15 @@ const Login = (props: Props) => {
                             className={classes.button}
                             onClick={() => showSnackbars(errors)}
                         >
-                            {t('Login')}
+                            {t('Register')}
                         </Button>
-                        <GoogleLogin
-                            clientId="689539234040-ul5se7j4rnm8s7mkf04bn51suq67p1hg.apps.googleusercontent.com"
-                            onSuccess={responseGoogle}
-                            onFailure={responseGoogleFailure}
-                            cookiePolicy={'single_host_origin'}
-                            render={(renderProps) => (
-                                <GoogleButton onClick={renderProps.onClick} />
-                            )}
-                        />
-                        <FacebookLogin
-                            appId="1360736550926562"
-                            autoLoad={false}
-                            fields="name,email"
-                            buttonStyle={
-                                { width: "200px", textTransform: "none" }
-                            }
-                            callback={responseFacebook}
-                            render={(renderProps) => (
-                                <FacebookButton onClick={renderProps.onClick} />
-                            )}
-                        />
-                        {authState.status === ActionStatus.Request &&
+                        {register.status === ActionStatus.Request &&
                             <div className={classes.progress}>
                                 <CircularProgress />
                             </div>
                         }
-                        {authState.status === ActionStatus.Failure &&
-                            <div className="form-error">{authState.error}</div>
+                        {register.status === ActionStatus.Failure &&
+                            <div className="form-error">{register.error}</div>
                         }
                     </form>
                 )}
@@ -193,4 +173,4 @@ const Login = (props: Props) => {
     );
 }
 
-export default Login;
+export default Register;

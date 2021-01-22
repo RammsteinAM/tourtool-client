@@ -1,10 +1,29 @@
 import { actionCreator, payloadedActionCreator } from "../helpers";
-import { UserGoogleLoginReqData, UserLoginReqData } from "../../types/user";
+import { UserGoogleLoginReqData, UserLoginReqData, UserRegisterReqData } from "../../types/user";
 
-import { LoginActionParams, LoginFailureActionParams, LoginRequestActionParams, LoginSuccessActionParams, LOGIN_REQUEST, LOGIN_FAILURE, LOGIN_SUCCESS } from "./types"
+import {
+    AuthActionParams,
+    LoginFailureActionParams,
+    LoginRequestActionParams,
+    LoginSuccessActionParams,
+    ForgotPasswordRequestActionParams,
+    ForgotPasswordSuccessActionParams,
+    ForgotPasswordFailureActionParams,
+    LOGIN_REQUEST,
+    LOGIN_FAILURE,
+    LOGIN_SUCCESS,
+    FORGOT_PASSWORD_REQUEST,
+    FORGOT_PASSWORD_SUCCESS,
+    FORGOT_PASSWORD_FAILURE,
+    RESET_PASSWORD_REQUEST,
+    RESET_PASSWORD_SUCCESS,
+    RESET_PASSWORD_FAILURE,
+    ForgotPasswordReqData,
+} from "./types"
 import { userServices } from "../../services/user";
 import { AxiosError, AxiosResponse } from "axios";
 import { Dispatch, DispatchWithoutAction } from "react";
+import { ForgotPasswordActionParams } from "../forgotPassword/types";
 
 export const loginRequest = actionCreator<LoginRequestActionParams>(LOGIN_REQUEST);
 
@@ -12,9 +31,20 @@ export const loginSuccess = payloadedActionCreator<LoginSuccessActionParams>(LOG
 
 export const loginFailure = payloadedActionCreator<LoginFailureActionParams>(LOGIN_FAILURE);
 
+export const forgotPasswordRequest = actionCreator<ForgotPasswordRequestActionParams>(FORGOT_PASSWORD_REQUEST);
+
+export const forgotPasswordSuccess = payloadedActionCreator<ForgotPasswordSuccessActionParams>(FORGOT_PASSWORD_SUCCESS);
+
+export const forgotPasswordFailure = payloadedActionCreator<ForgotPasswordFailureActionParams>(FORGOT_PASSWORD_FAILURE);
+
+export const resetPasswordRequest = actionCreator<ForgotPasswordRequestActionParams>(FORGOT_PASSWORD_REQUEST);
+
+export const resetPasswordSuccess = payloadedActionCreator<ForgotPasswordSuccessActionParams>(FORGOT_PASSWORD_SUCCESS);
+
+export const resetPasswordFailure = payloadedActionCreator<ForgotPasswordFailureActionParams>(FORGOT_PASSWORD_FAILURE);
 
 const login = (data: UserLoginReqData) => {
-    return (dispatch: Dispatch<LoginActionParams>) => {
+    return (dispatch: Dispatch<AuthActionParams>) => {
         dispatch(loginRequest());
 
         userServices.login(data)
@@ -32,7 +62,7 @@ const login = (data: UserLoginReqData) => {
 }
 
 const googleLogin = (token: string) => {
-    return (dispatch: Dispatch<LoginActionParams>) => {
+    return (dispatch: Dispatch<AuthActionParams>) => {
         dispatch(loginRequest());
 
         userServices.googleLogin(token)
@@ -50,7 +80,7 @@ const googleLogin = (token: string) => {
 }
 
 const facebookLogin = (token: string) => {
-    return (dispatch: Dispatch<LoginActionParams>) => {
+    return (dispatch: Dispatch<AuthActionParams>) => {
         dispatch(loginRequest());
 
         userServices.facebookLogin(token)
@@ -67,8 +97,27 @@ const facebookLogin = (token: string) => {
     };
 }
 
+const forgotPassword = (data: ForgotPasswordReqData) => {
+    return (dispatch: Dispatch<AuthActionParams>) => {
+        dispatch(forgotPasswordRequest());
+
+        userServices.forgotPassword(data)
+            .then(
+                (res: AxiosResponse) => {
+                    dispatch(forgotPasswordSuccess(res.data));
+                    //history.push(from);
+                },
+                (error: AxiosError) => {
+                    dispatch(forgotPasswordFailure({ error: error.message }));
+                    //dispatch(alertActions.error(error.toString()));
+                }
+            );
+    };
+}
+
 export const authActions = {
     login,
     googleLogin,
     facebookLogin,
+    forgotPassword,
 };

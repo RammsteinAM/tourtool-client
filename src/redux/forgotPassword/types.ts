@@ -10,15 +10,16 @@ const FORGOT_PASSWORD_FAILURE = "FORGOT_PASSWORD_FAILURE";
 export {
     FORGOT_PASSWORD_REQUEST,
     FORGOT_PASSWORD_SUCCESS,
-    FORGOT_PASSWORD_FAILURE
+    FORGOT_PASSWORD_FAILURE,
 }
 
-// export interface UserState extends AppState {
-//     displayName: string;
-//     email: string;
-//     password?: string;
-// }
+export interface ForgotPasswordReqData {
+    email: string;
+}
 
+export interface ForgotPasswordState extends AppState {
+    forgotPassword: ForgotPasswordReqData
+}
 
 export type ForgotPasswordRequestActionParams = Action<typeof FORGOT_PASSWORD_REQUEST>;
 export type ForgotPasswordSuccessActionParams = PayloadedAction<typeof FORGOT_PASSWORD_SUCCESS, ResponseData | null>;

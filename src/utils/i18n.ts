@@ -10,14 +10,16 @@ i18n
         resources: localizationResources,
         fallbackLng: "en",
         detection: {
-            order: ['localStorage', 'navigator'],          
+            order: ['localStorage', 'navigator'],
             lookupLocalStorage: 'i18nextLng',
             caches: ['localStorage'],
             excludeCacheFor: ['cimode'],
-          },
+        },
         interpolation: {
             escapeValue: false
         }
     });
+
+export const getLangQuery = () => i18n.language.substring(0, 2) ? `?lang=${i18n.language.substring(0, 2)}` : '';
 
 export default i18n;

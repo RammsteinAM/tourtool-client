@@ -1,10 +1,10 @@
 import { Store } from "redux";
 import { ActionStatus } from "./main";
-import { UserCreationReqData } from "./user";
+import { UserRegisterReqData } from "./user";
 
 export interface ReduxState {
     //error: ErrorReducerState;
-    user: UserCreationReqData | null;
+    user: UserRegisterReqData | null;
     headers: any;
 }
 

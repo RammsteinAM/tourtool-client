@@ -3,7 +3,6 @@ import { actionCreator, payloadedActionCreator, PayloadedAction } from "../helpe
 import { Dispatch } from "redux";
 import { AxiosError, AxiosResponse } from "axios";
 import { userServices } from "../../services/user";
-import { ForgotPasswordReqData } from "../auth/types";
 
 // export type AddUserActionParams = PayloadedAction<typeof actionTypes.ADD_USER, UserCreationReqData | null>;
 // export const addUser = payloadedActionCreator<AddUserActionParams>(actionTypes.ADD_USER);
@@ -17,14 +16,14 @@ export const forgotPasswordSuccess = payloadedActionCreator<ForgotPasswordSucces
 
 export const forgotPasswordFailure = payloadedActionCreator<ForgotPasswordFailureActionParams>(FORGOT_PASSWORD_FAILURE);
 
-const forgotPassword = (data: ForgotPasswordReqData) => {
+const forgotPassword = (email: string) => {
     return (dispatch: Dispatch<ForgotPasswordActionParams>) => {
         dispatch(forgotPasswordRequest());
 
-        userServices.forgotPassword(data)
+        userServices.forgotPassword(email)
             .then(
-                (user: AxiosResponse) => {
-                    dispatch(forgotPasswordSuccess(user.data));
+                (res: AxiosResponse) => {
+                    dispatch(forgotPasswordSuccess(res.data));
                     //history.push(from);
                 },
                 (error: AxiosError) => {
@@ -35,6 +34,6 @@ const forgotPassword = (data: ForgotPasswordReqData) => {
     };
 }
 
-export const userActions = {
+export const forgotPasswordActions = {
     forgotPassword
 };

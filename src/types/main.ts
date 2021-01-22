@@ -7,7 +7,7 @@ export enum ActionStatus {
     Failure = "FAILURE"
 }
 
-export default interface ResponseData<T> {
+export default interface ResponseData<T = any> {
     status: ActionStatus;
     data?: T;
     error?: string;

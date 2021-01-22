@@ -5,9 +5,9 @@ const styles = makeStyles((theme) => ({
         color: 'white',
         backgroundColor: '#1877F2',
         borderColor: '#1877F2',
-        margin: theme.spacing(3, 2, 2),
+        margin: theme.spacing(1, 2, 0),
         height: '35px',
-        minWidth: '100px',
+        minWidth: '250px',
         borderRadius: '2px',
         '&:hover': {
             backgroundColor: '#1368d6',
@@ -15,10 +15,7 @@ const styles = makeStyles((theme) => ({
         },
         '&:active': {
             boxShadow: 'none',
-        },
-        '&:focus': {
-            boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
-        },
+        }
     },
 }));
 
