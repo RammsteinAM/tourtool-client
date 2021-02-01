@@ -8,6 +8,10 @@ const mainStyles = makeStyles((theme) => ({
         fontSize: '12px',
         color: '#ff0000',
     },
+    errorMessage: {
+        fontWeight: 600,
+        color: '#ff0000',
+    },
     paper: {
         display: 'flex',
         flexDirection: 'column',
@@ -21,7 +25,7 @@ const mainStyles = makeStyles((theme) => ({
     },
     button: {
         margin: theme.spacing(3, 2, 2),
-        height: '35px',
+        //height: '35px',
         minWidth: '100px',
         borderRadius: '2px',
         '&:hover': {
@@ -29,11 +33,9 @@ const mainStyles = makeStyles((theme) => ({
         '&:active': {
             boxShadow: 'none',
         },
-        '&:focus': {
-            boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
-        },
     },
     progress: {
+        margin: theme.spacing(1),
         '& > * + *': {
             marginLeft: theme.spacing(2),
         },

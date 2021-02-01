@@ -1,35 +1,39 @@
 import { ActionStatus } from "../../types/main";
-import { UserRegisterReqData } from "../../types/user";
-//import { AddUserActionParams, LoginActionParams } from "./actions";
-import { ForgotPasswordActionParams, FORGOT_PASSWORD_REQUEST, FORGOT_PASSWORD_FAILURE, FORGOT_PASSWORD_SUCCESS } from "./types"
+import {
+  UserActionParams,
+  UPDATE_REQUEST,
+  UPDATE_SUCCESS,
+  UPDATE_FAILURE,
+  UserReducerState,
+} from "./types"
 
-// interface UserAction {
-//   type: string;
-//   user: AddUserActionParams | LoginActionParams
-// }
 
-const initialState: UserRegisterReqData | null = {
-  displayName: '',
-  password: '',
-  email: '',
+const initialState: UserReducerState | null = {
+  status: ActionStatus.Initial,
+  data: {
+    id: null,
+    email: '',
+    displayName: '',
+  },
+  error: '',
 };
 
-const reducer = (state = initialState, action: ForgotPasswordActionParams) => {
+const reducer = (state = initialState, action: UserActionParams) => {
   switch (action.type) {
-    case FORGOT_PASSWORD_REQUEST: {
+    case UPDATE_REQUEST: {
       return {
         ...state,
         status: ActionStatus.Request
       };
     }
-    case FORGOT_PASSWORD_FAILURE: {
+    case UPDATE_SUCCESS: {
       return {
         ...state,
         status: ActionStatus.Success,
         ...action.payload
       };
     }
-    case FORGOT_PASSWORD_SUCCESS: {
+    case UPDATE_FAILURE: {
       return {
         ...state,
         status: ActionStatus.Failure,

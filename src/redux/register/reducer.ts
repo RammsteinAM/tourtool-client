@@ -4,6 +4,9 @@ import {
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
   REGISTER_FAILURE,
+  VERIFY_EMAIL_REQUEST,
+  VERIFY_EMAIL_SUCCESS,
+  VERIFY_EMAIL_FAILURE,
   RESEND_VERIFICATION_EMAIL_REQUEST,
   RESEND_VERIFICATION_EMAIL_SUCCESS,
   RESEND_VERIFICATION_EMAIL_FAILURE,
@@ -14,16 +17,29 @@ import {
 //   user: LoginActionParams
 // }
 
+const resendVerificationEmailInitialState = {
+  status: ActionStatus.Initial,
+  error: ''
+}
+
+const verifyEmailInitialState = {
+  status: ActionStatus.Initial,
+  error: '',
+  data: {
+    email: '',
+    displayName: ''
+  },
+}
+
 const initialState: RegisterReducerState | null = {
   status: ActionStatus.Initial,
-  registrationData: {
+  data: {
     email: '',
     password: ''
   },
-  resendVerificationEmail: {
-    status: ActionStatus.Initial,
-    error: ''
-  }
+  error: '',
+  resendVerificationEmail: { ...resendVerificationEmailInitialState },
+  verifyEmail: { ...verifyEmailInitialState },
 };
 
 const reducer = (state: RegisterReducerState = initialState, action: RegisterActionParams): RegisterReducerState => {
@@ -32,10 +48,7 @@ const reducer = (state: RegisterReducerState = initialState, action: RegisterAct
       return {
         ...state,
         status: ActionStatus.Request,
-        registrationData: { 
-          email: action.payload!.email,
-          password: action.payload!.password
-        }
+        data: { ...action.payload! }
       };
     }
     case REGISTER_SUCCESS: {
@@ -51,11 +64,46 @@ const reducer = (state: RegisterReducerState = initialState, action: RegisterAct
         ...action.payload
       };
     }
+    case VERIFY_EMAIL_REQUEST: {
+      return {
+        ...state,
+        verifyEmail: {
+          ...state.verifyEmail,
+          status: ActionStatus.Request,
+          error: ''
+        }
+      };
+    }
+    case VERIFY_EMAIL_SUCCESS: {
+      return {
+        ...state,
+        verifyEmail: {
+          //...action.payload,
+          status: ActionStatus.Success,
+          error: '',
+          ...action.payload
+
+          //data: { displayName: action.payload!.data!.displayName, email: action.payload!.data!.email },
+          //data: { ...action.payload },
+        }
+      };
+    }
+    case VERIFY_EMAIL_FAILURE: {
+      return {
+        ...state,
+        verifyEmail: {
+          ...state.verifyEmail,
+          status: ActionStatus.Failure,
+          error: action.payload?.error
+        }
+      };
+    }
     case RESEND_VERIFICATION_EMAIL_REQUEST: {
       return {
         ...state,
         resendVerificationEmail: {
-          status: ActionStatus.Request
+          status: ActionStatus.Request,
+          error: ''
         }
       };
     }
@@ -63,7 +111,8 @@ const reducer = (state: RegisterReducerState = initialState, action: RegisterAct
       return {
         ...state,
         resendVerificationEmail: {
-          status: ActionStatus.Success
+          status: ActionStatus.Success,
+          error: ''
         }
       };
     }
@@ -71,7 +120,8 @@ const reducer = (state: RegisterReducerState = initialState, action: RegisterAct
       return {
         ...state,
         resendVerificationEmail: {
-          status: ActionStatus.Failure
+          status: ActionStatus.Failure,
+          error: action.payload?.error
         }
       };
     }

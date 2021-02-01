@@ -1,4 +1,4 @@
-import ResponseData from "./main";
+import { Nullable } from "./main";
 
 export interface UserLoginReqData {
     email: string;
@@ -13,11 +13,20 @@ export interface UserGoogleLoginReqData {
     token: string;
 }
 
-export interface UserLoginResData {
-    displayName: string;
+export interface UserStateData {
+    id: Nullable<number>;
     email: string;
+    displayName?: string;    
+    social?: Nullable<boolean>;
+}
+
+export interface UserLoginResData extends UserStateData {
     accessToken: string;
     refreshToken: string;
+}
+
+export interface UserLoginCheckResData extends UserStateData {
+    accessToken?: string;
 }
 
 export interface UserRegisterResData {
@@ -25,19 +34,33 @@ export interface UserRegisterResData {
     email: string;
 }
 
-export interface LoginResponse extends ResponseData<UserLoginResData> {
-    data: UserLoginResData;
+export interface UserPasswordResetReqData {
+    password: string;
+    token: string;
 }
 
-export interface RegisterResponse extends ResponseData<UserRegisterResData> {
-    data: UserRegisterResData;
+export interface UserLoginCheckReqData {
+    refreshToken: string;
 }
+
+export interface UserUpdateReqData {
+    id: Nullable<number>,
+    displayName?: string,
+    currentPassword?: string,
+    password?: string,
+}
+
+export type RegisterFormValues = UserRegisterReqData;
+
+
+// export interface LoginResponse extends ResponseData<UserLoginResData> {
+//     data: UserLoginResData;
+// }
+
+// export interface RegisterResponse extends ResponseData<UserRegisterResData> {
+//     data: UserRegisterResData;
+// }
 
 // export interface LoginRequest extends ResponseData<UserLoginResData> {
 //     data: UserLoginResData;
 // }
-export interface RegisterFormValues {
-    displayName?: string;
-    email: string;
-    password: string;
-}

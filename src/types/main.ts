@@ -7,13 +7,14 @@ export enum ActionStatus {
     Failure = "FAILURE"
 }
 
-export default interface ResponseData<T = any> {
-    status: ActionStatus;
+export interface ResponseData<T = any> {
+    success: string;
     data?: T;
     error?: string;
-    message?: string;
+    message?: string
 }
 
 export interface ResponseError {
     error: string
+    message: string
 }

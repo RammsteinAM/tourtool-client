@@ -13,7 +13,6 @@ import { ActionStatus } from '../../types/main';
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { appName } from '../../utils/constants';
-import { useSnackbar } from 'notistack';
 import mainStyles from '../../styles/mainStyles';
 import { RegisterFormValues } from '../../types/user';
 
@@ -32,27 +31,21 @@ const Register = (props: Props) => {
     const dispatch = useDispatch();
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [formValues, setFormValues] = useState<RegisterFormValues>();
-    const register = useSelector((state: RootState) => state.register);
+    const registerState = useSelector((state: RootState) => state.register);
     //const history = useHistory();
-    const { enqueueSnackbar } = useSnackbar();
     const { t } = useTranslation();
 
     useEffect(() => {
-        setSubmitting(register.status === ActionStatus.Request);
-        if (register.status === ActionStatus.Success && formValues) {
-            props.onSuccessCallback(formValues);
+        setSubmitting(registerState.status === ActionStatus.Request);
+        if (registerState.status === ActionStatus.Success && formValues) {
+            props.onSuccessCallback(formValues); // TODO
         }
-    }, [register.status]);
+    }, [registerState.status]);
 
     const handleFormSubmit = (values: RegisterFormValues): void => {
         setFormValues(values);
         dispatch(registerActions.register(values));
         setSubmitting(true);
-    }
-
-    const showSnackbars = (errors: IError): void => {
-        if (errors.email) enqueueSnackbar(errors.email, { variant: "error" });
-        if (errors.password) enqueueSnackbar(errors.password, { variant: "error" });
     }
 
     return (
@@ -154,18 +147,19 @@ const Register = (props: Props) => {
                             color="secondary"
                             disabled={submitting}
                             className={classes.button}
-                            onClick={() => showSnackbars(errors)}
                         >
                             {t('Register')}
                         </Button>
-                        {register.status === ActionStatus.Request &&
-                            <div className={classes.progress}>
+                        {registerState.status === ActionStatus.Request &&
+                            <div className={mainClasses.progress}>
                                 <CircularProgress />
                             </div>
                         }
-                        {register.status === ActionStatus.Failure &&
-                            <div className="form-error">{register.error}</div>
-                        }
+                        {/* {registerState.status === ActionStatus.Failure &&
+                            <div className={mainClasses.errorMessage}>
+                                {t(`ERROR_${registerState.error}`)}
+                                </div>
+                        } */}
                     </form>
                 )}
             </Formik>

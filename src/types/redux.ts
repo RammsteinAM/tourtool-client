@@ -11,7 +11,13 @@ export interface ReduxState {
 export type ReduxStore = Store<ReduxState>;
 
 
-export default interface AppState {
+
+
+export interface DatalessState {
     status: ActionStatus;
     error?: string;
+}
+
+export default interface AppState<T> extends DatalessState {
+    data?: T;
 }

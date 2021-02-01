@@ -33,7 +33,7 @@ const styles = makeStyles((theme) => ({
     },
     footer: {
         alignSelf: 'flex-end',
-        margin: '4px',
+        margin: '4px 24px 12px 4px',
         // position: 'absolute',
         // bottom: 0,
         // right: 0,

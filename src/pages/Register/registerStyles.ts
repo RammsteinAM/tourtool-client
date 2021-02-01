@@ -6,23 +6,25 @@ const styles = makeStyles((theme) => ({
         marginTop: theme.spacing(1),
         textAlign: 'center'
     },
+    paper: {
+        width: '720px',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '0px 72px',
+        height: '500px',
+        '& > div': {
+            marginTop: 14,
+        }
+    },
     button: {
         margin: theme.spacing(1, 2, 0),
-        height: '35px',        
+        //height: '35px',        
         minWidth: '250px',
         borderRadius: '2px',
         '&:hover': {
         },
         '&:active': {
             boxShadow: 'none',
-        },
-        '&:focus': {
-            boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
-        },
-    },
-    progress: {
-        '& > * + *': {
-            marginLeft: theme.spacing(2),
         },
     },
     textField: {
@@ -34,6 +36,9 @@ const styles = makeStyles((theme) => ({
             fontSize: '14px',
             fontWeight: '400',
         },
+        '& .MuiInput-underline:hover:before': {
+          borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
+        }
 
     }
 }));

@@ -5,7 +5,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import resetPasswordStyles from './passwordResetStyles';
 import { useTranslation } from "react-i18next";
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -15,11 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { authActions } from '../../redux/auth/actions'
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
-import { appName } from '../../utils/constants';
 import mainStyles from '../../styles/mainStyles';
-import { useSnackbar } from 'notistack';
-
-
 
 interface FormikValues {
     password: string;
@@ -54,166 +50,133 @@ const PasswordResetForm = (props: Props) => {
     const dispatch = useDispatch();
     const [submitting, setSubmitting] = useState<boolean>(false);
     const authState = useSelector((state: RootState) => state.auth);
-    const { enqueueSnackbar } = useSnackbar();
+    const { token } = useParams<{ token: string }>();
 
-    
+
     useEffect(() => {
         setSubmitting(authState.resetPassword.status === ActionStatus.Request);
     }, [authState.resetPassword.status]);
 
-    const handleClose = () => {
-        //setOpen(false);
-        history.push('/');
-    };
-    
     const handleFormSubmit = (values: FormikValues): void => {
-        //dispatch(authActions.resetPassword(values.password));
+        dispatch(authActions.resetPassword({ password: values.password, token }));
         setSubmitting(true);
     }
 
-    const renderContent = (dialogState: LoginDialogState) => {
-        switch (dialogState) {
-            case LoginDialogState.RegisterSuccess:
-                return //<RegisterSuccess />
-            case LoginDialogState.ResetPasswordSuccess:
-                //return <ResetPasswordSuccess />
-            default:
-                break;
-        }
-    }
-    
-    const showSnackbars = (errors: IError): void => {
-        if (errors.password) enqueueSnackbar(errors.password, { variant: "error" });
-        if (errors.confirmPassword) enqueueSnackbar(errors.confirmPassword, { variant: "error" });
-    }
 
     return (
-        <div>
-            <Dialog
-                maxWidth={false}
-                fullScreen={fullScreen}
-                open
-                //onClose={handleClose}
-                //className={classes.root}
-                classes={{
-                    paper:
-                        classes.paper
-                }}
-            >
-                <div className={classes.content}>
-                    <div className={classes.leftPart}>
-                        (Lorem Ipsum)
+        <Dialog
+            maxWidth={false}
+            fullScreen={fullScreen}
+            open
+            //onClose={handleClose}
+            //className={classes.root}
+            classes={{
+                paper:
+                    classes.paper
+            }}
+        >
+            <div className={classes.content}>
+                <div className={classes.leftPart}>
+                    (Lorem Ipsum)
                         </div>
-                    <div className={classes.mainPart}>
+                <div className={classes.mainPart}>
 
-                        <div className={classes.mainContent}>
-                            <>
-                                <CssBaseline />
-                                <Typography>
-                                    {t('Please enter a new Password')}
-                                </Typography>
-                                <Formik
-                                    initialValues={{ password: '', confirmPassword: '' }}
-                                    validate={values => {
-                                        const errors: IError = {};
-                                        if (!values.password) {
-                                            errors.password = t('Please enter a Password');
-                                        } else if (
-                                            !/(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}/.test(values.password)
-                                        ) {
-                                            errors.password = t('password-validation-error');
-                                        } else if (values.password !== values.confirmPassword) {
-                                            errors.confirmPassword = t('Passwords do not match');
-                                        }
-                                        if (!values.confirmPassword) {
-                                            errors.confirmPassword = t('Please confirm the Password');
-                                        }
+                    <div className={classes.mainContent}>
+                        <>
+                            <CssBaseline />
+                            <Typography>
+                                {t('Please enter a new Password')}
+                            </Typography>
+                            <Formik
+                                initialValues={{ password: '', confirmPassword: '' }}
+                                validate={values => {
+                                    const errors: IError = {};
+                                    if (!values.password) {
+                                        errors.password = t('Please enter a Password');
+                                    } else if (
+                                        !/(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}/.test(values.password)
+                                    ) {
+                                        errors.password = t('password-validation-error');
+                                    } else if (values.password !== values.confirmPassword) {
+                                        errors.confirmPassword = t('Passwords do not match');
+                                    }
+                                    if (!values.confirmPassword) {
+                                        errors.confirmPassword = t('Please confirm the Password');
+                                    }
 
-                                        return errors;
-                                    }}
-                                    onSubmit={handleFormSubmit}
-                                >
-                                    {({
-                                        values,
-                                        errors,
-                                        touched,
-                                        handleChange,
-                                        handleBlur,
-                                        handleSubmit
-                                    }) => (
-                                        <form className={classes.form} onSubmit={handleSubmit}>
-                                            <TextField
-                                                error={!!errors.password && touched.password}
-                                                required
-                                                fullWidth
-                                                name="password"
-                                                label={t('Password')}
-                                                type="password"
-                                                id="password"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                className={classes.textField}
-                                            />
-                                            <div className={mainClasses.formErrorContainer}>
-                                                {errors.password && touched.password &&
-                                                    <ErrorMessage name="email" component="div" className={mainClasses.formError} />}
+                                    return errors;
+                                }}
+                                onSubmit={handleFormSubmit}
+                            >
+                                {({
+                                    values,
+                                    errors,
+                                    touched,
+                                    handleChange,
+                                    handleBlur,
+                                    handleSubmit
+                                }) => (
+                                    <form className={classes.form} onSubmit={handleSubmit}>
+                                        <TextField
+                                            error={!!errors.password && touched.password}
+                                            required
+                                            fullWidth
+                                            name="password"
+                                            label={t('Password')}
+                                            type="password"
+                                            id="password"
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            className={classes.textField}
+                                        />
+                                        <div className={mainClasses.formErrorContainer}>
+                                            {errors.password && touched.password &&
+                                                <ErrorMessage name="email" component="div" className={mainClasses.formError} />}
+                                        </div>
+                                        <TextField
+                                            error={!!errors.password && touched.password}
+                                            required
+                                            fullWidth
+                                            name="confirmPassword"
+                                            label={t('Confirm Password')}
+                                            type="password"
+                                            id="confirmPassword"
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            className={classes.textField}
+                                        />
+                                        <div className={mainClasses.formErrorContainer}>
+                                            {errors.confirmPassword && touched.confirmPassword &&
+                                                <ErrorMessage name="email" component="div" className={mainClasses.formError} />}
+                                        </div>
+                                        <br />
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            color="secondary"
+                                            disabled={submitting}
+                                            className={classes.button}
+                                        >
+                                            {t('Confirm')}
+                                        </Button>
+                                        {authState.resetPassword.status === ActionStatus.Request &&
+                                            <div className={mainClasses.progress}>
+                                                <CircularProgress />
                                             </div>
-                                            <TextField
-                                                error={!!errors.password && touched.password}
-                                                required
-                                                fullWidth
-                                                name="confirmPassword"
-                                                label={t('Confirm Password')}
-                                                type="confirmPassword"
-                                                id="confirmPassword"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                className={classes.textField}
-                                            />
-                                            <div className={mainClasses.formErrorContainer}>
-                                                {errors.confirmPassword && touched.confirmPassword &&
-                                                    <ErrorMessage name="email" component="div" className={mainClasses.formError} />}
+                                        }
+                                        {/* {authState.resetPassword.status === ActionStatus.Failure &&
+                                            <div className={mainClasses.errorMessage}>
+                                            {t(`ERROR_${authState.resetPassword.error}`)}
                                             </div>
-                                            <br />
-                                            <Button
-                                                type="submit"
-                                                variant="contained"
-                                                color="secondary"
-                                                disabled={submitting}
-                                                className={classes.button}
-                                                onClick={() => showSnackbars(errors)}
-                                            >
-                                                {t('Confirm')}
-                                            </Button>
-                                            {authState.resetPassword.status === ActionStatus.Request &&
-                                                <div className={classes.progress}>
-                                                    <CircularProgress />
-                                                </div>
-                                            }
-                                            {authState.resetPassword.status === ActionStatus.Failure &&
-                                                <div className="form-error">{authState.resetPassword.error}</div>
-                                            }
-                                        </form>
-                                    )}
-                                </Formik>
-                            </>
-                        </div>
-                        {/* <div className={classes.footer}>
-                            {renderLinks(content)}
-                        </div> */}
-
+                                        } */}
+                                    </form>
+                                )}
+                            </Formik>
+                        </>
                     </div>
                 </div>
-                {/* <DialogActions>
-          <Button autoFocus onClick={handleClose} color="primary">
-            Disagree
-          </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
-            Agree
-          </Button>
-        </DialogActions> */}
-            </Dialog>
-        </div>
+            </div>
+        </Dialog>
     );
 
 }

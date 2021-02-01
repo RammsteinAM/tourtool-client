@@ -1,55 +1,82 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { DispatchProp } from 'react-redux';
-import { UserGoogleLoginReqData, UserLoginReqData, UserRegisterReqData } from '../types/user';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { UserLoginCheckReqData, UserLoginReqData, UserPasswordResetReqData, UserRegisterReqData, UserUpdateReqData } from '../types/user';
 import { endpoint } from './../config'
-import * as loginActionTypes from "../redux/auth/types"
-import { HttpError } from '../utils/error';
-import { asyncActionWrapper } from '../utils/asyncActionWrapper';
+import { asyncWrapper } from '../utils/asyncWrapper';
 import { ForgotPasswordReqData } from '../redux/auth/types';
-import { getLangQuery } from '../utils/i18n';
+import { getLocale } from '../utils/i18n';
 
+axios.defaults.params = {
+    lang: getLocale()
+}
 
-const login = asyncActionWrapper<AxiosResponse>(async (data: UserLoginReqData): Promise<AxiosResponse> => {
+const login = asyncWrapper<AxiosResponse>(async (data: UserLoginReqData): Promise<AxiosResponse> => {
     const { email, password } = data;
-    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/login${getLangQuery()}`, { email, password });
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/login`, { email, password });
     return response;
 })
 
-const register = asyncActionWrapper<AxiosResponse>(async (data: UserRegisterReqData): Promise<AxiosResponse> => {
+const loginCheck = asyncWrapper<AxiosResponse>(async (data: UserLoginCheckReqData): Promise<AxiosResponse> => {
+    const { refreshToken } = data;
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/login-check`, { refreshToken }, { withCredentials: true });
+    return response;
+})
+
+const register = asyncWrapper<AxiosResponse>(async (data: UserRegisterReqData): Promise<AxiosResponse> => {
     const { email, password, displayName } = data;
-    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/register${getLangQuery()}`, { email, password, displayName });
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/register`, { email, password, displayName });
     return response;
 })
 
-const resendVerificationEmail = asyncActionWrapper<AxiosResponse>(async (data: UserLoginReqData): Promise<AxiosResponse> => {
+const verifyUser = asyncWrapper<AxiosResponse>(async (token: string): Promise<AxiosResponse> => {
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.get(`${endpoint}/auth/verify/${token}`);
+    return response;
+})
+
+const resendVerificationEmail = asyncWrapper<AxiosResponse>(async (data: UserLoginReqData): Promise<AxiosResponse> => {
     const { email, password } = data;
-    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/resend-mail${getLangQuery()}`, { email, password });
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/resend-mail`, { email, password });
     return response;
 })
 
-const googleLogin = asyncActionWrapper<AxiosResponse>(async (token: string): Promise<AxiosResponse> => {
-    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/social/google${getLangQuery()}`, { token });
+const googleLogin = asyncWrapper<AxiosResponse>(async (token: string): Promise<AxiosResponse> => {
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/social/google`, { token });
     return response;
 })
 
-const facebookLogin = asyncActionWrapper<AxiosResponse>(async (data: any): Promise<AxiosResponse> => {
-    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/social/facebook${getLangQuery()}`, data);
+const facebookLogin = asyncWrapper<AxiosResponse>(async (data: any): Promise<AxiosResponse> => {
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/social/facebook`, data);
     return response;
 })
 
-const forgotPassword = asyncActionWrapper<AxiosResponse>(async (data: ForgotPasswordReqData): Promise<AxiosResponse> => {
+const forgotPassword = asyncWrapper<AxiosResponse>(async (data: ForgotPasswordReqData): Promise<AxiosResponse> => {
     const { email } = data;
-    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/user/forgot-password${getLangQuery()}`, { email });
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/user/forgot-password`, { email });
+    return response;
+})
+
+const resetPassword = asyncWrapper<AxiosResponse>(async (data: UserPasswordResetReqData): Promise<AxiosResponse> => {
+    const { password, token } = data;
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/reset-password/${token}`, { password });
+    return response;
+})
+
+const update = asyncWrapper<AxiosResponse>(async (data: UserUpdateReqData): Promise<AxiosResponse> => {
+    const { id, displayName, currentPassword, password } = data;
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.put(`${endpoint}/user/${id}`, { displayName, currentPassword, password });
     return response;
 })
 
 export const userServices = {
     login,
+    loginCheck,
     register,
     googleLogin,
     facebookLogin,
     forgotPassword,
     resendVerificationEmail,
+    verifyUser,
+    resetPassword,
+    update,
 }
 
 // import { generateConfigHeaderWithToken } from './localStorageUtils';

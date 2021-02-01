@@ -1,33 +1,40 @@
-import React, { ReactElement, ReactEventHandler } from 'react';
+import React, { ReactElement, ReactEventHandler, useState } from 'react';
 import clsx from 'clsx';
-import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import PermIdentity from '@material-ui/icons/PermIdentity';
-import MailIcon from '@material-ui/icons/Mail';
+import PersonIcon from '@material-ui/icons/Person';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import HomeIcon from '@material-ui/icons/Home';
 import SettingsIcon from '@material-ui/icons/Settings';
-import layoutStyles from './layoutStyles';
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import LanguageSelect from '../LanguageSelect';
-import Backdrop from '@material-ui/core/Backdrop';
 import CloseIcon from '@material-ui/icons/Close';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
+import Settings from '../Settings/Settings';
+import Profile from '../Profile/Profile';
+import { authActions } from '../../redux/auth/actions';
+import Main from './Main';
+import layoutStyles from './layoutStyles';
+
+const initialRightClick = {
+  mouseX: null,
+  mouseY: null,
+};
+
+enum SidePanelState {
+  Initial,
+  Settings,
+  Profile,
+}
 
 interface Props {
   children: ReactElement,
@@ -36,9 +43,15 @@ interface Props {
 const Layout = (props: Props) => {
   const classes = layoutStyles();
   const [open, setOpen] = React.useState(false);
+  const [rightClick, setRightClick] = React.useState<{
+    mouseX: null | number;
+    mouseY: null | number;
+  }>(initialRightClick);
   const [showSidePanel, setShowSidePanel] = React.useState(false);
+  const [panelContent, setPanelContent] = useState<SidePanelState>(SidePanelState.Initial);
   const history = useHistory();
   const authState = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
   const { t } = useTranslation();
 
   const handleDrawerClick = () => {
@@ -52,45 +65,69 @@ const Layout = (props: Props) => {
 
   const openSettings = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setPanelContent(SidePanelState.Settings);
     setShowSidePanel(true);
   };
 
-  const closeSettings = (e: React.MouseEvent) => {
+  const closeSidePanel = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowSidePanel(false);
   };
+
+  const openAccount = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPanelContent(SidePanelState.Profile);
+    setShowSidePanel(true);
+  };
+
+  // const closeSettings = (e: React.MouseEvent) => {
+  //   e.stopPropagation();
+  //   setShowSidePanel(false);
+  // };
 
   const handleLoginButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     history.push('/login');
   };
 
+  const handleRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setRightClick({
+      mouseX: event.clientX - 2,
+      mouseY: event.clientY - 4,
+    });
+  };
+
+  const handleCloseContextMenu = (e: React.MouseEvent) => {
+    setRightClick(initialRightClick);
+  };
+
+  const handleProfileMenuItemClick = (e: React.MouseEvent) => {
+    openAccount(e);
+    handleCloseContextMenu(e);
+  };
+
+  const handleLogoutMenuItemClick = (e: React.MouseEvent) => {
+    handleCloseContextMenu(e);
+    dispatch(authActions.logout());
+  };
+
+  const renderSidePanel = (content: SidePanelState) => {
+    switch (content) {
+      case SidePanelState.Settings:
+        return <Settings />
+      case SidePanelState.Profile:
+        return <Profile />
+      default:
+        break;
+    }
+  }
+
+  const name = authState.data?.displayName || authState.data?.email;
+
   return (
     <div className={classes.root}>
-      {/* <CssBaseline /> */}
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          {/* <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
-          >
-            <MenuIcon />
-          </IconButton> */}
-          <Typography variant="h6" noWrap>
-            {t('Manage Tournaments')}
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <CssBaseline />
       <Drawer
         variant="permanent"
         anchor="left"
@@ -100,16 +137,16 @@ const Layout = (props: Props) => {
             [classes.sidePanelClose]: !showSidePanel,
           }),
         }}
-        onClose={closeSettings}
+        onClose={closeSidePanel}
       >
         <div className={classes.settingsHeader}>
-          <IconButton aria-label="close" onClick={closeSettings} className={classes.icons}>
+          <IconButton aria-label="close" onClick={closeSidePanel} className={classes.icons}>
             <CloseIcon />
           </IconButton>
         </div>
         <div className={classes.settingsBody}>
           {
-            <LanguageSelect />
+            renderSidePanel(panelContent)
           }
         </div>
       </Drawer>
@@ -134,36 +171,54 @@ const Layout = (props: Props) => {
             <ListItemIcon>
               <HomeIcon className={classes.icons} />
             </ListItemIcon>
-            <ListItemText primary={t('Home')} classes={{primary: classes.listItemText}} />
+            <ListItemText primary={t('Home')} classes={{ primary: classes.listItemText }} />
           </ListItem>
           <ListItem button onClick={openSettings} className={classes.listItems}>
             <ListItemIcon>
               <SettingsIcon className={classes.icons} />
             </ListItemIcon>
-            <ListItemText primary={t('Settings')} classes={{primary: classes.listItemText}}  />
+            <ListItemText primary={t('Settings')} classes={{ primary: classes.listItemText }} />
           </ListItem>
         </List>
         <List>
           {authState.status === ActionStatus.Success ?
-            <ListItem button /* onClick={openAccount} */ className={classes.listItems}>
-              <ListItemIcon>
-                <PermIdentity className={classes.icons} />
-              </ListItemIcon>
-              <ListItemText primary={t('Account')} classes={{primary: classes.listItemText}}  />
-            </ListItem> :
+            <div onContextMenu={handleRightClick}>
+              <ListItem button onClick={openAccount} className={classes.listItems}>
+                <ListItemIcon>
+                  <PersonIcon className={classes.icons} />
+                </ListItemIcon>
+                <ListItemText primary={name} title={name} classes={{ primary: classes.listItemText }} />
+              </ListItem>
+            </div> :
             <ListItem button onClick={handleLoginButtonClick} className={classes.listItems}>
               <ListItemIcon>
                 <PermIdentity className={classes.icons} />
               </ListItemIcon>
-              <ListItemText primary={t('Login')} classes={{primary: classes.listItemText}}  />
+              <ListItemText primary={t('Login')} classes={{ primary: classes.listItemText }} />
             </ListItem>
           }
         </List>
       </Drawer>
-      <main className={classes.content}>
-        <Backdrop open={showSidePanel} onClick={closeSettings} />
+
+      
+      <Main menuOpen={open} backdropVisible={showSidePanel} backdropCallback={closeSidePanel}>
         {props.children}
-      </main>
+      </Main>
+      
+      <Menu
+        keepMounted
+        open={rightClick.mouseY !== null}
+        onClose={handleCloseContextMenu}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          rightClick.mouseY !== null && rightClick.mouseX !== null
+            ? { top: rightClick.mouseY, left: rightClick.mouseX }
+            : undefined
+        }
+      >
+        <MenuItem onClick={handleProfileMenuItemClick}>{t('User Profile')}</MenuItem>
+        <MenuItem onClick={handleLogoutMenuItemClick}>{t('Logout')}</MenuItem>
+      </Menu>
     </div>
   );
 }

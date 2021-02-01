@@ -8,21 +8,19 @@ const styles = makeStyles((theme) => ({
     },
     button: {
         margin: theme.spacing(1, 2, 0),
-        height: '35px',
+        //height: '35px',
         minWidth: '250px',
         '&:active': {
             boxShadow: 'none',
         }
     },
-    progress: {
-        '& > * + *': {
-            marginLeft: theme.spacing(2),
-        },
-    },
     textField: {
         '& .MuiFormLabel-asterisk': {
             display: 'none',
         },
+        '& .MuiInput-underline:hover:before': {
+          borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
+        }
 
     },
     forgotPasswordLink: {

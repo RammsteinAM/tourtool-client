@@ -12,6 +12,7 @@ interface Props {
 
 const PublicRoute = ({ children, ...rest }: Props) => {
     const login = useSelector((state: RootState) => state.auth);
+    debugger
     return (
         <Route
             {...rest}

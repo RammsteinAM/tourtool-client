@@ -21,5 +21,6 @@ i18n
     });
 
 export const getLangQuery = () => i18n.language.substring(0, 2) ? `?lang=${i18n.language.substring(0, 2)}` : '';
+export const getLocale = () => i18n.language.substring(0, 2) || '';
 
 export default i18n;

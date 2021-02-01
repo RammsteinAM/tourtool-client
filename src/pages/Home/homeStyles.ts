@@ -1,31 +1,11 @@
-import { makeStyles } from '@material-ui/core/styles';
-
+import { makeStyles, fade } from '@material-ui/core/styles';
+const drawerWidth = 220;
 const styles = makeStyles((theme) => ({
-    // root: {
-    //     display: 'flex',
-    //     justifyContent: 'center',
-    //     minWidth: 500,
-
-    // },
-    // mainContainer: {
-    //     padding: theme.spacing(6, 20, 4, 20),
-    // },
-    card: {
-        marginTop: theme.spacing(4),
-        display: 'block',
-        flexDirection: 'column',
+    root: {
+        display: 'flex',
+        justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f4f4f4',
-        border: 'none',
-        borderRadius: '10px'
-    },
-    paper: {
-        width: '720px',
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
-        textAlign: 'center'
+        height: '100%',
     },
     button: {
         margin: theme.spacing(3, 2, 2),
@@ -43,7 +23,7 @@ const styles = makeStyles((theme) => ({
             display: 'none',
         },
         '& .MuiInput-underline:hover:before': {
-          borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
+            borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
         }
 
     },

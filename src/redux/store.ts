@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, combineReducers, AnyAction, Action, Reducer, compose } from 'redux';
 import thunk from 'redux-thunk';
-import userReducer from './forgotPassword/reducer';
+import userReducer from './user/reducer';
 import authReducer from './auth/reducer';
 import registerReducer from './register/reducer';
 import { composeWithDevTools } from 'redux-devtools-extension';

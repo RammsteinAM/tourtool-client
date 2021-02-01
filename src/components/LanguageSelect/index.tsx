@@ -35,6 +35,7 @@ const LanguageSelect = (props: Props) => {
             <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
+                fullWidth
                 value={currentLanguage}
                 onChange={handleChange}
             >

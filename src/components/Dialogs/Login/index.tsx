@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
@@ -11,7 +10,7 @@ import Link from '@material-ui/core/Link';
 import { useTranslation } from "react-i18next";
 import { useHistory } from 'react-router-dom';
 import RegisterSuccess from '../../../pages/Register/RegisterSuccess';
-import ResetPasswordForm from '../../../pages/PasswordReset/PasswordResetForm';
+import RequestPasswordResetSuccess from '../../../pages/PasswordReset/RequestPasswordResetSuccess';
 import { RegisterFormValues } from '../../../types/user';
 
 interface Props {
@@ -27,7 +26,6 @@ enum LoginDialogState {
 }
 
 const LoginDialog = (props: Props) => {
-    const [open, setOpen] = useState(true);
     const [content, setContent] = useState<LoginDialogState>(LoginDialogState.Login);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -35,12 +33,7 @@ const LoginDialog = (props: Props) => {
     const history = useHistory();
     const { t } = useTranslation();
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
     const handleClose = () => {
-        //setOpen(false);
         history.push('/');
     };
 
@@ -58,9 +51,9 @@ const LoginDialog = (props: Props) => {
             case LoginDialogState.ResetPassword:
                 return <ResetPassword onSuccessCallback={() => { setContent(LoginDialogState.ResetPasswordSuccess) }} />
             case LoginDialogState.RegisterSuccess:
-                return //<RegisterSuccess />
+                return <RegisterSuccess />
             case LoginDialogState.ResetPasswordSuccess:
-            // return <ResetPasswordSuccess />
+                return <RequestPasswordResetSuccess onSuccessCallback={() => { setContent(LoginDialogState.Login) }} />
             default:
                 break;
         }
@@ -99,15 +92,11 @@ const LoginDialog = (props: Props) => {
 
     return (
         <div>
-            <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                Open responsive dialog
-            </Button>
             <Dialog
                 maxWidth={false}
                 fullScreen={fullScreen}
                 open={true}
                 onClose={handleClose}
-                //className={classes.root}
                 classes={{
                     paper:
                         classes.paper
@@ -128,14 +117,6 @@ const LoginDialog = (props: Props) => {
 
                     </div>
                 </div>
-                {/* <DialogActions>
-          <Button autoFocus onClick={handleClose} color="primary">
-            Disagree
-          </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
-            Agree
-          </Button>
-        </DialogActions> */}
             </Dialog>
         </div>
     );

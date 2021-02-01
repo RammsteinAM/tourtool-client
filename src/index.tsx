@@ -16,7 +16,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <SnackbarProvider maxSnack={3}>
+        <SnackbarProvider maxSnack={3} anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}>
           <App />
         </SnackbarProvider>
       </ThemeProvider>

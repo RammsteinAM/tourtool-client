@@ -1,40 +1,44 @@
-import { FORGOT_PASSWORD_REQUEST, FORGOT_PASSWORD_SUCCESS, FORGOT_PASSWORD_FAILURE, ForgotPasswordRequestActionParams, ForgotPasswordSuccessActionParams, ForgotPasswordFailureActionParams, ForgotPasswordActionParams } from "./types"
 import { actionCreator, payloadedActionCreator, PayloadedAction } from "../helpers";
 import { Dispatch } from "redux";
 import { AxiosError, AxiosResponse } from "axios";
 import { userServices } from "../../services/user";
 import { ForgotPasswordReqData } from "../auth/types";
+import {
+    UPDATE_REQUEST,
+    UPDATE_SUCCESS,
+    UPDATE_FAILURE,
+    UpdateRequestActionParams,
+    UpdateSuccessActionParams,
+    UpdateFailureActionParams,
+    UserActionParams
+} from "./types"
+import { UserRegisterResData, UserStateData, UserUpdateReqData } from "../../types/user";
+import { loginSuccess } from "../auth/actions";
+import { ResponseData } from "../../types/main";
 
-// export type AddUserActionParams = PayloadedAction<typeof actionTypes.ADD_USER, UserCreationReqData | null>;
-// export const addUser = payloadedActionCreator<AddUserActionParams>(actionTypes.ADD_USER);
+export const updateRequest = actionCreator<UpdateRequestActionParams>(UPDATE_REQUEST);
 
-// export type LoginActionParams = PayloadedAction<typeof actionTypes.LOGIN, UserLoginReqData | null>;
-// //export const login = payloadedActionCreator<LoginActionParams>(actionTypes.LOGIN);
+export const updateSuccess = payloadedActionCreator<UpdateSuccessActionParams>(UPDATE_SUCCESS);
 
-export const forgotPasswordRequest = actionCreator<ForgotPasswordRequestActionParams>(FORGOT_PASSWORD_REQUEST);
+export const updateFailure = payloadedActionCreator<UpdateFailureActionParams>(UPDATE_FAILURE);
 
-export const forgotPasswordSuccess = payloadedActionCreator<ForgotPasswordSuccessActionParams>(FORGOT_PASSWORD_SUCCESS);
+const update = (data: UserUpdateReqData) => {
+    return (dispatch: Dispatch) => {
+        dispatch(updateRequest());
 
-export const forgotPasswordFailure = payloadedActionCreator<ForgotPasswordFailureActionParams>(FORGOT_PASSWORD_FAILURE);
-
-const forgotPassword = (data: ForgotPasswordReqData) => {
-    return (dispatch: Dispatch<ForgotPasswordActionParams>) => {
-        dispatch(forgotPasswordRequest());
-
-        userServices.forgotPassword(data)
+        userServices.update(data)
             .then(
-                (user: AxiosResponse) => {
-                    dispatch(forgotPasswordSuccess(user.data));
-                    //history.push(from);
+                (res: AxiosResponse<ResponseData<UserStateData>>) => {
+                    dispatch(loginSuccess(res.data));
+                    dispatch(updateSuccess(res.data));
                 },
                 (error: AxiosError) => {
-                    dispatch(forgotPasswordFailure({ error: error.message }));
-                    //dispatch(alertActions.error(error.toString()));
+                    dispatch(updateFailure({ error: error.name, message: error.message }));
                 }
             );
     };
 }
 
 export const userActions = {
-    forgotPassword
+    update
 };

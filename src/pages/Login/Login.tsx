@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { appName } from '../../utils/constants';
 import mainStyles from '../../styles/mainStyles';
-import { useSnackbar } from 'notistack';
+import toast from '../../components/IndependentSnackbar';
 
 interface FormikValues {
     email: string;
@@ -41,21 +41,18 @@ const Login = (props: Props) => {
     const [submitting, setSubmitting] = useState<boolean>(false);
     const authState = useSelector((state: RootState) => state.auth);
     const history = useHistory();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { t } = useTranslation();
 
     useEffect(() => {
         setSubmitting(authState.status === ActionStatus.Request);
+        if (authState.status === ActionStatus.Failure) {
+            //authState.error && toast.error(t(`ERROR_${authState.error}`))
+        }
     }, [authState.status]);
 
     const handleFormSubmit = (values: FormikValues): void => {
         dispatch(authActions.login(values));
         setSubmitting(true);
-    }
-
-    const showSnackbars = (errors: IError): void => {
-        if (errors.email) enqueueSnackbar(errors.email, {variant: "error"});
-        if (errors.password) enqueueSnackbar(errors.password, {variant: "error"});
     }
 
     const handleForgotPassword = (e: React.MouseEvent): void => {
@@ -64,12 +61,11 @@ const Login = (props: Props) => {
     }
 
     const responseGoogle = (response: any) => {
-        debugger
         dispatch(authActions.googleLogin(response.tokenId));
     }
 
     const responseGoogleFailure = (response: any) => {
-        enqueueSnackbar(`${t('Google Login Error:')} ${response?.details}`, {variant: "error"});
+        toast.error(`${t('Google Login Error:')} ${response?.details}`);
     }
 
     const responseFacebook = (response: any) => {
@@ -79,7 +75,6 @@ const Login = (props: Props) => {
 
     return (
         <>
-            <CssBaseline />
             <Typography>
                 {t("Login to app", { appName })}
             </Typography>
@@ -95,7 +90,7 @@ const Login = (props: Props) => {
                         errors.email = t('Invalid Email Address');
                     }
                     if (!values.password) {
-                        errors.email = t('Please enter the Password');
+                        errors.password = t('Please enter the Password');
                     }
                     return errors;
                 }}
@@ -141,6 +136,10 @@ const Login = (props: Props) => {
                             onBlur={handleBlur}
                             className={classes.textField}
                         />
+                        <div className={mainClasses.formErrorContainer}>
+                            {errors.password && touched.password &&
+                                <ErrorMessage name="password" component="div" className={mainClasses.formError} />}
+                        </div>
                         <div className={classes.forgotPasswordLink}>
                             <Link href="" onClick={handleForgotPassword}>
                                 {t("Forgot Password?")}
@@ -153,7 +152,6 @@ const Login = (props: Props) => {
                             color="secondary"
                             disabled={submitting}
                             className={classes.button}
-                            onClick={() => showSnackbars(errors)}
                         >
                             {t('Login')}
                         </Button>
@@ -179,13 +177,15 @@ const Login = (props: Props) => {
                             )}
                         />
                         {authState.status === ActionStatus.Request &&
-                            <div className={classes.progress}>
+                            <div className={mainClasses.progress}>
                                 <CircularProgress />
                             </div>
                         }
-                        {authState.status === ActionStatus.Failure &&
-                            <div className="form-error">{authState.error}</div>
-                        }
+                        {/* {authState.status === ActionStatus.Failure &&
+                            <div className={mainClasses.errorMessage}>
+                                {t(`ERROR_${authState.error}`)}
+                            </div>
+                        } */}
                     </form>
                 )}
             </Formik>

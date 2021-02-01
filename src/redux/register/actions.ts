@@ -1,16 +1,22 @@
 import { actionCreator, payloadedActionCreator } from "../helpers";
-import { RegisterResponse, UserGoogleLoginReqData, UserLoginReqData, UserRegisterReqData } from "../../types/user";
+import { UserLoginReqData, UserRegisterReqData } from "../../types/user";
 import {
     RegisterActionParams,
     RegisterFailureActionParams,
     RegisterRequestActionParams,
     RegisterSuccessActionParams,
+    VerifyEmailRequestActionParams,
+    VerifyEmailSuccessActionParams,
+    VerifyEmailFailureActionParams,
     ResendVericationEmailRequestActionParams,
     ResendVericationEmailSuccessActionParams,
     ResendVericationEmailFailureActionParams,
     REGISTER_REQUEST,
     REGISTER_SUCCESS,
     REGISTER_FAILURE,
+    VERIFY_EMAIL_REQUEST,
+    VERIFY_EMAIL_SUCCESS,
+    VERIFY_EMAIL_FAILURE,
     RESEND_VERIFICATION_EMAIL_REQUEST,
     RESEND_VERIFICATION_EMAIL_SUCCESS,
     RESEND_VERIFICATION_EMAIL_FAILURE,
@@ -25,6 +31,12 @@ export const registerSuccess = actionCreator<RegisterSuccessActionParams>(REGIST
 
 export const registerFailure = payloadedActionCreator<RegisterFailureActionParams>(REGISTER_FAILURE);
 
+export const verifyEmailRequest = actionCreator<VerifyEmailRequestActionParams>(VERIFY_EMAIL_REQUEST);
+
+export const verifyEmailSuccess = payloadedActionCreator<VerifyEmailSuccessActionParams>(VERIFY_EMAIL_SUCCESS);
+
+export const verifyEmailFailure = payloadedActionCreator<VerifyEmailFailureActionParams>(VERIFY_EMAIL_FAILURE);
+
 export const resendVericationEmailRequest = actionCreator<ResendVericationEmailRequestActionParams>(RESEND_VERIFICATION_EMAIL_REQUEST);
 
 export const resendVericationEmailSuccess = payloadedActionCreator<ResendVericationEmailSuccessActionParams>(RESEND_VERIFICATION_EMAIL_SUCCESS);
@@ -37,11 +49,27 @@ const register = (data: UserRegisterReqData) => {
 
         userServices.register(data)
             .then(
-                (res: AxiosResponse<RegisterResponse>) => {
+                (res: AxiosResponse) => {
                     dispatch(registerSuccess());
                 },
                 (error: AxiosError) => {
-                    dispatch(registerFailure({ error: error.message }));
+                    dispatch(registerFailure({ error: error.name, message: error.message }));
+                }
+            );
+    };
+}
+
+const verifyEmail = (token: string) => {
+    return (dispatch: Dispatch<RegisterActionParams>) => {
+        dispatch(verifyEmailRequest());
+
+        userServices.verifyUser(token)
+            .then(
+                (user: AxiosResponse) => {
+                    dispatch(verifyEmailSuccess(user.data));
+                },
+                (error: AxiosError) => {
+                    dispatch(verifyEmailFailure({ error: error.name, message: error.message }));
                 }
             );
     };
@@ -57,7 +85,7 @@ const resendVerificationEmail = (data: UserLoginReqData) => {
                     dispatch(resendVericationEmailSuccess(user.data));
                 },
                 (error: AxiosError) => {
-                    dispatch(resendVericationEmailFailure({ error: error.message }));
+                    dispatch(resendVericationEmailFailure({ error: error.name, message: error.message }));
                 }
             );
     };
@@ -65,5 +93,6 @@ const resendVerificationEmail = (data: UserLoginReqData) => {
 
 export const registerActions = {
     register,
+    verifyEmail,
     resendVerificationEmail,
 };
