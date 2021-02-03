@@ -18,51 +18,23 @@ import clsx from 'clsx';
 import { CssBaseline } from '@material-ui/core';
 import Backdrop from '@material-ui/core/Backdrop';
 import layoutStyles from './layoutStyles';
+import Header from './Headers';
 
 interface Props {
     children: ReactElement,
     menuOpen: boolean,
     backdropVisible: boolean,
-    backdropCallback: (e: React.MouseEvent) => void
+    backdropCallback: (e: React.MouseEvent) => void,
 }
 
 const Main = (props: Props) => {
     const classes = layoutStyles();
+    const history = useHistory();
     const { t } = useTranslation();
     return (
         <>
             <CssBaseline />
-            <AppBar
-                position="fixed"
-                className={clsx(classes.appBar, {
-                    [classes.appBarShift]: props.menuOpen,
-                })}
-            >
-                <Toolbar>
-                    <Typography variant="h6" noWrap className={classes.title}>
-                        {t('Manage Tournaments')}
-                    </Typography>
-                    <FormControl className={classes.search}/* className={clsx(classes.margin, classes.textField)} */>
-                        <Input
-                            id="standard-adornment-password"
-                            type='text'
-                            //value={values.password}
-                            //onChange={handleChange('password')}
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="hide search field"
-                                    // onClick={handleClickShowPassword}
-                                    // onMouseDown={handleMouseDownPassword}
-                                    >
-                                        <CloseIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                        />
-                    </FormControl>
-                </Toolbar>
-            </AppBar>
+            <Header menuOpen={props.menuOpen} />
             <main className={classes.content}>
                 <div className={classes.toolbar} />
                 {props.children}

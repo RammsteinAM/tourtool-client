@@ -1,3 +1,97 @@
+* {
+  font-family: Mardoto, sans-serif;  
+}
+
+@font-face {
+    font-family: 'Mardoto';
+    src: url('./resources/fonts/Mardoto/ttf/Mardoto-Regular.ttf');
+    src: url('./resources/fonts/Mardoto/woff/Mardoto-Regular.woff2') format('woff'),
+         url('./resources/fonts/Mardoto/ttf/Mardoto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Mardoto';
+    src: url('./resources/fonts/Mardoto/ttf/Mardoto-Italic.ttf');
+    src: url('./resources/fonts/Mardoto/woff/Mardoto-Italic.woff2') format('woff'),
+         url('./resources/fonts/Mardoto/ttf/Mardoto-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Mardoto';
+    src: url('./resources/fonts/Mardoto/ttf/Mardoto-Bold.ttf');
+    src: url('./resources/fonts/Mardoto/woff/Mardoto-Bold.woff2') format('woff'),
+         url('./resources/fonts/Mardoto/ttf/Mardoto-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Mardoto';
+    src: url('./resources/fonts/Mardoto/ttf/Mardoto-BoldItalic.ttf');
+    src: url('./resources/fonts/Mardoto/woff/Mardoto-BoldItalic.woff2') format('woff'),
+         url('./resources/fonts/Mardoto/ttf/Mardoto-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Mardoto';
+    src: url('./resources/fonts/Mardoto/ttf/Mardoto-Light.ttf');
+    src: url('./resources/fonts/Mardoto/woff/Mardoto-Light.woff2') format('woff'),
+         url('./resources/fonts/Mardoto/ttf/Mardoto-Light.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Mardoto';
+    src: url('./resources/fonts/Mardoto/ttf/Mardoto-LightItalic.ttf');
+    src: url('./resources/fonts/Mardoto/woff/Mardoto-LightItalic.woff2') format('woff'),
+         url('./resources/fonts/Mardoto/ttf/Mardoto-LightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+}
+
+@font-face {
+  font-family: 'Mardoto';
+  src: url('./resources/fonts/Mardoto/ttf/Mardoto-Thin.ttf');
+  src: url('./resources/fonts/Mardoto/woff/Mardoto-Thin.woff2') format('woff'),
+       url('./resources/fonts/Mardoto/ttf/Mardoto-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Mardoto';
+  src: url('./resources/fonts/Mardoto/ttf/Mardoto-ThinItalic.ttf');
+  src: url('./resources/fonts/Mardoto/woff/Mardoto-ThinItalic.woff2') format('woff'),
+       url('./resources/fonts/Mardoto/ttf/Mardoto-ThinItalic.ttf') format('truetype');
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+    font-family: 'Mardoto';
+    src: url('./resources/fonts/Mardoto/ttf/Mardoto-Medium.ttf');
+    src: url('./resources/fonts/Mardoto/woff/Mardoto-Medium.woff2') format('woff'),
+         url('./resources/fonts/Mardoto/ttf/Mardoto-Medium.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Mardoto';
+    src: url('./resources/fonts/Mardoto/ttf/Mardoto-MediumItalic.ttf');
+    src: url('./resources/fonts/Mardoto/woff/Mardoto-MediumItalic.woff2') format('woff'),
+         url('./resources/fonts/Mardoto/ttf/Mardoto-MediumItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

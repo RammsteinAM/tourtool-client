@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 import { authActions } from './redux/auth/actions';
 import { ActionStatus } from './types/main';
+import TournamentTypeSelect from './pages/Tournaments/TournamentTypeSelect';
+import TournamentForm from './pages/Tournaments/TournamentForm';
 
 function App() {
   const dispatch = useDispatch();
@@ -30,17 +32,14 @@ function App() {
             <Tournaments />
           </PrivateRoute> */}
           <PrivateRoute exact path="/new/">
-            <div>KEKW</div>
-            {/* <Tournaments /> */}
+            <TournamentTypeSelect />
+          </PrivateRoute>
+          <PrivateRoute exact path="/tournament-form/:tournamentType">
+            <TournamentForm />
           </PrivateRoute>
           <PrivateRoute exact path="/tournaments/">
             <div>KEKW</div>
-            {/* <Tournaments /> */}
           </PrivateRoute>
-          {/* <PrivateRoute exact path="/settings">
-            <Settings />
-          </PrivateRoute> */}
-
           <PublicRoute exact path="/login">
             <LoginDialog />
           </PublicRoute>

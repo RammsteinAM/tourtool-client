@@ -22,6 +22,7 @@ interface Props {
 const Home = (props: Props) => {
     const classes = homeStyles();
     const authState = useSelector((state: RootState) => state.auth);
+    const loggedIn = authState.status === ActionStatus.Success;
     const history = useHistory();
     const { t } = useTranslation();
 
@@ -38,7 +39,7 @@ const Home = (props: Props) => {
                 className={classes.button}
                 onClick={handleCreateTournament}
             >
-                {t('Create New Tournament')}
+                {loggedIn ? t('Create New Tournament') : t('Login to Create a Tournament')}
             </Button>
         </div>
     )

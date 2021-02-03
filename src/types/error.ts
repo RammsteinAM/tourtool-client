@@ -17,4 +17,5 @@ export enum ErrorNames {
     UserNotVerified = 'UserNotVerifiedError',
     Validation = 'ValidationError',
     MailSend = 'MailSendError',
+    SocialUserForgotPassword = 'SocialUserForgotPasswordError',
 }

@@ -7,7 +7,6 @@ import { CircularProgress } from '@material-ui/core';
 import { ErrorMessage, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerActions } from '../../redux/register/actions'
-import registerStyles from './registerStyles';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
 import { useTranslation } from "react-i18next";
@@ -15,6 +14,7 @@ import { useHistory } from "react-router-dom";
 import { appName } from '../../utils/constants';
 import mainStyles from '../../styles/mainStyles';
 import { RegisterFormValues } from '../../types/user';
+import registerStyles from './registerStyles';
 
 interface IError {
     email?: string;
