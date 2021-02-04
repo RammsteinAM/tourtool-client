@@ -43,6 +43,9 @@ const Profile = (props: Props) => {
     if (userState.status === ActionStatus.Success) {
       toast.success(t('Changes saved'));
     }
+    return () => {
+      dispatch(userActions.reset());
+    }
   }, [userState.status]);
 
   const handleLogout = () => {
@@ -50,7 +53,6 @@ const Profile = (props: Props) => {
   }
 
   const handleFormSubmit = (values: FormValues): void => {
-    debugger;
     const userUpdateData: UserUpdateReqData = {
       id: authState.data!.id,
       displayName: values.displayName,

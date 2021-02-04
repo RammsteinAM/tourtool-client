@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import clsx from 'clsx';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { CssBaseline } from '@material-ui/core';
 import { useFormikContext } from 'formik';
 import headerStyles from './headerStyles';
@@ -34,26 +35,31 @@ const Header = (props: Props) => {
 
     const handleSubmit = () => {
         //submitForm();
-      }
+    }
+
+    const handleBackButton = () => {
+        history.goBack()
+    }
 
     return (
         <Toolbar>
             <Typography variant="h6" noWrap className={classes.title}>
-                {t('Manage Tournaments')}
+                {t('Tournament Settings')}
             </Typography>
-            <FormControl className={classes.search}/* className={clsx(classes.margin, classes.textField)} */>
-                <Button
+            <IconButton className={classes.iconButton} aria-label="back" onClick={handleBackButton}>
+                <ChevronLeftIcon />
+            </IconButton>
+            <Button
                 form='tournament-form'
-                    type="submit"
-                    variant="contained"
-                    color="secondary"
-                    //disabled={submitting}
-                    //className={classes.button}
-                    //onClick={handleSubmit}
-                >
-                    {t('Next')}
-                </Button>
-            </FormControl>
+                type="submit"
+                variant="contained"
+                color="secondary"
+                //disabled={submitting}
+                className={classes.button}
+                //onClick={handleSubmit}
+            >
+                {t('Next')}
+            </Button>
         </Toolbar>
     )
 }

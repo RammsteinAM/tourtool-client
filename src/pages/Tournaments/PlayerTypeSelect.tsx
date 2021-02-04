@@ -13,9 +13,9 @@ import StarsIcon from '@material-ui/icons/Stars';
 import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 import { useTranslation } from "react-i18next";
 import { useHistory } from 'react-router-dom';
-import { ReactComponent as RoundRobinIcon } from '../../resources/icons/roundRobin.svg';
-import { ReactComponent as LastManStandingIcon } from '../../resources/icons/lms.svg';
-import { ReactComponent as Elimination } from '../../resources/icons/elimination.svg';
+import { ReactComponent as Teams } from '../../resources/icons/teams.svg';
+import { ReactComponent as Single } from '../../resources/icons/single.svg';
+import { ReactComponent as DrawYourPartner } from '../../resources/icons/drawYourPartner.svg';
 
 import tournamentStyles from './tournamentStyles';
 
@@ -23,40 +23,27 @@ interface Props {
 
 }
 
-const TournamentTypeSelect = (props: Props) => {
+const PlayerTypeSelect = (props: Props) => {
     const history = useHistory();
     const { t } = useTranslation();
 
     const handleCardClick = (type: string) => {
-        history.push(`/tournament-form/${type}`)
+        history.push(`/tournament-player-form/${type}`)
     }
 
     const classes = tournamentStyles();
     return (
         <div className={classes.cardListContainer}>
             <Card className={classes.cardRoot}>
-                <CardContent className={classes.cardContent} style={{ backgroundColor: '#00b8d4' }}>
-                    <RoundRobinIcon className={classes.cardIcon} />
-                    <div className={classes.cardTitle}>{t('Round Robin')}</div>
+                <CardContent
+                    className={classes.cardContent}
+                    style={{ backgroundColor: '#8bc34a' }}
+                    onClick={() => handleCardClick('teams')}
+                >
+                    <Teams className={classes.cardIcon} />
+                    <div className={classes.cardTitle}>{t('Teams')}</div>
                 </CardContent>
                 <CardActions disableSpacing className={classes.cardActions}>
-                    <IconButton aria-label="info">
-                        <MoreHorizIcon />
-                    </IconButton>
-                    <IconButton >
-                        <PlayArrowIcon />
-                    </IconButton>
-                </CardActions>
-            </Card>
-            <Card className={classes.cardRoot}>
-                <CardContent className={classes.cardContent} style={{ backgroundColor: '#9c27b0' }}>
-                    <LastManStandingIcon className={classes.cardIcon} />
-                    <div className={classes.cardTitle}>{t('Last Man Standing')}</div>
-                </CardContent>
-                <CardActions disableSpacing className={classes.cardActions}>
-                    <IconButton aria-label="info">
-                        <MoreHorizIcon />
-                    </IconButton>
                     <IconButton >
                         <PlayArrowIcon />
                     </IconButton>
@@ -65,18 +52,29 @@ const TournamentTypeSelect = (props: Props) => {
             <Card className={classes.cardRoot}>
                 <CardContent
                     className={classes.cardContent}
-                    style={{ backgroundColor: '#8dbb5e' }}
-                    onClick={() => handleCardClick('elimination')}
+                    style={{ backgroundColor: '#e16f3d' }}
+                    onClick={() => handleCardClick('single')}
                 >
-
-                    <Elimination className={classes.cardIcon} />
-                    <div className={classes.cardTitle}>{t('Elimination')}</div>
+                    <Single className={classes.cardIcon} />
+                    <div className={classes.cardTitle}>{t('Single')}</div>
                 </CardContent>
                 <CardActions disableSpacing className={classes.cardActions}>
-                    <IconButton aria-label="info">
-                        <MoreHorizIcon />
+                    <IconButton >
+                        <PlayArrowIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleCardClick('elimination')} >
+                </CardActions>
+            </Card>
+            <Card className={classes.cardRoot}>
+                <CardContent
+                    className={classes.cardContent}
+                    style={{ backgroundColor: '#00b8d4' }}
+                    onClick={() => handleCardClick('drawYourPartner')}
+                >
+                    <DrawYourPartner className={classes.cardIcon} />
+                    <div className={classes.cardTitle}>{t('Draw Your Partner')}</div>
+                </CardContent>
+                <CardActions disableSpacing className={classes.cardActions}>
+                    <IconButton onClick={() => handleCardClick('drawYourPartner')} >
                         <PlayArrowIcon />
                     </IconButton>
                 </CardActions>
@@ -85,4 +83,4 @@ const TournamentTypeSelect = (props: Props) => {
     )
 }
 
-export default TournamentTypeSelect
+export default PlayerTypeSelect

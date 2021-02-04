@@ -13,6 +13,8 @@ import { authActions } from './redux/auth/actions';
 import { ActionStatus } from './types/main';
 import TournamentTypeSelect from './pages/Tournaments/TournamentTypeSelect';
 import TournamentForm from './pages/Tournaments/TournamentForm';
+import PlayerTypeSelect from './pages/Tournaments/PlayerTypeSelect';
+import PlayerForm from './pages/Tournaments/PlayerForm';
 
 function App() {
   const dispatch = useDispatch();
@@ -36,6 +38,12 @@ function App() {
           </PrivateRoute>
           <PrivateRoute exact path="/tournament-form/:tournamentType">
             <TournamentForm />
+          </PrivateRoute>
+          <PrivateRoute exact path="/tournament-player-type-select">
+            <PlayerTypeSelect />
+          </PrivateRoute>
+          <PrivateRoute exact path="/tournament-player-form/:playerType">
+            <PlayerForm />
           </PrivateRoute>
           <PrivateRoute exact path="/tournaments/">
             <div>KEKW</div>

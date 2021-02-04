@@ -4,27 +4,23 @@ import { AxiosError, AxiosResponse } from "axios";
 import { userServices } from "../../services/user";
 import { ForgotPasswordReqData } from "../auth/types";
 import {
-    USER_UPDATE_REQUEST,
-    USER_UPDATE_SUCCESS,
-    USER_UPDATE_FAILURE,
-    USER_RESET,
+    UPDATE_REQUEST,
+    UPDATE_SUCCESS,
+    UPDATE_FAILURE,
     UpdateRequestActionParams,
     UpdateSuccessActionParams,
     UpdateFailureActionParams,
-    UserActionParams,
-    UserResetActionParams
+    UserActionParams
 } from "./types"
 import { UserRegisterResData, UserStateData, UserUpdateReqData } from "../../types/user";
-import { userUpdateSuccess } from "../auth/actions";
+import { loginSuccess } from "../auth/actions";
 import { ResponseData } from "../../types/main";
 
-export const updateRequest = actionCreator<UpdateRequestActionParams>(USER_UPDATE_REQUEST);
+export const updateRequest = actionCreator<UpdateRequestActionParams>(UPDATE_REQUEST);
 
-export const updateSuccess = payloadedActionCreator<UpdateSuccessActionParams>(USER_UPDATE_SUCCESS);
+export const updateSuccess = payloadedActionCreator<UpdateSuccessActionParams>(UPDATE_SUCCESS);
 
-export const updateFailure = payloadedActionCreator<UpdateFailureActionParams>(USER_UPDATE_FAILURE);
-
-export const reset = actionCreator<UserResetActionParams>(USER_RESET);
+export const updateFailure = payloadedActionCreator<UpdateFailureActionParams>(UPDATE_FAILURE);
 
 const update = (data: UserUpdateReqData) => {
     return (dispatch: Dispatch) => {
@@ -33,7 +29,7 @@ const update = (data: UserUpdateReqData) => {
         userServices.update(data)
             .then(
                 (res: AxiosResponse<ResponseData<UserStateData>>) => {
-                    dispatch(userUpdateSuccess(res.data));
+                    dispatch(loginSuccess(res.data));
                     dispatch(updateSuccess(res.data));
                 },
                 (error: AxiosError) => {
@@ -44,6 +40,5 @@ const update = (data: UserUpdateReqData) => {
 }
 
 export const userActions = {
-    update,
-    reset,
+    update
 };

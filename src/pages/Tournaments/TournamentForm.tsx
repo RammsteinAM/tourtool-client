@@ -1,36 +1,22 @@
 import React, { useState } from 'react'
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import { CircularProgress } from '@material-ui/core';
-import { ErrorMessage, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerActions } from '../../redux/register/actions'
 import { RootState } from '../../redux/store';
-import { ActionStatus, Nullable } from '../../types/main';
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import mainStyles from '../../styles/mainStyles';
 import { RegisterFormValues } from '../../types/user';
-import tournamentStyles from './tournamentStyles';
 import { useParams } from 'react-router-dom';
-
-const values = {
-    minTables: 1,
-    maxTables: 200,
-    minGoals: 1,
-    maxGoals: 100,
-}
+import { formMinMaxValues } from '../../utils/constants';
+import tournamentStyles from './tournamentStyles';
+import FormSubheader from '../../components/FormComponents/FormSubheader';
 
 interface TournamentForm {
     numberOfTables: number,
@@ -45,13 +31,22 @@ enum GoalValues {
     Number = 'number',
 }
 
+enum SubheaderStateValues {
+    Tables = 'tables',
+    Goals = 'goals',
+    Points = 'points',
+}
+
+interface SubheaderState {
+    [subheader: string]: boolean | undefined;
+}
+
 interface Props {
 
 }
 
 const TournamentForm = (props: Props) => {
     //const [goalsValue, setGoalsValue] = useState<number>(GoalValues.Number);
-    const [draw, setDraw] = useState<boolean>(false);
     const [formState, setFormState] = React.useState<TournamentForm>({
         numberOfTables: 1,
         goals: GoalValues.Number,
@@ -59,8 +54,10 @@ const TournamentForm = (props: Props) => {
         draw: false,
         winningSets: 1,
     });
+    const [subheaderState, setSubeaderState] = useState<SubheaderState>({});
     const classes = tournamentStyles();
     const mainClasses = mainStyles();
+    const history = useHistory();
     const { tournamentType } = useParams<{ tournamentType: string }>();
     const { t } = useTranslation();
 
@@ -77,7 +74,7 @@ const TournamentForm = (props: Props) => {
     };
 
     const handleSubmit = (e: React.FormEvent): void => {
-        debugger
+        history.push('/tournament-player-type-select');
         e.preventDefault()
         alert(e.target)
         // setFormValues(values);
@@ -88,20 +85,20 @@ const TournamentForm = (props: Props) => {
         const name = event.target.name as keyof typeof formState;
         let value = event.target.value;
         if (name === 'numberOfTables') {
-            if (event.target.value as number < values.minTables) {
+            if (event.target.value as number < formMinMaxValues.minTables) {
                 value = 1;
             }
-            if (event.target.value as number > values.maxTables) {
-                value = values.maxTables;
+            if (event.target.value as number > formMinMaxValues.maxTables) {
+                value = formMinMaxValues.maxTables;
             }
             value = Math.round(value as number);
         }
         if (name === 'numberOfGoals') {
-            if (event.target.value as number < values.minTables) {
-                value = values.minTables;
+            if (event.target.value as number < formMinMaxValues.minTables) {
+                value = formMinMaxValues.minTables;
             }
-            if (event.target.value as number > values.maxGoals) {
-                value = values.maxGoals;
+            if (event.target.value as number > formMinMaxValues.maxGoals) {
+                value = formMinMaxValues.maxGoals;
             }
             value = Math.round(value as number);
         }
@@ -109,15 +106,12 @@ const TournamentForm = (props: Props) => {
             ...formState,
             [name]: value,
         });
-
     };
 
     return (
         <Paper elevation={3} className={classes.paper}>
             <form className={classes.form} onSubmit={handleSubmit} id='tournament-form'>
-                <div>
-                    
-                </div>
+                <FormSubheader title={t('Tables')} text={t('form-subheader-tables-text')} width={454} />
                 <div className={classes.formBlock}>
                     <span className={classes.formLabel}>{t('Number of Tables')}</span>
                     <FormControlLabel
@@ -129,7 +123,7 @@ const TournamentForm = (props: Props) => {
                                 value={formState.numberOfTables}
                                 id="numberOfTables"
                                 type="number"
-                                inputProps={{ min: `${values.minTables}`, max: `${values.maxTables}`, step: "1" }}
+                                inputProps={{ min: `${formMinMaxValues.minTables}`, max: `${formMinMaxValues.maxTables}`, step: "1" }}
                                 onChange={handleFormStateChange}
                                 name="numberOfTables"
                                 autoComplete="off"
@@ -138,6 +132,7 @@ const TournamentForm = (props: Props) => {
                         }
                     />
                 </div>
+                <FormSubheader title={t('Goals')} text={t('form-subheader-goals-text')} width={454} />
                 <div className={classes.formBlock}>
                     <RadioGroup aria-label="goals" name="goals" value={formState.goals} onChange={handleFormStateChange}>
                         <FormControlLabel value={GoalValues.Quick} control={<Radio color='primary' />} label={t('Quick Entry')} />
@@ -154,7 +149,7 @@ const TournamentForm = (props: Props) => {
                                 type="number"
                                 name="numberOfGoals"
                                 onChange={handleFormStateChange}
-                                inputProps={{ min: `${values.minGoals}`, max: `${values.maxGoals}`, step: "1" }}
+                                inputProps={{ min: `${formMinMaxValues.minGoals}`, max: `${formMinMaxValues.maxGoals}`, step: "1" }}
                                 defaultValue={formState.numberOfGoals}
                                 autoComplete="off"
                                 //disabled={formState.goals === GoalValues.Quick}
@@ -163,17 +158,21 @@ const TournamentForm = (props: Props) => {
                         }
                     />
                 </div>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={formState.draw}
-                            onChange={handleCheckboxChange}
-                            name="draw"
-                            color="primary"
-                        />
-                    }
-                    label={t('Draw')}
-                />
+                <div className={classes.formBlock}>
+                    <FormControlLabel
+                        disabled={tournamentType === 'elimination'}
+                        control={
+                            <Checkbox
+                                checked={formState.draw}
+                                onChange={handleCheckboxChange}
+                                name="draw"
+                                color="primary"
+                            />
+                        }
+                        label={t('Draw')}
+                    />
+                </div>
+                <FormSubheader title={t('Winning Sets')} width={454} />
                 <div className={classes.formBlock}>
                     <span className={classes.formLabel}>{t('Winning Sets')}</span>
                     <Select

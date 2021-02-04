@@ -13,20 +13,19 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import clsx from 'clsx';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { CssBaseline } from '@material-ui/core';
-import HeaderGeneric from './HeaderGeneric';
-import HeaderHome from './HeaderHome';
+import { useFormikContext } from 'formik';
 import headerStyles from './headerStyles';
-import HeaderTournamentForm from './HeaderTournamentForm';
 
 interface Props {
-    menuOpen: boolean,
 }
 
 const Header = (props: Props) => {
+    const [path, setPath] = useState('');
     const classes = headerStyles();
     const history = useHistory();
-    const [path, setPath] = useState('');
+    //const { submitForm } = useFormikContext();
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -34,33 +33,34 @@ const Header = (props: Props) => {
 
     })
 
+    const handleSubmit = () => {
+        //submitForm();
+    }
+
+    const handleBackButton = () => {
+        history.goBack()
+    }
+
     return (
-        <AppBar
-            position="fixed"
-            className={clsx(classes.appBar, {
-                [classes.appBarShift]: props.menuOpen,
-            })}
-        >
+        <Toolbar>
             <Typography variant="h6" noWrap className={classes.title}>
-                <Switch>
-                    <Route exact path="/new">
-                        <HeaderGeneric title={t('Select Mode')} />
-                    </Route>
-                    <Route exact path="/tournament-form/:tournamentType">
-                        <HeaderTournamentForm />
-                    </Route>
-                    <Route exact path="/tournament-player-type-select">
-                        <HeaderGeneric title={t('Add Participants')} backButton />
-                    </Route>
-                    <Route exact path="/tournament-player-form/:playerType">
-                        <HeaderTournamentForm />
-                    </Route>
-                    <Route path="/">
-                        <HeaderHome />
-                    </Route>
-                </Switch>
+                {t('Tournament Settings')}
             </Typography>
-        </AppBar>
+            <IconButton className={classes.iconButton} aria-label="back" onClick={handleBackButton}>
+                <ChevronLeftIcon />
+            </IconButton>
+            <Button
+                form='tournament-form'
+                type="submit"
+                variant="contained"
+                color="secondary"
+            //disabled={submitting}
+            className={classes.button}
+            //onClick={handleSubmit}
+            >
+                {t('Next')}
+            </Button>
+        </Toolbar>
     )
 }
 

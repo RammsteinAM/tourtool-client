@@ -5,6 +5,9 @@ const toast = {
   success: function (msg: string) {
     this.toast(msg, 'success');
   },
+  warning: function (msg: string) {
+    this.toast(msg, 'warning');
+  },
   error: function (msg: string) {
     this.toast(msg, 'error');
   },

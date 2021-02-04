@@ -14,7 +14,12 @@ const styles = makeStyles((theme) =>
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      
+      '& .MuiToolbar-root': {
+        padding: '13px 24px',
+      },
+      '&.MuiPaper-elevation4': {
+        boxShadow: '0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)',
+      }
     },
     appBarShift: {
       paddingLeft: theme.spacing(7),
@@ -46,6 +51,18 @@ const styles = makeStyles((theme) =>
       [theme.breakpoints.up('sm')]: {
         display: 'block',
       },
+    },
+    button: {
+      height: '40px',
+      padding: '0 30px',
+      borderRadius: '2px',
+    },
+    iconButton: {
+      padding: 7,
+      margin: '0 10px',
+      '&:hover': {
+        backgroundColor: 'initial',
+      }
     },
   }),
 );

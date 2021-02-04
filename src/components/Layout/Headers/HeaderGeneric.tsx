@@ -11,15 +11,17 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import clsx from 'clsx';
 import { CssBaseline } from '@material-ui/core';
 import headerStyles from './headerStyles';
 
 interface Props {
+    title: string;
+    backButton?: boolean;
 }
 
-const Header = (props: Props) => {
+const HeaderGeneric = (props: Props) => {
     const classes = headerStyles();
     const history = useHistory();
     const [path, setPath] = useState('');
@@ -30,13 +32,20 @@ const Header = (props: Props) => {
 
     })
 
+    const handleBackButton = () => {
+        history.goBack()
+    }
+
     return (
-            <Toolbar>
-                <Typography variant="h6" noWrap className={classes.title}>
-                    {t('Select Mode')}
-                </Typography>
-            </Toolbar>
+        <Toolbar>
+            <Typography variant="h6" noWrap className={classes.title}>
+                {props.title}
+            </Typography>
+            {props.backButton && <IconButton className={classes.iconButton} aria-label="back" onClick={handleBackButton}>
+                <ChevronLeftIcon />
+            </IconButton>}
+        </Toolbar>
     )
 }
 
-export default Header
+export default HeaderGeneric

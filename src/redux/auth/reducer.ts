@@ -6,7 +6,7 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  // LOGIN_CHECK_REQUEST,
+  USER_UPDATE_SUCCESS,
   // LOGIN_CHECK_SUCCESS,
   // LOGIN_CHECK_FAILURE,
   FORGOT_PASSWORD_REQUEST,
@@ -49,6 +49,7 @@ const initialState: AuthReducerState | null = {
 };
 
 const reducer = (state: AuthReducerState = initialState, action: AuthActionParams): AuthReducerState => {
+  debugger
   switch (action.type) {
     case LOGIN_REQUEST: {
       return {
@@ -71,37 +72,6 @@ const reducer = (state: AuthReducerState = initialState, action: AuthActionParam
         ...action.payload
       };
     }
-    // case LOGIN_CHECK_REQUEST: {
-    //   return {
-    //     ...state,
-    //     loginCheck: {
-    //       status: ActionStatus.Request,
-    //       error: ''
-    //     }
-    //   };
-    // }
-    // case LOGIN_CHECK_SUCCESS: {
-    //   const data = action.payload?.data!;
-    //   debugger
-    //   return {
-    //     ...state,
-    //     data: { ...data },
-    //     loginCheck: {
-    //       status: ActionStatus.Success,
-    //       error: ''
-    //     }
-    //   };
-    // }
-    // case LOGIN_CHECK_FAILURE: {
-    //   return {
-    //     ...state,
-    //     status: ActionStatus.Initial,
-    //     loginCheck: {
-    //       status: ActionStatus.Failure,
-    //       error: action.payload?.error
-    //     }
-    //   };
-    // }
     case FORGOT_PASSWORD_REQUEST: {
       return {
         ...state,
@@ -163,6 +133,14 @@ const reducer = (state: AuthReducerState = initialState, action: AuthActionParam
           status: ActionStatus.Failure,
           error: action.payload?.error
         }
+      };
+    }
+    case USER_UPDATE_SUCCESS: {
+      return {
+        ...state,
+        data: { ...action.payload?.data!, social: state.data?.social },
+        status: ActionStatus.Success,
+        error: ''
       };
     }
     case LOGOUT: {
