@@ -14,7 +14,7 @@ const FORGOT_PASSWORD_RESET = "FORGOT_PASSWORD_RESET";
 const RESET_PASSWORD_REQUEST = "RESET_PASSWORD_REQUEST";
 const RESET_PASSWORD_SUCCESS = "RESET_PASSWORD_SUCCESS";
 const RESET_PASSWORD_FAILURE = "RESET_PASSWORD_FAILURE";
-const USER_UPDATE_SUCCESS = "USER_UPDATE_SUCCESS";
+//const USER_UPDATE_SUCCESS = "USER_UPDATE_SUCCESS";
 const LOGOUT = "LOGOUT";
 
 export {
@@ -28,7 +28,7 @@ export {
     RESET_PASSWORD_REQUEST,
     RESET_PASSWORD_SUCCESS,
     RESET_PASSWORD_FAILURE,
-    USER_UPDATE_SUCCESS,
+    //USER_UPDATE_SUCCESS,
     LOGOUT,
 }
 
@@ -54,7 +54,7 @@ export type ForgotPasswordResetActionParams = Action<typeof FORGOT_PASSWORD_RESE
 export type ResetPasswordRequestActionParams = Action<typeof RESET_PASSWORD_REQUEST>;
 export type ResetPasswordSuccessActionParams = PayloadedAction<typeof RESET_PASSWORD_SUCCESS, AppState<any> | null>;
 export type ResetPasswordFailureActionParams = PayloadedAction<typeof RESET_PASSWORD_FAILURE, ResponseError | null>;
-export type UserUpdateSuccessActionParams = PayloadedAction<typeof USER_UPDATE_SUCCESS, ResponseData<UserStateData> | null>;
+//export type UserUpdateSuccessActionParams = PayloadedAction<typeof USER_UPDATE_SUCCESS, ResponseData<UserStateData> | null>;
 export type LogoutActionParams = Action<typeof LOGOUT>;
 export type AuthActionParams =
     LoginRequestActionParams |
@@ -67,5 +67,5 @@ export type AuthActionParams =
     ResetPasswordRequestActionParams |
     ResetPasswordSuccessActionParams |
     ResetPasswordFailureActionParams | 
-    UserUpdateSuccessActionParams |
+    //UserUpdateSuccessActionParams |
     LogoutActionParams

@@ -3,11 +3,13 @@ import thunk from 'redux-thunk';
 import userReducer from './user/reducer';
 import authReducer from './auth/reducer';
 import registerReducer from './register/reducer';
+import entitiesReducer from './tournamentEntities/reducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 export const rootReducer = combineReducers({
-    user: userReducer,
     auth: authReducer,
+    entities: entitiesReducer,
+    user: userReducer,
     register: registerReducer,
 });
 

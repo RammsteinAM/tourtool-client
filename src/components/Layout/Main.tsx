@@ -33,7 +33,6 @@ const Main = (props: Props) => {
     const { t } = useTranslation();
     return (
         <>
-            <CssBaseline />
             <Header menuOpen={props.menuOpen} />
             <main className={classes.content}>
                 <div className={classes.toolbar} />

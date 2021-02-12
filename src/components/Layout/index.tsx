@@ -200,7 +200,6 @@ const Layout = (props: Props) => {
         </List>
       </Drawer>
 
-      
       <Main menuOpen={open} backdropVisible={showSidePanel} backdropCallback={closeSidePanel}>
         {props.children}
       </Main>

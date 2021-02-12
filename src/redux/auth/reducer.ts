@@ -6,9 +6,7 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  USER_UPDATE_SUCCESS,
-  // LOGIN_CHECK_SUCCESS,
-  // LOGIN_CHECK_FAILURE,
+  //USER_UPDATE_SUCCESS,
   FORGOT_PASSWORD_REQUEST,
   FORGOT_PASSWORD_SUCCESS,
   FORGOT_PASSWORD_FAILURE,
@@ -49,7 +47,6 @@ const initialState: AuthReducerState | null = {
 };
 
 const reducer = (state: AuthReducerState = initialState, action: AuthActionParams): AuthReducerState => {
-  debugger
   switch (action.type) {
     case LOGIN_REQUEST: {
       return {
@@ -135,14 +132,14 @@ const reducer = (state: AuthReducerState = initialState, action: AuthActionParam
         }
       };
     }
-    case USER_UPDATE_SUCCESS: {
-      return {
-        ...state,
-        data: { ...action.payload?.data!, social: state.data?.social },
-        status: ActionStatus.Success,
-        error: ''
-      };
-    }
+    // case USER_UPDATE_SUCCESS: {
+    //   return {
+    //     ...state,
+    //     data: { ...action.payload?.data!, social: state.data?.social },
+    //     status: ActionStatus.Success,
+    //     error: ''
+    //   };
+    // }
     case LOGOUT: {
       clearCookieAndStorage();
       return {

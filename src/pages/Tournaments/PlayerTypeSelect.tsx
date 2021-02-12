@@ -68,7 +68,7 @@ const PlayerTypeSelect = (props: Props) => {
                 <CardContent
                     className={classes.cardContent}
                     style={{ backgroundColor: '#00b8d4' }}
-                    onClick={() => handleCardClick('drawYourPartner')}
+                    onClick={() => handleCardClick('dyp')}
                 >
                     <DrawYourPartner className={classes.cardIcon} />
                     <div className={classes.cardTitle}>{t('Draw Your Partner')}</div>

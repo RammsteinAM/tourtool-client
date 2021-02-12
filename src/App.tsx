@@ -15,6 +15,7 @@ import TournamentTypeSelect from './pages/Tournaments/TournamentTypeSelect';
 import TournamentForm from './pages/Tournaments/TournamentForm';
 import PlayerTypeSelect from './pages/Tournaments/PlayerTypeSelect';
 import PlayerForm from './pages/Tournaments/PlayerForm';
+import Elimination from './pages/Tournaments/Elimination';
 
 function App() {
   const dispatch = useDispatch();
@@ -38,6 +39,9 @@ function App() {
           </PrivateRoute>
           <PrivateRoute exact path="/tournament-form/:tournamentType">
             <TournamentForm />
+          </PrivateRoute>
+          <PrivateRoute exact path="/elimination">
+            <Elimination />
           </PrivateRoute>
           <PrivateRoute exact path="/tournament-player-type-select">
             <PlayerTypeSelect />

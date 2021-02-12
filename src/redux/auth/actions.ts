@@ -16,7 +16,7 @@ import {
     ResetPasswordRequestActionParams,
     ResetPasswordSuccessActionParams,
     ResetPasswordFailureActionParams,
-    UserUpdateSuccessActionParams,
+    //UserUpdateSuccessActionParams,
     LogoutActionParams,
     LOGIN_REQUEST,
     LOGIN_FAILURE,
@@ -31,7 +31,7 @@ import {
     RESET_PASSWORD_SUCCESS,
     RESET_PASSWORD_FAILURE,
     FORGOT_PASSWORD_RESET,
-    USER_UPDATE_SUCCESS,
+    //USER_UPDATE_SUCCESS,
     LOGOUT,
     ForgotPasswordReqData,
     ForgotPasswordResetActionParams,
@@ -61,7 +61,7 @@ export const resetPasswordFailure = payloadedActionCreator<ResetPasswordFailureA
 
 export const forgotPasswordReset = actionCreator<ForgotPasswordResetActionParams>(FORGOT_PASSWORD_RESET);
 
-export const userUpdateSuccess = payloadedActionCreator<UserUpdateSuccessActionParams>(USER_UPDATE_SUCCESS);
+//export const userUpdateSuccess = payloadedActionCreator<UserUpdateSuccessActionParams>(USER_UPDATE_SUCCESS);
 
 export const logout = actionCreator<LogoutActionParams>(LOGOUT);
 

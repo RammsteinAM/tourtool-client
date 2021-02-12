@@ -48,6 +48,7 @@ const styles = makeStyles((theme) =>
       fontWeight: 400,
       flexGrow: 1,
       display: 'none',
+      userSelect: 'none',
       [theme.breakpoints.up('sm')]: {
         display: 'block',
       },
@@ -56,10 +57,11 @@ const styles = makeStyles((theme) =>
       height: '40px',
       padding: '0 30px',
       borderRadius: '2px',
+      marginLeft: '10px',
     },
     iconButton: {
-      padding: 7,
-      margin: '0 10px',
+      padding: 8,
+      margin: 0,
       '&:hover': {
         backgroundColor: 'initial',
       }

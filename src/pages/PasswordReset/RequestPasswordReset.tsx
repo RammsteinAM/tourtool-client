@@ -33,7 +33,6 @@ const RequestPasswordReset = (props: Props) => {
     const history = useHistory();
     const { t } = useTranslation();
 
-
     useEffect(() => {
         setSubmitting(authState.forgotPassword.status === ActionStatus.Request);
         if (authState.forgotPassword.status === ActionStatus.Success) {

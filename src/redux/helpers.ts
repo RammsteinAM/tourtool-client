@@ -1,6 +1,5 @@
 import { Action } from "redux";
-
-
+import { EntityStateData } from "../types/entities";
 
 export interface PayloadedAction<T, P> extends Action<T> {
     payload: P;
@@ -18,6 +17,17 @@ export const payloadedActionCreator = <T extends PayloadedAction<T["type"], T["p
         payload
     })
 }
+
+export const arrayGroupBy = <T>(objectArray: any[], property: string): T => {
+    return objectArray.reduce(function (acc, obj, i) {
+      //let key = obj[property]
+      if (!acc[i]) {
+        acc[i] = {}
+      }
+      acc[i] = {...obj}
+      return acc
+    }, {})
+  }
 
 
 // export function payloadedActionCreator<TAction extends PayloadedAction<TAction['type'], TAction['payload']>>(

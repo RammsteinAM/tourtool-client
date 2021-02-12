@@ -40,12 +40,6 @@ const Profile = (props: Props) => {
 
   useEffect(() => {
     setSubmitting(userState.status === ActionStatus.Request);
-    if (userState.status === ActionStatus.Success) {
-      toast.success(t('Changes saved'));
-    }
-    return () => {
-      dispatch(userActions.reset());
-    }
   }, [userState.status]);
 
   const handleLogout = () => {
