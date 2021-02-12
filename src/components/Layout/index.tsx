@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactEventHandler, useState } from 'react';
+import React, { ReactElement, ReactEventHandler, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -42,7 +42,8 @@ interface Props {
 
 const Layout = (props: Props) => {
   const classes = layoutStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState<boolean>(false);
+  //const [name, setName] = React.useState<string>();
   const [rightClick, setRightClick] = React.useState<{
     mouseX: null | number;
     mouseY: null | number;
@@ -53,6 +54,8 @@ const Layout = (props: Props) => {
   const authState = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const { t } = useTranslation();
+
+
 
   const handleDrawerClick = () => {
     setOpen(!open);

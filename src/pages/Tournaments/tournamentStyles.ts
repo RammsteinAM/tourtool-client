@@ -292,7 +292,7 @@ const styles = makeStyles((theme) => ({
     },
     gameColumnHeader: {
         textAlign: 'center',
-        marginBottom: '30px',
+        marginBottom: '28px',
         fontSize: '14px',
         color: '#bdbdbd',
     },

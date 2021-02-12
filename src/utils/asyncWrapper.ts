@@ -9,10 +9,10 @@ export function asyncWrapper<T>(func: (param: any) => Promise<T>) {
             return await func(param);
         } catch (err) {
             const { error, message } = err.response.data;
-
-            if (Object.values(ErrorNames).includes(error)) {
-                toast.error(i18n.t(`ERROR_${error}`));
-            }
+            toast.error(i18n.t(`ERROR_${error}`));
+            // if (Object.values(ErrorNames).includes(error)) {
+            //     toast.error(i18n.t(`ERROR_${error}`));
+            // }
 
             throw new HttpError(err.response.status, error, message);
         }

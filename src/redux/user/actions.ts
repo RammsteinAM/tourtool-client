@@ -18,6 +18,7 @@ import { UserRegisterResData, UserStateData, UserUpdateReqData } from "../../typ
 import { ResponseData } from "../../types/main";
 import toast from "../../components/IndependentSnackbar";
 import i18n from "../../utils/i18n";
+import { userUpdateSuccess } from "../auth/actions";
 
 export const updateRequest = actionCreator<UpdateRequestActionParams>(USER_UPDATE_REQUEST);
 
@@ -35,6 +36,7 @@ const update = (data: UserUpdateReqData) => {
             .then(
                 (res: AxiosResponse<ResponseData<UserStateData>>) => {
                     dispatch(updateSuccess(res.data));
+                    dispatch(userUpdateSuccess(res.data));
                     toast.success(i18n.t('Changes saved'))
                 },
                 (error: AxiosError) => {

@@ -66,7 +66,7 @@ const styles = makeStyles((theme) =>
       alignItems: 'center',
       justifyContent: 'flex-end',
       padding: theme.spacing(0, 1),
-      minHeight: 50,
+      minHeight: 46,
       // necessary for content to be below app bar
       //...theme.mixins.toolbar,
     },

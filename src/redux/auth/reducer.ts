@@ -6,7 +6,7 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  //USER_UPDATE_SUCCESS,
+  USER_UPDATE_SUCCESS,
   FORGOT_PASSWORD_REQUEST,
   FORGOT_PASSWORD_SUCCESS,
   FORGOT_PASSWORD_FAILURE,
@@ -132,14 +132,14 @@ const reducer = (state: AuthReducerState = initialState, action: AuthActionParam
         }
       };
     }
-    // case USER_UPDATE_SUCCESS: {
-    //   return {
-    //     ...state,
-    //     data: { ...action.payload?.data!, social: state.data?.social },
-    //     status: ActionStatus.Success,
-    //     error: ''
-    //   };
-    // }
+    case USER_UPDATE_SUCCESS: {
+      return {
+        ...state,
+        data: { ...action.payload?.data!, social: state.data?.social },
+        //status: ActionStatus.Success,
+        //error: ''
+      };
+    }
     case LOGOUT: {
       clearCookieAndStorage();
       return {

@@ -19,6 +19,7 @@ const EliminationSidebarItem = (props: Props) => {
         boxShadow: isDragging ? "0px 2px 12px #00000077" : "initial",
         ...draggableStyle,
         cursor: 'move',
+        outline: 'none',
     });
 
     return (

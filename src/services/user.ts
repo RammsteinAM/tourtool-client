@@ -62,7 +62,7 @@ const resetPassword = asyncWrapper<AxiosResponse>(async (data: UserPasswordReset
 
 const update = asyncWrapper<AxiosResponse>(async (data: UserUpdateReqData): Promise<AxiosResponse> => {
     const { id, displayName, currentPassword, password } = data;
-    const response: AxiosResponse<AxiosRequestConfig> = await axios.put(`${endpoint}/user/${id}`, { displayName, currentPassword, password });
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.put(`${endpoint}/user/${id}`, { displayName, currentPassword, password }, { withCredentials: true });
     return response;
 })
 
