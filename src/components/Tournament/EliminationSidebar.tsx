@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { StatePlayers } from '../../types/entities';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import DragHandleIcon from '@material-ui/icons/DragHandle';
-import tournamentStyles from './tournamentStyles';
 import EliminationSidebarItem from './EliminationSidebarItem';
+import eliminationSidebarStyles from './eliminationSidebarStyles';
 
 const reorder = (list: StatePlayers, startIndex: number, endIndex: number) => {
     const result = Array.from(list);
@@ -20,7 +20,7 @@ interface Props {
 
 const EliminationSidebar = (props: Props) => {
     const [players, setPlayers] = useState<StatePlayers>();
-    const classes = tournamentStyles();
+    const classes = eliminationSidebarStyles();
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -70,19 +70,6 @@ const EliminationSidebar = (props: Props) => {
                     )}
                 </Droppable>
             </DragDropContext>
-
-
-            {/* {props.players.map((player, i) => {
-                return (
-                    <div className={classes.eliminationSidebarItem}>
-                        <div className={classes.eliminationSidebarItemNumber}>{i + 1}</div>
-                        {player && player.bye ?
-                            <div className={classes.eliminationSidebarItemPlayerBye}>{t('<Bye>')}</div> :
-                            <div className={classes.eliminationSidebarItemPlayer}>{player?.name}</div>
-                        }
-                    </div>
-                )
-            })} */}
         </div>
     )
 }

@@ -6,17 +6,19 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import mainStyles from '../../styles/mainStyles';
 import { useParams } from 'react-router-dom';
 import FormSubheader from '../../components/FormComponents/FormSubheader';
 import { ReactComponent as Teams } from '../../resources/icons/teams.svg';
 import { ReactComponent as Single } from '../../resources/icons/single.svg';
 import { ReactComponent as DrawYourPartner } from '../../resources/icons/drawYourPartner.svg';
+import { ReactComponent as MonsterDYP } from '../../resources/icons/monsterDYP.svg';
 import { PlayerCategory, StatePlayers } from '../../types/entities';
 import toast from '../../components/IndependentSnackbar';
-import tournamentStyles from './tournamentStyles';
 import { updatePlayers } from '../../redux/tournamentEntities/actions';
-import PlayerFormTextField from './PlayerFormTextField';
+import PlayerFormTextField from '../../components/Tournament/PlayerFormTextField';
+import FormControl from '@material-ui/core/FormControl';
+import mainStyles from '../../styles/mainStyles';
+import tournamentStyles from './tournamentStyles';
 
 interface Duplicate {
     player: string;
@@ -43,7 +45,7 @@ const PlayerForm = (props: Props) => {
     const dispatch = useDispatch();
     const mainClasses = mainStyles();
     const history = useHistory();
-    const { playerType } = useParams<{ playerType: 'single' | 'teams' | 'dyp' }>();
+    const { playerType } = useParams<{ playerType: 'single' | 'teams' | 'dyp' | 'monster-dyp' }>();
     const { t } = useTranslation();
 
     const dyp = playerType === 'dyp';
@@ -57,7 +59,7 @@ const PlayerForm = (props: Props) => {
     useEffect(() => {
         const storePlayers = entityState.players;
         setPlayers([...storePlayers, { ...initialPlayer }])
-    }, []);
+    }, [entityState.players]);
 
     useEffect(() => {
         const storePlayers = entityState.players;
@@ -207,6 +209,16 @@ const PlayerForm = (props: Props) => {
                         <div>{t('Draw Your Partner')}</div>
                     </div>
                 )
+            case 'monster-dyp':
+                return (
+                    <div
+                        className={classes.playerFormHeader}
+                        style={{ backgroundImage: 'linear-gradient(-180deg,#efdb63,#f6c832)' }}
+                    >
+                        <MonsterDYP />
+                        <div>{t('MonsterDYP')}</div>
+                    </div>
+                )
             default:
                 return null;
                 break;
@@ -219,6 +231,7 @@ const PlayerForm = (props: Props) => {
                 {renderHeader()}
                 <FormSubheader title={t('Names')} text={dyp ? t('form-subheader-names-dyp-text') : t('form-subheader-names-text')} width={366} />
                 {dyp &&
+                <FormControl>
                     <FormControlLabel
                         className={classes.playerFormCheckbox}
                         control={
@@ -231,7 +244,7 @@ const PlayerForm = (props: Props) => {
                             />
                         }
                         label={t('Set Players')}
-                    />
+                    /></FormControl>
                 }
                 <div>
                     {players.map((player, index) => {
@@ -247,66 +260,6 @@ const PlayerForm = (props: Props) => {
                                 onCategoryChange={handleCategoryChange}
                                 onKeyDown={handleKeyDown}
                             />
-                            // <div key={index} className={classes.playerFormFieldContainer}>
-                            //     <div className={classes.playerFormFieldNumber}>{index + 1}</div>
-                            //     <TextField
-                            //         fullWidth
-                            //         size="small"
-                            //         value={player.name}
-                            //         key={index}
-                            //         type="text"
-                            //         onChange={
-                            //             (event: React.ChangeEvent<{ value: unknown }>) => {
-                            //                 handlePlayerChange(index)
-                            //             }
-                            //         }
-                            //         onKeyDown={
-                            //             (event: React.KeyboardEvent) => {
-                            //                 handleKeyDown(event, index, player.name)
-                            //             }
-                            //         }
-                            //         onBlur={
-                            //                                     (event: React.ChangeEvent<{ value: unknown }>) => {
-                            //                                         handleBlur(event.target.value as string, index)
-                            //                                     }
-                            //         }
-                            //         inputRef={fieldRefs[index]}
-                            //         autoComplete="off"
-                            //         className={clsx(classes.textField, classes.playerFormField)}
-                            //     />
-                            //     {dyp && checkboxSetPlayers &&
-                            //         <ul className={classes.playerFormGroupSelect}>
-                            //             <li className={
-                            //                 clsx(classes.playerFormGroupSelectItem,
-                            //                     { [classes.playerFormGroupSelectItemSeleced]: player.category === 'A' }
-                            //                 )
-                            //             }
-                            //                 onClick={() => handleCategoryChange(index, 'A')}
-                            //             >
-                            //                 <a>{t('A')}</a>
-                            //             </li>
-                            //             <li
-                            //                 className={
-                            //                     clsx(classes.playerFormGroupSelectItem,
-                            //                         { [classes.playerFormGroupSelectItemSelecedNeutral]: !player.category }
-                            //                     )
-                            //                 }
-                            //                 onClick={() => handleCategoryChange(index, null)}
-                            //             >
-                            //                 <a className="none">—</a>
-                            //             </li>
-                            //             <li className={
-                            //                 clsx(classes.playerFormGroupSelectItem,
-                            //                     { [classes.playerFormGroupSelectItemSeleced]: player.category === 'B' }
-                            //                 )
-                            //             }
-                            //                 onClick={() => handleCategoryChange(index, 'B')}
-                            //             >
-                            //                 <a>{t('B')}</a>
-                            //             </li>
-                            //         </ul>
-                            //     }
-                            // </div>
                         )
                     })}
                 </div>

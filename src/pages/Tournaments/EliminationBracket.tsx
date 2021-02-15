@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
 import { EliminationPlayers, StatePlayers } from '../../types/entities';
-import tournamentStyles from './tournamentStyles';
-import EliminationSidebar from './EliminationSidebar';
+import EliminationSidebar from '../../components/Tournament/EliminationSidebar';
 import { updatePlayers } from '../../redux/tournamentEntities/actions';
+import tournamentStyles from './tournamentStyles';
+import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
 
 const initialPlayers = { 1: [] }
 
@@ -13,9 +14,10 @@ interface Props {
 
 }
 
-const Elimination = (props: Props) => {
+const EliminationBracket = (props: Props) => {
     const [players, setPlayers] = useState<EliminationPlayers>(initialPlayers);
-    const entityState = useSelector((state: RootState) => state.entities);    
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+    const entityState = useSelector((state: RootState) => state.entities);
     const dispatch = useDispatch();
     const numberOfPlayers = entityState.players.length;
     const firstRoundGameNumber: number = 2 ** Math.ceil((Math.log(numberOfPlayers) / Math.log(2)) - 1);
@@ -35,6 +37,20 @@ const Elimination = (props: Props) => {
         }
         setPlayers({ ...players, 1: [...newPlayers] })
     }, [entityState.players])
+
+    const handleDialogOpen = () => {
+        setDialogOpen(true);
+    };
+
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    };
+
+    const handleStartTournament = (e: React.FormEvent, name: string) => {
+        e.preventDefault();
+        alert(name)
+        //setDialogOpen(false);
+    };
 
     const getByeIndexes = (n: number) => {
         if (Math.log(32) / Math.log(2) % 1 !== 0) return null;
@@ -61,7 +77,6 @@ const Elimination = (props: Props) => {
     const insertByePlayers = (players: StatePlayers) => {
         let byePlayers = byePlayerNumber;
         const byeI = getByeIndexes(numberOfPlayers + byePlayerNumber);
-        let kekw = 1;
 
         for (let i = 0; i < byePlayerNumber; i++) {
             if (byePlayers <= 0) break;
@@ -77,13 +92,14 @@ const Elimination = (props: Props) => {
     }
 
     const handleSidebarChange = (players: StatePlayers) => {
-        setPlayers({1: [...players]})
+        setPlayers({ 1: [...players] })
     }
 
     const handleSubmit = (e: React.FormEvent): void => {
 
         e.preventDefault()
-        alert('KEKW')
+        handleDialogOpen();
+        //alert('KEKW')
     }
 
     const renderTree = () => {
@@ -175,8 +191,13 @@ const Elimination = (props: Props) => {
                     {renderTree()}
                 </div>
             </form>
+            <CreateTournamentDialog
+                open={dialogOpen}
+                onClose={handleDialogClose}
+                onSubmit={handleStartTournament}
+            />
         </div>
     )
 }
 
-export default Elimination
+export default EliminationBracket

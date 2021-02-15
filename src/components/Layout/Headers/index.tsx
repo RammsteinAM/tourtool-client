@@ -44,17 +44,21 @@ const Header = (props: Props) => {
             <Typography variant="h6" noWrap className={classes.title}>
                 <Switch>
                     <Route exact path="/new">
-                        <HeaderGeneric title={t('Select Mode')} />
+                        <HeaderGeneric
+                            title={t('Select Mode')}
+                            backButton
+                        />
                     </Route>
                     <Route exact path="/tournament-form/:tournamentType">
                         <HeaderGeneric
                             title={t('Tournament Settings')}
+                            backButton
                             nextButton
                             nextButtonForm='tournament-form'
                         />
                         {/* <HeaderTournamentForm /> */}
                     </Route>
-                    <Route exact path="/tournament-player-type-select">
+                    <Route exact path="/tournament-player-type-select/:tournamentType">
                         <HeaderGeneric title={t('Add Participants')} backButton />
                     </Route>
                     <Route exact path="/tournament-player-form/:playerType">
@@ -62,6 +66,7 @@ const Header = (props: Props) => {
                             title={t('Add Participants')}
                             backButton
                             shufflePlayersButton
+                            importPlayersButton
                             nextButton
                             nextButtonForm='player-form'
                         />

@@ -35,7 +35,11 @@ const TournamentTypeSelect = (props: Props) => {
     return (
         <div className={classes.cardListContainer}>
             <Card className={classes.cardRoot}>
-                <CardContent className={classes.cardContent} style={{ backgroundColor: '#00b8d4' }}>
+                <CardContent
+                    className={classes.cardContent}
+                    style={{ backgroundColor: '#00b8d4' }}
+                    onClick={() => handleCardClick('round-robin')}
+                >
                     <RoundRobinIcon className={classes.cardIcon} />
                     <div className={classes.cardTitle}>{t('Round Robin')}</div>
                 </CardContent>
@@ -43,13 +47,17 @@ const TournamentTypeSelect = (props: Props) => {
                     <IconButton aria-label="info">
                         <MoreHorizIcon />
                     </IconButton>
-                    <IconButton >
+                    <IconButton onClick={() => handleCardClick('round-robin')} >
                         <PlayArrowIcon />
                     </IconButton>
                 </CardActions>
             </Card>
             <Card className={classes.cardRoot}>
-                <CardContent className={classes.cardContent} style={{ backgroundColor: '#9c27b0' }}>
+                <CardContent
+                    className={classes.cardContent}
+                    style={{ backgroundColor: '#9c27b0' }}
+                    onClick={() => handleCardClick('lms')}
+                >
                     <LastManStandingIcon className={classes.cardIcon} />
                     <div className={classes.cardTitle}>{t('Last Man Standing')}</div>
                 </CardContent>
@@ -57,7 +65,7 @@ const TournamentTypeSelect = (props: Props) => {
                     <IconButton aria-label="info">
                         <MoreHorizIcon />
                     </IconButton>
-                    <IconButton >
+                    <IconButton onClick={() => handleCardClick('lms')} >
                         <PlayArrowIcon />
                     </IconButton>
                 </CardActions>

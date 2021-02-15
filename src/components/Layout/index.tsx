@@ -43,7 +43,6 @@ interface Props {
 const Layout = (props: Props) => {
   const classes = layoutStyles();
   const [open, setOpen] = React.useState<boolean>(false);
-  //const [name, setName] = React.useState<string>();
   const [rightClick, setRightClick] = React.useState<{
     mouseX: null | number;
     mouseY: null | number;
@@ -54,8 +53,6 @@ const Layout = (props: Props) => {
   const authState = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const { t } = useTranslation();
-
-
 
   const handleDrawerClick = () => {
     setOpen(!open);

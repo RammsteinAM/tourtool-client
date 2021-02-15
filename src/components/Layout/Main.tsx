@@ -17,8 +17,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import clsx from 'clsx';
 import { CssBaseline } from '@material-ui/core';
 import Backdrop from '@material-ui/core/Backdrop';
-import layoutStyles from './layoutStyles';
 import Header from './Headers';
+import layoutStyles from './layoutStyles';
 
 interface Props {
     children: ReactElement,

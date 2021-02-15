@@ -4,7 +4,7 @@ import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
 import { EliminationPlayers, StatePlayers } from '../../types/entities';
 import tournamentStyles from './tournamentStyles';
-import EliminationSidebar from './EliminationSidebar';
+import EliminationSidebar from '../../components/Tournament/EliminationSidebar';
 import { updatePlayers } from '../../redux/tournamentEntities/actions';
 
 const initialPlayers = { 1: [] }
@@ -14,7 +14,7 @@ interface Props {
 }
 
 const EliminationTree = (props: Props) => {
-    const entityState = useSelector((state: RootState) => state.entities);    
+    const entityState = useSelector((state: RootState) => state.entities);
     const dispatch = useDispatch();
     const numberOfPlayers = entityState.players.length;
     const firstRoundGameNumber: number = 2 ** Math.ceil((Math.log(numberOfPlayers) / Math.log(2)) - 1);
@@ -143,10 +143,9 @@ const EliminationTree = (props: Props) => {
 
     return (
         <div>
-
-                <div className={classes.eliminationCardsContainer}>
-                    {renderTree()}
-                </div>
+            <div className={classes.eliminationCardsContainer}>
+                {renderTree()}
+            </div>
         </div>
     )
 }

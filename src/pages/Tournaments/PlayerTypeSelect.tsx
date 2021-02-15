@@ -12,10 +12,11 @@ import Whatshot from '@material-ui/icons/Whatshot';
 import StarsIcon from '@material-ui/icons/Stars';
 import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 import { useTranslation } from "react-i18next";
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { ReactComponent as Teams } from '../../resources/icons/teams.svg';
 import { ReactComponent as Single } from '../../resources/icons/single.svg';
 import { ReactComponent as DrawYourPartner } from '../../resources/icons/drawYourPartner.svg';
+import { ReactComponent as MonsterDYP } from '../../resources/icons/monsterDYP.svg';
 
 import tournamentStyles from './tournamentStyles';
 
@@ -27,6 +28,7 @@ const PlayerTypeSelect = (props: Props) => {
     const history = useHistory();
     const { t } = useTranslation();
 
+    const { tournamentType } = useParams<{ tournamentType: string }>();
     const handleCardClick = (type: string) => {
         history.push(`/tournament-player-form/${type}`)
     }
@@ -34,6 +36,22 @@ const PlayerTypeSelect = (props: Props) => {
     const classes = tournamentStyles();
     return (
         <div className={classes.cardListContainer}>
+            {tournamentType === 'lms' &&
+                <Card className={classes.cardRoot}>
+                    <CardContent
+                        className={classes.cardContent}
+                        style={{ backgroundColor: '#fbc02d' }}
+                        onClick={() => handleCardClick('monster-dyp')}
+                    >
+                        <MonsterDYP className={classes.cardIcon} />
+                        <div className={classes.cardTitle}>{t('MonsterDYP')}</div>
+                    </CardContent>
+                    <CardActions disableSpacing className={classes.cardActions}>
+                        <IconButton onClick={() => handleCardClick('monster-dyp')}>
+                            <PlayArrowIcon />
+                        </IconButton>
+                    </CardActions>
+                </Card>}
             <Card className={classes.cardRoot}>
                 <CardContent
                     className={classes.cardContent}
@@ -44,7 +62,7 @@ const PlayerTypeSelect = (props: Props) => {
                     <div className={classes.cardTitle}>{t('Teams')}</div>
                 </CardContent>
                 <CardActions disableSpacing className={classes.cardActions}>
-                    <IconButton >
+                    <IconButton onClick={() => handleCardClick('teams')}>
                         <PlayArrowIcon />
                     </IconButton>
                 </CardActions>
@@ -59,7 +77,7 @@ const PlayerTypeSelect = (props: Props) => {
                     <div className={classes.cardTitle}>{t('Single')}</div>
                 </CardContent>
                 <CardActions disableSpacing className={classes.cardActions}>
-                    <IconButton >
+                    <IconButton onClick={() => handleCardClick('single')} >
                         <PlayArrowIcon />
                     </IconButton>
                 </CardActions>
@@ -74,7 +92,7 @@ const PlayerTypeSelect = (props: Props) => {
                     <div className={classes.cardTitle}>{t('Draw Your Partner')}</div>
                 </CardContent>
                 <CardActions disableSpacing className={classes.cardActions}>
-                    <IconButton onClick={() => handleCardClick('drawYourPartner')} >
+                    <IconButton onClick={() => handleCardClick('dyp')} >
                         <PlayArrowIcon />
                     </IconButton>
                 </CardActions>

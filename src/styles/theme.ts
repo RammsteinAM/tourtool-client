@@ -14,7 +14,9 @@ const theme = createMuiTheme({
       tonalOffset: 0.2,
       
     },
-    
+    typography: {
+      fontFamily: ['Mardoto', 'sans-serif'].join(','),
+    },
     // transitions: {
     //     duration: {
     //         leavingScreen: 500

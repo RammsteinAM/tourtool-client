@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import TextField from '@material-ui/core/TextField';
 import { useTranslation } from "react-i18next";
 import { PlayerCategory, StatePlayer, StatePlayers } from '../../types/entities';
-import tournamentStyles from './tournamentStyles';
+import playerFormTextFieldStyles from './playerFormTextFieldStyles';
 
 interface Props {
     index: number;
@@ -18,7 +18,7 @@ interface Props {
 
 const PlayerFormTextField = (props: Props) => {
     const [playerName, setPlayerName] = useState<string>(props.player.name);
-    const classes = tournamentStyles();
+    const classes = playerFormTextFieldStyles();
     const { t } = useTranslation();
 
     useEffect(() => {

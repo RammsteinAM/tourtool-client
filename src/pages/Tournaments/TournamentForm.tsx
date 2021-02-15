@@ -24,6 +24,7 @@ interface TournamentForm {
     numberOfGoals: number,
     draw: boolean,
     winningSets: number;
+    numberOfLives?: number;
 }
 
 enum GoalValues {
@@ -53,6 +54,7 @@ const TournamentForm = (props: Props) => {
         numberOfGoals: 7,
         draw: false,
         winningSets: 1,
+        numberOfLives: 1,
     });
     const [subheaderState, setSubeaderState] = useState<SubheaderState>({});
     const classes = tournamentStyles();
@@ -74,9 +76,9 @@ const TournamentForm = (props: Props) => {
     };
 
     const handleSubmit = (e: React.FormEvent): void => {
-        history.push('/tournament-player-type-select');
-        e.preventDefault()
-        alert(e.target)
+        e.preventDefault();
+        history.push(`/tournament-player-type-select/${tournamentType}`);
+        //alert(e.target)
         // setFormValues(values);
         // dispatch(registerActions.register(values));
     }
@@ -111,6 +113,28 @@ const TournamentForm = (props: Props) => {
     return (
         <Paper elevation={3} className={classes.paper}>
             <form className={classes.form} onSubmit={handleSubmit} id='tournament-form'>
+                {tournamentType === 'lms' &&
+                    <>
+                        <FormSubheader title={t('Last Man Standing')} text={t('form-subheader-lms-text')} width={454} />
+                        <div className={classes.formBlock}>
+                            <span className={classes.formLabel}>{t('Number of Lives')}</span>
+                            <Select
+                                id="numberOfLives"
+                                name="numberOfLives"
+                                value={formState.numberOfLives}
+                                onChange={handleFormStateChange}
+                                className={classes.formSelect}
+                                MenuProps={{ classes: { paper: classes.menuPaper } }}
+                            >
+                                {
+                                    [...Array(10).keys()].map(key => (
+                                        <MenuItem value={key + 1}>{t('Life', { count: key + 1 })}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </div>
+                    </>
+                }
                 <FormSubheader title={t('Tables')} text={t('form-subheader-tables-text')} width={454} />
                 <div className={classes.formBlock}>
                     <span className={classes.formLabel}>{t('Number of Tables')}</span>

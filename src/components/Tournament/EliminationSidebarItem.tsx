@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { StatePlayer, StatePlayers } from '../../types/entities';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import DragHandleIcon from '@material-ui/icons/DragHandle';
-import tournamentStyles from './tournamentStyles';
+import eliminationSidebarStyles from './eliminationSidebarStyles';
 
 interface Props {
     player: StatePlayer,
@@ -11,7 +11,7 @@ interface Props {
 }
 
 const EliminationSidebarItem = (props: Props) => {
-    const classes = tournamentStyles();
+    const classes = eliminationSidebarStyles();
     const { t } = useTranslation();
 
     const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
