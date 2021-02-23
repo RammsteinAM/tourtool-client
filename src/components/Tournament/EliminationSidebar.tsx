@@ -57,10 +57,11 @@ const EliminationSidebar = (props: Props) => {
                         <div
                             {...provided.droppableProps}
                             ref={provided.innerRef}
-                            style={{cursor: 'move'}}
+                            style={{ cursor: 'move' }}
                         >
                             {props.players && props.players.map((player, i) => (
                                 <EliminationSidebarItem
+                                    key={i}
                                     player={player}
                                     index={i}
                                 />

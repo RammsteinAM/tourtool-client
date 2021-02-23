@@ -15,17 +15,12 @@ import TournamentTypeSelect from './pages/Tournaments/TournamentTypeSelect';
 import TournamentForm from './pages/Tournaments/TournamentForm';
 import PlayerTypeSelect from './pages/Tournaments/PlayerTypeSelect';
 import PlayerForm from './pages/Tournaments/PlayerForm';
-import Elimination from './pages/Tournaments/EliminationBracket';
+import EliminationBracket from './pages/Tournaments/EliminationBracket';
+import DeleteAccountResult from './pages/DeleteAccount/DeleteAccountResult';
+import Elimination from './pages/Tournaments/Elimination';
 
 function App() {
-  const dispatch = useDispatch();
-  const authState = useSelector((state: RootState) => state.auth);
 
-  useEffect(() => {
-    if (authState.status === ActionStatus.Initial) {
-      dispatch(authActions.loginCheck());
-    }
-  }, [])
 
   return (
     <BrowserRouter>
@@ -39,6 +34,9 @@ function App() {
           </PrivateRoute>
           <PrivateRoute exact path="/tournament-form/:tournamentType">
             <TournamentForm />
+          </PrivateRoute>
+          <PrivateRoute exact path="/elimination-bracket">
+            <EliminationBracket />
           </PrivateRoute>
           <PrivateRoute exact path="/elimination">
             <Elimination />
@@ -60,6 +58,9 @@ function App() {
           </PublicRoute>
           <PublicRoute exact path="/verify-email/:token">
             <EmailVerificationResult />
+          </PublicRoute>
+          <PublicRoute exact path="/delete-account/:token">
+            <DeleteAccountResult />
           </PublicRoute>
           <Route path="/">
             <Home />

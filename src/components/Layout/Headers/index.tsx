@@ -72,13 +72,21 @@ const Header = (props: Props) => {
                         />
                         {/* <HeaderTournamentForm /> */}
                     </Route>
-                    <Route exact path="/elimination">
+                    <Route exact path="/elimination-bracket">
                         <HeaderGeneric
                             title={t('Create Elimination Bracket')}
                             backButton
                             shufflePlayersButton
                             nextButton
                             nextButtonForm='elimination-form'
+                            thirdPlaceCheckbox
+                        />
+                        {/* <HeaderTournamentForm /> */}
+                    </Route>
+                    <Route exact path="/elimination">
+                        <HeaderGeneric
+                            title={t('Elimination')}
+                            zoomSlider
                         />
                         {/* <HeaderTournamentForm /> */}
                     </Route>

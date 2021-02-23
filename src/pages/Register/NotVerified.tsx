@@ -24,16 +24,18 @@ interface IError {
 }
 
 interface Props {
+    //resetPasswordCallback: () => void;
 }
 
-const RegisterSuccess = (props: Props) => {
+const NotVerified = (props: Props) => {
     const classes = registerStyles();
     const mainClasses = mainStyles();
     const dispatch = useDispatch();
     const [submitting, setSubmitting] = useState<boolean>(false);
-    const [timeLeft, setTimeLeft] = useState<number>(60);
+    const [timeLeft, setTimeLeft] = useState<number>(0);
     const authState = useSelector((state: RootState) => state.auth);
     const registerState = useSelector((state: RootState) => state.register);
+    const history = useHistory();
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -53,20 +55,23 @@ const RegisterSuccess = (props: Props) => {
 
     const handleResendEmail = (e: React.MouseEvent): void => {
         //e.preventDefault();
-        registerState.data && dispatch(registerActions.resendVerificationEmail(registerState.data));
+        if (authState.data?.email && authState.data?.password) {
+            dispatch(registerActions.resendVerificationEmail({ email: authState.data?.email, password: authState.data?.password }));
+            setTimeLeft(60)
+        }            
     }
 
     return (
         <>
             <CssBaseline />
             <Typography>
-                {t("Registration success")}
+                {t("Your account is not verified")}
             </Typography>
             <div>
-                {t("registration-success-body")}
+                {t("not-verified-body")}
                 {timeLeft > 0 ?
-                    t("registration-success-body-end1", { sec: timeLeft }) :
-                    t("registration-success-body-end2")
+                    t("not-verified-body-end1", { sec: timeLeft }) :
+                    t("not-verified-body-end2")
                 }
                 <Button
                     type="button"
@@ -84,11 +89,8 @@ const RegisterSuccess = (props: Props) => {
                     <CircularProgress />
                 </div>
             }
-            {registerState.resendVerificationEmail.status === ActionStatus.Failure &&
-                <div className={mainClasses.errorMessage}>{registerState.resendVerificationEmail.error}</div>
-            }
         </>
     );
 }
 
-export default RegisterSuccess;
+export default NotVerified;

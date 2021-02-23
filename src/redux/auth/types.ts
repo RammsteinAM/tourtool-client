@@ -1,7 +1,7 @@
 import { Action } from "redux";
 import { ActionStatus, ResponseData, ResponseError } from "../../types/main";
 import AppState, { DatalessState } from "../../types/redux";
-import { UserStateData } from "../../types/user";
+import { UserLoginReqData, UserStateData } from "../../types/user";
 import { PayloadedAction } from "../helpers";
 
 const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -44,7 +44,7 @@ export interface AuthReducerAdditionalData {
 
 export type AuthReducerState = AppState<UserStateData> & AuthReducerAdditionalData;
 
-export type LoginRequestActionParams = Action<typeof LOGIN_REQUEST>;
+export type LoginRequestActionParams = PayloadedAction<typeof LOGIN_REQUEST, {data: UserLoginReqData} | null>;
 export type LoginSuccessActionParams = PayloadedAction<typeof LOGIN_SUCCESS, ResponseData<UserStateData> | null>;
 export type LoginFailureActionParams = PayloadedAction<typeof LOGIN_FAILURE, ResponseError | null>;
 export type ForgotPasswordRequestActionParams = Action<typeof FORGOT_PASSWORD_REQUEST>;

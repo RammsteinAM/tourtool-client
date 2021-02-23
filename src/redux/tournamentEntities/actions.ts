@@ -4,25 +4,33 @@ import { AxiosError, AxiosResponse } from "axios";
 import { userServices } from "../../services/user";
 import { ForgotPasswordReqData } from "../auth/types";
 import {
+    UPDATE_TOURNAMENT,
     UPDATE_PLAYERS,
     UPDATE_GAMES,
+    RESET_GAMES,
     UPDATE_PLAYERS_REQUEST,
     UPDATE_PLAYERS_SUCCESS,
     UPDATE_PLAYERS_FAILURE,
+    UpdateTournamentActionParams,
     UpdatePlayersActionParams,
+    ResetGamesActionParams,
     UpdateGamesActionParams,
     UpdatePlayersRequestActionParams,
     UpdatePlayersSuccessActionParams,
     UpdatePlayersFailureActionParams,
-    UserActionParams
+    UserActionParams,
 } from "./types"
 import { UserRegisterResData, UserStateData, UserUpdateReqData } from "../../types/user";
 import { loginSuccess } from "../auth/actions";
 import { ResponseData } from "../../types/main";
 
+export const updateTournament = payloadedActionCreator<UpdateTournamentActionParams>(UPDATE_TOURNAMENT);
+
 export const updatePlayers = payloadedActionCreator<UpdatePlayersActionParams>(UPDATE_PLAYERS);
 
 export const updateGames = payloadedActionCreator<UpdateGamesActionParams>(UPDATE_GAMES);
+
+export const resetGames = actionCreator<ResetGamesActionParams>(RESET_GAMES);
 
 export const updatePlayersRequest = actionCreator<UpdatePlayersRequestActionParams>(UPDATE_PLAYERS_REQUEST);
 

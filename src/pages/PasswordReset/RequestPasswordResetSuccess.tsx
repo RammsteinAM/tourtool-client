@@ -22,7 +22,7 @@ const RequestPasswordResetSuccess = (props: Props) => {
 
     useEffect(() => {
         return () => {
-            dispatch(authActions.forgotPasswordReset())
+            dispatch(authActions.forgotPasswordStateReset())
         }
     })
 

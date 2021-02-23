@@ -48,7 +48,27 @@ const styles = makeStyles((theme) => ({
       borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
     }
 
-  }
+  },
+  dialogHeader: {
+    color: "#ffffff",
+    backgroundImage: 'linear-gradient(0deg,#d41313 5%,#f34040)',
+    height: "171px",
+    width: "100%",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dialogButton: {
+    color: 'rgba(0,0,0,.54)',
+    paddingLeft: '16px',
+    paddingRight: '16px',
+  },
+  dialog: {
+    width: 474,
+    '& .MuiDialogTitle-root': {
+      paddingBottom: 0,
+    }
+  },
 }));
 
 export default styles;

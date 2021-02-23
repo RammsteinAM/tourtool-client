@@ -73,16 +73,20 @@ const PlayerForm = (props: Props) => {
     };
 
     const handleSubmit = (e: React.FormEvent): void => {
-        e.preventDefault()
+        e.preventDefault();
+        const minPlayers = (playerType === 'dyp' || playerType === 'monster-dyp') ? 4 : 2;
         const duplicate = getDuplicate();
         if (duplicate) {
             toast.warning(t('player-form-duplicate-name', { name: duplicate.player }));
             fieldRefs[duplicate.index]?.current?.focus();
             fieldRefs[duplicate.index]?.current?.select();
         }
+        else if (players.length - 1 < minPlayers) {
+            toast.warning(t('player-form-few-players', { number: minPlayers }));
+        }
         else {
             submitPlayersToStore([...players]);
-            history.push('/elimination');
+            history.push('/elimination-bracket');
         }
     }
 

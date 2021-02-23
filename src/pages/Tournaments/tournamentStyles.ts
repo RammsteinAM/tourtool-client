@@ -201,9 +201,13 @@ const styles = makeStyles((theme) => ({
             fontSize: 13,
         }
     },
-    eliminationCardsContainer: {
+    eliminationBracketCardsContainer: {
         display: 'flex',
         paddingLeft: '250px',
+    },
+    eliminationCardsContainer: {
+        display: 'flex',
+        paddingLeft: '26px',
     },
     gameColumn: {
         display: 'flex',
@@ -230,7 +234,7 @@ const styles = makeStyles((theme) => ({
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-around",
-        margin: "45px 0 -5px 0",
+        margin: "43px 0 -3px 0",
         zIndex: -1,
         '& div': {
             borderColor: "#e0e0e0"
@@ -248,6 +252,53 @@ const styles = makeStyles((theme) => ({
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
+        position: 'relative',
+        '&:hover': {
+            '& $gameCardEnterResult': {
+                display: "flex"
+            }
+        }
+    },
+    gameCardScore: {
+        top: "0",
+        right: "0",
+        width: "46px",
+        bottom: "0",
+        display: "flex",
+        position: "absolute",
+        flexDirection: "column",
+        textAlign: "center",
+        alignItems: "center",
+        justifyContent: "space-around",
+        padding: "10px 0",
+        backgroundColor: "#333",
+    },
+    gameCardTable: {
+        backgroundColor: "#8ebd5e",
+    },
+    gameCardEnterResult: {
+        backgroundColor: "rgba(0,0,0,.6)",
+        cursor: 'pointer',
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        top: "0",
+        left: "0",
+        display: "none",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    gameCardEnterResultBtn: {
+        backgroundColor: "#e16f3d",
+        display: "inline",
+        padding: "6px"
+    },
+    gameColumnWithThirdPlace: {
+        position: 'relative',
+    },
+    gameCardThirdPlace: {
+        position: 'absolute',
+        top: '150px',
     },
     gameCardBye: {
         width: "215px",
@@ -262,6 +313,10 @@ const styles = makeStyles((theme) => ({
         flexDirection: "column",
         justifyContent: "center",
         alignItems: 'center',
+    },
+    loser: {
+        color: "#767d84",
+        textDecoration: "line-through" ,
     },
     gameBetweenColumnSpaceItem: {
         width: "80px",

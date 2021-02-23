@@ -3,6 +3,7 @@ import I18nextBrowserLanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 import intervalPlural from 'i18next-intervalplural-postprocessor';
 import localizationResources from "./localization";
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 i18n
     .use(intervalPlural)
@@ -24,5 +25,9 @@ i18n
 
 export const getLangQuery = () => i18n.language.substring(0, 2) ? `?lang=${i18n.language.substring(0, 2)}` : '';
 export const getLocale = () => i18n.language.substring(0, 2) || '';
+
+export const updateAxiosLocale = () => {
+    axios.defaults.params = { lang: getLocale() }
+}
 
 export default i18n;

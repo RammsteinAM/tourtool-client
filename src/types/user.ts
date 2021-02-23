@@ -16,7 +16,8 @@ export interface UserGoogleLoginReqData {
 export interface UserStateData {
     id: Nullable<number>;
     email: string;
-    displayName?: string;    
+    displayName?: string;
+    password?: string;
     social?: Nullable<boolean>;
 }
 
@@ -48,6 +49,10 @@ export interface UserUpdateReqData {
     displayName?: string,
     currentPassword?: string,
     password?: string,
+}
+
+export interface UserDeleteReqData {
+    id: Nullable<number>
 }
 
 export type RegisterFormValues = UserRegisterReqData;

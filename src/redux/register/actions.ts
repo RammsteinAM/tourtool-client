@@ -24,6 +24,8 @@ import {
 import { userServices } from "../../services/user";
 import { AxiosError, AxiosResponse } from "axios";
 import { Dispatch, DispatchWithoutAction } from "react";
+import toast from "../../components/IndependentSnackbar";
+import i18n from "../../utils/i18n";
 
 export const registerRequest = payloadedActionCreator<RegisterRequestActionParams>(REGISTER_REQUEST);
 

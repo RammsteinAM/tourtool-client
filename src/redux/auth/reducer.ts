@@ -38,6 +38,7 @@ const initialState: AuthReducerState | null = {
     id: null,
     email: '',
     displayName: '',
+    password: '',
     social: null,
   },
   error: '',
@@ -51,7 +52,8 @@ const reducer = (state: AuthReducerState = initialState, action: AuthActionParam
     case LOGIN_REQUEST: {
       return {
         ...state,
-        status: ActionStatus.Request
+        data: { ...initialState.data!, ...action.payload?.data },
+        status: ActionStatus.Request,
       };
     }
     case LOGIN_SUCCESS: {

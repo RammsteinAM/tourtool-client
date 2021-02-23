@@ -1,35 +1,28 @@
 import React, { useState } from 'react'
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
+import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import mainStyles from '../../styles/mainStyles';
-import { RegisterFormValues } from '../../types/user';
 import { useParams } from 'react-router-dom';
 import { formMinMaxValues } from '../../utils/constants';
 import tournamentStyles from './tournamentStyles';
 import FormSubheader from '../../components/FormComponents/FormSubheader';
+import { useDispatch } from 'react-redux';
+import { updateTournament } from '../../redux/tournamentEntities/actions';
 
 interface TournamentForm {
     numberOfTables: number,
-    goals: GoalValues,
+    goals: boolean,
     numberOfGoals: number,
     draw: boolean,
     winningSets: number;
     numberOfLives?: number;
-}
-
-enum GoalValues {
-    Quick = 'quick',
-    Number = 'number',
 }
 
 enum SubheaderStateValues {
@@ -47,19 +40,18 @@ interface Props {
 }
 
 const TournamentForm = (props: Props) => {
-    //const [goalsValue, setGoalsValue] = useState<number>(GoalValues.Number);
+    //const [tournamentData, setTournamentData] = React.useState<TournamentForm>()
     const [formState, setFormState] = React.useState<TournamentForm>({
         numberOfTables: 1,
-        goals: GoalValues.Number,
+        goals: true,
         numberOfGoals: 7,
         draw: false,
         winningSets: 1,
         numberOfLives: 1,
     });
-    const [subheaderState, setSubeaderState] = useState<SubheaderState>({});
     const classes = tournamentStyles();
-    const mainClasses = mainStyles();
     const history = useHistory();
+    const dispatch = useDispatch();
     const { tournamentType } = useParams<{ tournamentType: string }>();
     const { t } = useTranslation();
 
@@ -76,7 +68,8 @@ const TournamentForm = (props: Props) => {
     };
 
     const handleSubmit = (e: React.FormEvent): void => {
-        e.preventDefault();
+        e.preventDefault();        
+        dispatch(updateTournament(formState))
         history.push(`/tournament-player-type-select/${tournamentType}`);
         //alert(e.target)
         // setFormValues(values);
@@ -86,6 +79,9 @@ const TournamentForm = (props: Props) => {
     const handleFormStateChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
         const name = event.target.name as keyof typeof formState;
         let value = event.target.value;
+        if (name === 'goals') {
+            value = event.target.value === 'true'
+        }
         if (name === 'numberOfTables') {
             if (event.target.value as number < formMinMaxValues.minTables) {
                 value = 1;
@@ -128,7 +124,7 @@ const TournamentForm = (props: Props) => {
                             >
                                 {
                                     [...Array(10).keys()].map(key => (
-                                        <MenuItem value={key + 1}>{t('Life', { count: key + 1 })}</MenuItem>
+                                        <MenuItem key={key} value={key + 1}>{t('Life', { count: key + 1 })}</MenuItem>
                                     ))
                                 }
                             </Select>
@@ -159,11 +155,11 @@ const TournamentForm = (props: Props) => {
                 <FormSubheader title={t('Goals')} text={t('form-subheader-goals-text')} width={454} />
                 <div className={classes.formBlock}>
                     <RadioGroup aria-label="goals" name="goals" value={formState.goals} onChange={handleFormStateChange}>
-                        <FormControlLabel value={GoalValues.Quick} control={<Radio color='primary' />} label={t('Quick Entry')} />
-                        <FormControlLabel value={GoalValues.Number} control={<Radio color='primary' />} label={t('Goals to Win')} />
+                        <FormControlLabel value={false} control={<Radio color='primary' />} label={t('Quick Entry')} />
+                        <FormControlLabel value={true} control={<Radio color='primary' />} label={t('Goals to Win')} />
                     </RadioGroup>
                     <FormControlLabel
-                        disabled={formState.goals === GoalValues.Quick}
+                        disabled={!formState.goals}
                         value={formState.numberOfGoals}
                         label={t('Goal', { count: formState.numberOfGoals })}
                         classes={{ label: classes.formTextFieldSuffix }}
@@ -174,7 +170,7 @@ const TournamentForm = (props: Props) => {
                                 name="numberOfGoals"
                                 onChange={handleFormStateChange}
                                 inputProps={{ min: `${formMinMaxValues.minGoals}`, max: `${formMinMaxValues.maxGoals}`, step: "1" }}
-                                defaultValue={formState.numberOfGoals}
+                                //defaultValue={formState.numberOfGoals}
                                 autoComplete="off"
                                 //disabled={formState.goals === GoalValues.Quick}
                                 className={classes.formTextField}
@@ -209,7 +205,7 @@ const TournamentForm = (props: Props) => {
                     >
                         {
                             [...Array(10).keys()].map(key => (
-                                <MenuItem value={key + 1}>{t('Set', { count: key + 1 })}</MenuItem>
+                                <MenuItem key={key} value={key + 1}>{t('Set', { count: key + 1 })}</MenuItem>
                             ))
                         }
                     </Select>

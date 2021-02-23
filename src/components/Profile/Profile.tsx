@@ -3,20 +3,23 @@ import { RootState } from '../../redux/store';
 import clsx from 'clsx';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '@material-ui/core/Button';
-import profileStyles from './profileStyles';
 import { useTranslation } from "react-i18next";
 import { authActions } from '../../redux/auth/actions';
 import { useHistory } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import { ErrorMessage, Formik } from 'formik';
 import TextField from '@material-ui/core/TextField';
-import mainStyles from '../../styles/mainStyles';
 import { ActionStatus } from '../../types/main';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { userActions } from '../../redux/user/actions';
 import { UserUpdateReqData } from '../../types/user';
 import { useSnackbar } from 'notistack';
+import Link from '@material-ui/core/Link';
 import toast from '../IndependentSnackbar';
+import profileStyles from './profileStyles';
+import mainStyles from '../../styles/mainStyles';
+import DeleteAccountDialog from './DeleteAccountDialog';
+import DeleteAccountSuccessDialog from './DeleteAccountSuccessDialog';
 
 interface FormValues {
   displayName?: string;
@@ -29,18 +32,25 @@ interface Props {
 }
 
 const Profile = (props: Props) => {
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = useState<boolean>(false);
   const classes = profileStyles();
   const mainClasses = mainStyles();
   const authState = useSelector((state: RootState) => state.auth);
   const userState = useSelector((state: RootState) => state.user);
-  const [submitting, setSubmitting] = useState<boolean>(false);
   const dispatch = useDispatch();
   const history = useHistory();
   const { t } = useTranslation();
 
   useEffect(() => {
-    setSubmitting(userState.status === ActionStatus.Request);
-  }, [userState.status]);
+    setSubmitting(userState.update.status === ActionStatus.Request);
+  }, [userState.update.status]);
+
+  useEffect(() => {
+    if (userState.delete.status === ActionStatus.Success) {
+      history.push('/delete-account-success')
+    };
+  }, [userState.update.status]);
 
   const handleLogout = () => {
     dispatch(authActions.logout());
@@ -53,8 +63,25 @@ const Profile = (props: Props) => {
       currentPassword: values.currentPassword,
       password: values.password,
     }
-    userUpdateData.id && dispatch(userActions.update(userUpdateData));
+    userUpdateData.id && dispatch(userActions.updateUser(userUpdateData));
     setSubmitting(true);
+  }
+
+  const openDeleteAccountDialog = () => {
+    setDeleteAccountDialogOpen(true);
+  }
+
+  const closeDeleteAccountDialog = () => {
+    setDeleteAccountDialogOpen(false);
+  }
+
+  const closeDeleteAccountSuccessDialog = () => {
+    dispatch(userActions.requestDeleteReset());
+  }
+
+  const handleDeleteConfirm = () => {
+    authState.data?.id && dispatch(userActions.deleteUserEmailRequest());
+    setDeleteAccountDialogOpen(false);
   }
 
   if (authState.status !== ActionStatus.Success) {
@@ -186,7 +213,7 @@ const Profile = (props: Props) => {
             >
               {t('Save')}
             </Button>
-            {userState.status === ActionStatus.Request &&
+            {userState.update.status === ActionStatus.Request &&
               <div className={mainClasses.progress}>
                 <CircularProgress />
               </div>
@@ -194,6 +221,12 @@ const Profile = (props: Props) => {
           </form>
         )}
       </Formik>
+      <Link href="" style={{ color: 'red', textAlign: 'center', marginBottom: '12px' }} onClick={(e: React.MouseEvent) => {
+        e.preventDefault();
+        openDeleteAccountDialog()
+      }}>
+        {t("Delete Account")}
+      </Link>
       <Button
         type="button"
         variant="contained"
@@ -203,6 +236,18 @@ const Profile = (props: Props) => {
       >
         {t('Logout')}
       </Button>
+      <DeleteAccountDialog
+        open={deleteAccountDialogOpen}
+        onClose={closeDeleteAccountDialog}
+        onConfirm={handleDeleteConfirm}
+      />
+      <DeleteAccountSuccessDialog
+        open={
+          userState.requestDelete.status === ActionStatus.Success ||
+          userState.requestDelete.status === ActionStatus.Failure
+        }
+        onClose={closeDeleteAccountSuccessDialog}
+      />
     </div>
   );
 }

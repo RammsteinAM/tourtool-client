@@ -4,6 +4,7 @@ import userReducer from './user/reducer';
 import authReducer from './auth/reducer';
 import registerReducer from './register/reducer';
 import entitiesReducer from './tournamentEntities/reducer';
+import settingsReducer from './settings/reducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 export const rootReducer = combineReducers({
@@ -11,6 +12,7 @@ export const rootReducer = combineReducers({
     entities: entitiesReducer,
     user: userReducer,
     register: registerReducer,
+    settings: settingsReducer,
 });
 
 const configureStore = () => {

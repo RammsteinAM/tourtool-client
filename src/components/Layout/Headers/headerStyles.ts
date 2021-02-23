@@ -66,6 +66,13 @@ const styles = makeStyles((theme) =>
         backgroundColor: 'initial',
       }
     },
+    checkboxLabel: {
+      fontSize: '13px',
+      color: '#000000'
+    },
+    checkbox: {
+      marginRight: '2px',
+    },
   }),
 );
 

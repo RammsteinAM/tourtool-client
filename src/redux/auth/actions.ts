@@ -41,7 +41,7 @@ import { AxiosError, AxiosResponse } from "axios";
 import { Dispatch, DispatchWithoutAction } from "react";
 import { ResponseData } from "../../types/main";
 
-export const loginRequest = actionCreator<LoginRequestActionParams>(LOGIN_REQUEST);
+export const loginRequest = payloadedActionCreator<LoginRequestActionParams>(LOGIN_REQUEST);
 
 export const loginSuccess = payloadedActionCreator<LoginSuccessActionParams>(LOGIN_SUCCESS);
 
@@ -59,7 +59,7 @@ export const resetPasswordSuccess = payloadedActionCreator<ResetPasswordSuccessA
 
 export const resetPasswordFailure = payloadedActionCreator<ResetPasswordFailureActionParams>(RESET_PASSWORD_FAILURE);
 
-export const forgotPasswordReset = actionCreator<ForgotPasswordResetActionParams>(FORGOT_PASSWORD_RESET);
+export const forgotPasswordStateReset = actionCreator<ForgotPasswordResetActionParams>(FORGOT_PASSWORD_RESET);
 
 export const userUpdateSuccess = payloadedActionCreator<UserUpdateSuccessActionParams>(USER_UPDATE_SUCCESS);
 
@@ -67,13 +67,16 @@ export const logout = actionCreator<LogoutActionParams>(LOGOUT);
 
 const login = (data: UserLoginReqData) => {
     return (dispatch: Dispatch<AuthActionParams>) => {
-        dispatch(loginRequest());
+        dispatch(loginRequest({ data: { ...data } }));
 
         userServices.login(data)
             .then(
                 (res: AxiosResponse<ResponseData<UserLoginResData>>) => {
                     const cookies = new Cookies();
-                    cookies.set('x-auth-token', res.data.data!.accessToken);
+                    if (cookies.get('x-auth-token')) {
+                        cookies.remove('x-auth-token');
+                    }
+                    cookies.set('x-auth-token', res.data.data!.accessToken, { path: '/' });
                     localStorage.setItem('refreshToken', res.data.data!.refreshToken!);
                     dispatch(loginSuccess(res.data));
 
@@ -89,14 +92,14 @@ const login = (data: UserLoginReqData) => {
 const loginCheck = () => {
     const refreshToken = localStorage.getItem('refreshToken')
     return (dispatch: Dispatch<AuthActionParams>) => {
-        dispatch(loginRequest());
+        dispatch(loginRequest(null));
 
         userServices.loginCheck({ refreshToken })
             .then(
                 (res: AxiosResponse<ResponseData<UserLoginCheckResData>>) => {
                     const cookies = new Cookies();
                     if (res.data.data?.accessToken) {
-                        cookies.set('x-auth-token', res.data.data!.accessToken);
+                        cookies.set('x-auth-token', res.data.data!.accessToken, { path: '/' });
                     }
                     dispatch(loginSuccess(res.data));
                 },
@@ -109,13 +112,13 @@ const loginCheck = () => {
 
 const googleLogin = (token: string) => {
     return (dispatch: Dispatch<AuthActionParams>) => {
-        dispatch(loginRequest());
+        dispatch(loginRequest(null));
 
         userServices.googleLogin(token)
             .then(
                 (res: AxiosResponse<ResponseData<UserLoginResData>>) => {
                     const cookies = new Cookies();
-                    cookies.set('x-auth-token', res.data.data!.accessToken);
+                    cookies.set('x-auth-token', res.data.data!.accessToken, { path: '/' });
                     localStorage.setItem('refreshToken', res.data.data!.refreshToken!);
                     dispatch(loginSuccess(res.data));
                 },
@@ -128,13 +131,13 @@ const googleLogin = (token: string) => {
 
 const facebookLogin = (token: string) => {
     return (dispatch: Dispatch<AuthActionParams>) => {
-        dispatch(loginRequest());
+        dispatch(loginRequest(null));
 
         userServices.facebookLogin(token)
             .then(
                 (res: AxiosResponse<ResponseData<UserLoginResData>>) => {
                     const cookies = new Cookies();
-                    cookies.set('x-auth-token', res.data.data!.accessToken);
+                    cookies.set('x-auth-token', res.data.data!.accessToken, { path: '/' });
                     localStorage.setItem('refreshToken', res.data.data!.refreshToken!);
                     dispatch(loginSuccess(res.data));
                 },
@@ -186,7 +189,7 @@ export const authActions = {
     googleLogin,
     facebookLogin,
     forgotPassword,
-    forgotPasswordReset,
+    forgotPasswordStateReset,
     resetPassword,
     logout,
 };

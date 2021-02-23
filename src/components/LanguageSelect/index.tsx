@@ -4,7 +4,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import languageSelectStyles from './languageSelectStyles';
-import i18n from '../../utils/i18n';
+import i18n, { updateAxiosLocale } from '../../utils/i18n';
 import { useTranslation } from "react-i18next";
 
 interface Props {
@@ -25,6 +25,7 @@ const LanguageSelect = (props: Props) => {
         //console.log()
         i18n.changeLanguage(event.target.value as string);
         localStorage.setItem('i18nextLng', event.target.value as string);
+        updateAxiosLocale();
     };
 
     const { t } = useTranslation();

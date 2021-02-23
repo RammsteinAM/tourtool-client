@@ -1,13 +1,11 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { UserLoginCheckReqData, UserLoginReqData, UserPasswordResetReqData, UserRegisterReqData, UserUpdateReqData } from '../types/user';
+import { UserDeleteReqData, UserLoginCheckReqData, UserLoginReqData, UserPasswordResetReqData, UserRegisterReqData, UserUpdateReqData } from '../types/user';
 import { endpoint } from './../config'
 import { asyncWrapper } from '../utils/asyncWrapper';
 import { ForgotPasswordReqData } from '../redux/auth/types';
-import { getLocale } from '../utils/i18n';
+import { updateAxiosLocale } from '../utils/i18n';
 
-axios.defaults.params = {
-    lang: getLocale()
-}
+updateAxiosLocale();
 
 const login = asyncWrapper<AxiosResponse>(async (data: UserLoginReqData): Promise<AxiosResponse> => {
     const { email, password } = data;
@@ -26,6 +24,11 @@ const register = asyncWrapper<AxiosResponse>(async (data: UserRegisterReqData): 
     const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/register`, { email, password, displayName });
     return response;
 })
+
+const emailCheck = async (email: string): Promise<AxiosResponse> => {
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/email-check`, { email });
+    return response;
+}
 
 const verifyUser = asyncWrapper<AxiosResponse>(async (token: string): Promise<AxiosResponse> => {
     const response: AxiosResponse<AxiosRequestConfig> = await axios.get(`${endpoint}/auth/verify/${token}`);
@@ -50,7 +53,7 @@ const facebookLogin = asyncWrapper<AxiosResponse>(async (data: any): Promise<Axi
 
 const forgotPassword = asyncWrapper<AxiosResponse>(async (data: ForgotPasswordReqData): Promise<AxiosResponse> => {
     const { email } = data;
-    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/user/forgot-password`, { email });
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/forgot-password`, { email });
     return response;
 })
 
@@ -62,7 +65,17 @@ const resetPassword = asyncWrapper<AxiosResponse>(async (data: UserPasswordReset
 
 const update = asyncWrapper<AxiosResponse>(async (data: UserUpdateReqData): Promise<AxiosResponse> => {
     const { id, displayName, currentPassword, password } = data;
-    const response: AxiosResponse<AxiosRequestConfig> = await axios.put(`${endpoint}/user/${id}`, { displayName, currentPassword, password }, { withCredentials: true });
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.put(`${endpoint}/auth`, { displayName, currentPassword, password }, { withCredentials: true });
+    return response;
+})
+
+const deleteAccountEmailRequest = asyncWrapper<AxiosResponse>(async (): Promise<AxiosResponse> => {
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.get(`${endpoint}/auth/delete-account-request`, { withCredentials: true });
+    return response;
+})
+
+const deleteAccount = asyncWrapper<AxiosResponse>(async (token: string): Promise<AxiosResponse> => {
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.delete(`${endpoint}/auth/${token}`);
     return response;
 })
 
@@ -77,28 +90,12 @@ export const userServices = {
     verifyUser,
     resetPassword,
     update,
+    deleteAccountEmailRequest,
+    deleteAccount,
+    emailCheck,
 }
-
-// import { generateConfigHeaderWithToken } from './localStorageUtils';
 
 export async function axiosPost<TBody>(url: string, body: TBody, config: AxiosRequestConfig = {}): Promise<object> {
     //const config = generateConfigHeaderWithToken();
     return axios.post(url, body, config);
 }
-
-// export const post = async (url: string, body: object): Promise<object> => {
-//     const config = generateConfigHeaderWithToken();
-//     return axios.post(url, body, config);
-// }
-// export const put = async (url: string, body: object): Promise<object> => {
-//     const config = generateConfigHeaderWithToken();
-//     return axios.put(url, body, config);
-// }
-// export const get = async (url: string): Promise<object> => {
-//     const config = generateConfigHeaderWithToken();
-//     return axios.get(url, config);
-// }
-// export const del = async (url: string): Promise<object> => {
-//     const config = generateConfigHeaderWithToken();
-//     return axios.delete(url, config);
-// }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
@@ -12,6 +12,11 @@ import { useHistory } from 'react-router-dom';
 import RegisterSuccess from '../../../pages/Register/RegisterSuccess';
 import RequestPasswordResetSuccess from '../../../pages/PasswordReset/RequestPasswordResetSuccess';
 import { RegisterFormValues } from '../../../types/user';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { ErrorNames } from '../../../types/error';
+import NotVerified from '../../../pages/Register/NotVerified';
+import { ActionStatus } from '../../../types/main';
 
 interface Props {
     //children: ReactElement
@@ -22,7 +27,8 @@ enum LoginDialogState {
     Register,
     ResetPassword,
     RegisterSuccess,
-    ResetPasswordSuccess
+    ResetPasswordSuccess,
+    NotVerified
 }
 
 const LoginDialog = (props: Props) => {
@@ -31,11 +37,18 @@ const LoginDialog = (props: Props) => {
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const classes = loginDialogStyles();
     const history = useHistory();
+    const authState = useSelector((state: RootState) => state.auth);
     const { t } = useTranslation();
 
     const handleClose = () => {
         history.push('/');
     };
+
+    useEffect(() => {
+        if(authState.status === ActionStatus.Failure && authState.error === ErrorNames.UserNotVerified) {
+            setContent(LoginDialogState.NotVerified)
+        }
+    }, [authState])
 
     const renderContent = (dialogState: LoginDialogState) => {
         switch (dialogState) {
@@ -52,6 +65,8 @@ const LoginDialog = (props: Props) => {
                 return <ResetPassword onSuccessCallback={() => { setContent(LoginDialogState.ResetPasswordSuccess) }} />
             case LoginDialogState.RegisterSuccess:
                 return <RegisterSuccess />
+            case LoginDialogState.NotVerified:
+                return <NotVerified />
             case LoginDialogState.ResetPasswordSuccess:
                 return <RequestPasswordResetSuccess onSuccessCallback={() => { setContent(LoginDialogState.Login) }} />
             default:

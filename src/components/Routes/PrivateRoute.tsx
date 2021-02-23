@@ -1,6 +1,7 @@
-import React from 'react'
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom'
+import { authActions } from '../../redux/auth/actions';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
 
@@ -11,12 +12,20 @@ interface Props {
 }
 
 const PrivateRoute = ({ children, ...rest }: Props) => {
-    const login = useSelector((state: RootState) => state.auth);
+    const dispatch = useDispatch();
+    const authState = useSelector((state: RootState) => state.auth);
+
+    useEffect(() => {
+        if (authState.status === ActionStatus.Initial) {
+            dispatch(authActions.loginCheck());
+        }
+    }, [])
+
     return (
         <Route
             {...rest}
             render={() =>
-                login.status === ActionStatus.Success ?
+                authState.status === ActionStatus.Success ?
                     children :
                     <Redirect to="/login" />
             }
