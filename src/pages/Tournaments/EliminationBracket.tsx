@@ -84,16 +84,33 @@ const EliminationBracket = (props: Props) => {
                 }
 
                 // parent X player Y
-                const { p1p1, p1p2, hasByePlayer1 } = { p1p1: storeGames[`${prevCol}-${j * 2 - 1}`].player1, p1p2: storeGames[`${prevCol}-${j * 2 - 1}`].player2, hasByePlayer1: storeGames[`${prevCol}-${j * 2 - 1}`].hasByePlayer };
-                const { p2p1, p2p2, hasByePlayer2 } = { p2p1: storeGames[`${prevCol}-${j * 2}`].player1, p2p2: storeGames[`${prevCol}-${j * 2}`].player2, hasByePlayer2: storeGames[`${prevCol}-${j * 2}`].hasByePlayer };
-                
-                if (!hasByePlayer1 && !hasByePlayer2 && ((p1p1 && p1p2) || (p2p1 && p2p2))) {
+                const { p1p1, p1p2, parent1HasByePlayer } = { p1p1: storeGames[`${prevCol}-${j * 2 - 1}`].player1, p1p2: storeGames[`${prevCol}-${j * 2 - 1}`].player2, parent1HasByePlayer: storeGames[`${prevCol}-${j * 2 - 1}`].hasByePlayer };
+                const { p2p1, p2p2, parent2HasByePlayer } = { p2p1: storeGames[`${prevCol}-${j * 2}`].player1, p2p2: storeGames[`${prevCol}-${j * 2}`].player2, parent2HasByePlayer: storeGames[`${prevCol}-${j * 2}`].hasByePlayer };
+                const parent1HasNoPlayer = !p1p1 && !p1p2;
+                const parent1HasOnePlayer = (p1p1 && !p1p2) || (p1p2 && !p1p1);
+                const parent2HasNoPlayer = !p2p1 && !p2p2;
+                const parent2HasOnePlayer = (p2p1 && !p2p2) || (p2p2 && !p2p1);
+                if ((parent2HasNoPlayer || parent1HasNoPlayer) && ((parent1HasByePlayer && parent2HasOnePlayer) || (parent2HasByePlayer && parent1HasOnePlayer))) {
+                    storeGames[gameKey].hasByePlayer = true;
+                }
+                // if (
+                //     !parent1HasByePlayer &&
+                //     !parent1HasByePlayer &&
+                //     (!parent1HasNoPlayer || !parent2HasNoPlayer) &&
+                //     (parent1HasOnePlayer || parent2HasOnePlayer)
+                // ) {
+                //     continue;
+                // }
+                if(gameKey === '2-4') {
+                    debugger
+                }
+                if (!parent1HasByePlayer && !parent2HasByePlayer) {
                     continue;
                 }
-                if ((p1p1 && !p1p2) || (p1p2 && !p1p1)) {
+                if (parent1HasOnePlayer) {
                     storeGames[gameKey].player1 = p1p1 || p1p2;
                 }
-                if ((p2p1 && !p2p2) || (p2p2 && !p2p1)) {
+                if (parent2HasOnePlayer) {
                     storeGames[gameKey].player2 = p2p1 || p2p2;
                 }
             }
@@ -173,7 +190,7 @@ const EliminationBracket = (props: Props) => {
                     <div className={classes.gameColumnWithThirdPlace} key={`gameCard_${columnNumber}_${i}`}>
                         <EliminationCard
                             key={`gameCard_${columnNumber}_${i}`}
-                            gameKey={`${columnNumber}-${i}`}
+
                         />
                         <div className={classes.gameCardThirdPlace}>
                             <div className={classes.gameColumnHeader}>
@@ -181,7 +198,6 @@ const EliminationBracket = (props: Props) => {
                             </div>
                             <EliminationCard
                                 key={`gameCard_${columnNumber}_${i}`}
-                                gameKey={`thirdPlace`}
                             />
                         </div>
                     </div>

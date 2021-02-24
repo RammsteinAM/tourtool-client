@@ -20,6 +20,8 @@ export interface StateGame extends BaseEntity {
     player2: string,
     score1?: number,
     score2?: number,
+    scores1?: number[],
+    scores2?: number[],
     index: string,
     hasByePlayer?: boolean,
 }
@@ -50,4 +52,7 @@ export type EliminationPlayers = {
 
 export type EliminationGames = { 
     [key: string]: StateGame
+}
+export interface StateScore {
+    [set: number]: number;
 }

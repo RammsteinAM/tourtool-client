@@ -11,6 +11,7 @@ const styles = makeStyles((theme) => ({
     },
     dialogHeader: {
         paddingTop: '35px',
+        paddingBottom: '20px',
     },
     dialogHeaderPlayer: {
         display: "inline-block",
@@ -21,7 +22,8 @@ const styles = makeStyles((theme) => ({
         fontSize: "16px"
     },
     dialogFooter: {
-        borderTop: '1px solid rgba(0, 0, 0, 0.12)'
+        borderTop: '1px solid rgba(0, 0, 0, 0.12)',        
+        marginTop: '40px',
     },
     dialogButton: {
         color: '#9b9b9b',
@@ -34,13 +36,13 @@ const styles = makeStyles((theme) => ({
     pointsContainer: {
         display: "grid",
         gridTemplateColumns: "calc(50% - 40px) 80px calc(50% - 40px)",
-        padding: "40px 0",
+        padding: "4px 0",
     },
     pointsInputContainer: {
         width: "100%",
         display: "flex",
         position: "relative",
-        padding: "0px 20px",
+        padding: "0px 24px",
         margin: "auto",
         alignItems: 'center',
     },
@@ -56,23 +58,27 @@ const styles = makeStyles((theme) => ({
         fontSize: "20px",
         lineHeight: "28px",
         textAlign: "center",
-        verticalAlign: "top",
+        alignSelf: 'center',
     },
     scoreItem: {
         position: 'absolute',
         top: '10px',
         fontSize: "14px",
-        fontWeight: 300,
+        fontWeight: 200,
         width: "24px",
         textAlign: "center",
-        transition: "color 50ms",
+        transition: 'left 0.25s cubic-bezier(0.4, 0, 0.25, 0.7), right 0.25s cubic-bezier(0.4, 0, 0.25, 0.7)',
         padding: "0 3px",
         marginLeft: "9px",
         marginRight: "9px",
         display: "inline-block",
         backgroundColor: "transparent",
         cursor: "pointer",
-        zIndex: 5,
+        zIndex: 8,
+        '&.disabled': {
+            color: '#707070',
+            cursor: 'not-allowed',
+        }
     },
     scoreItemSelected: {
         position: "absolute",
@@ -80,7 +86,9 @@ const styles = makeStyles((theme) => ({
         width: "30px",
         backgroundColor: "#e16f3d",
         top: "5px",
-        borderRadius: "50%"
+        borderRadius: "50%",
+        transition: 'left 0.25s cubic-bezier(0.4, 0, 0.25, 0.7), right 0.25s cubic-bezier(0.4, 0, 0.25, 0.7)',
+        zIndex: 5,
     },
     iconButtons: {
         color: '#ffffff',

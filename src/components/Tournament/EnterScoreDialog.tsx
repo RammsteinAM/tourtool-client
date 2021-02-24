@@ -1,134 +1,203 @@
-import React, { ReactElement, useEffect, useState } from 'react'
-import TextField from '@material-ui/core/TextField';
+import React, { useState, useEffect } from 'react'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import { useTranslation } from "react-i18next";
-import { ActionStatus } from '../../types/main';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
-import IconButton from '@material-ui/core/IconButton';
 import enterScoreDialogStyles from './enterScoreDialogStyles';
+import EnterScoreDialogScoresConainer from './EnterScoreDialogScoresConainer';
+import { StateScore } from '../../types/entities';
+import { getNthIndexOf } from '../../utils/arrayUtils';
 
 interface Props {
     open: boolean;
     onClose: () => void;
-    onConfirm: (score1: number, score2: number) => void;
+    onConfirm: (score1: StateScore, score2: StateScore) => void;
     player1?: string;
     player2?: string;
+    gameKey: string;
 }
 
-interface ScoreProps {
-    scoreNumber: number;
-    selectedNumber?: number;
-    left: number;
-    onScoreSelect: (score: number) => void;
-}
-
-const Score = ({ scoreNumber, left, selectedNumber, onScoreSelect }: ScoreProps) => {
+const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2, gameKey }: Props) => {
     const classes = enterScoreDialogStyles();
-    const handleScoreSelect = () => {
-        onScoreSelect(scoreNumber);
-    }
-
-    return (
-        <>
-            <div className={classes.scoreItem} style={{ left }} onClick={handleScoreSelect}>
-                {scoreNumber}
-
-            </div>
-            {selectedNumber === scoreNumber &&
-                <div className={classes.scoreItemSelected}  style={{ left: `${left+6}px` }} ></div>
-            }
-        </>
-    )
-}
-
-const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2 }: Props) => {
-    const classes = enterScoreDialogStyles();
-    const [score1, setScore1] = useState<number>();
-    const [score2, setScore2] = useState<number>();
+    const [score1, setScore1] = useState<StateScore>({});
+    const [score2, setScore2] = useState<StateScore>({});
     const entityState = useSelector((state: RootState) => state.entities);
+    const [numberOfGames, setNumberOfGames] = useState<number>(entityState.tournament.winningSets || 1);
     const { t } = useTranslation();
     const numberOfGoals = entityState.tournament.numberOfGoals || 7;
+    const winningSets = entityState.tournament.winningSets || 1;
+
+    // useEffect(() => {
+    //     effect
+    //     return () => {
+    //         cleanup
+    //     }
+    // }, [entityState.games[gameKey]])
+
+    // useEffect(() => {
+    //     setNumberOfGames(entityState.tournament.winningSets || 1)
+    // }, [entityState.tournament.winningSets])
+
+
+
     const handleConfirm = (e: React.FormEvent) => {
-        if (score1 !== undefined && score2 !== undefined) {
+        // const scores1 = for (const key in score1) {
+        //     if (Object.prototype.hasOwnProperty.call(object, key)) {
+        //         const element = object[key];
+
+        //     }
+        // }
+        if (score1 !== null && score2 !== null) {
             onConfirm(score1, score2);
         }
     }
 
-    const handleLScoreSelectLeft = (score: number) => {
-        setScore1(score);
-        if (score2 === undefined && score < numberOfGoals) {
-            setScore2(numberOfGoals);
+    const getMultipleSetScores = (scores1: StateScore, scores2: StateScore): { score1: number, score2: number, winners: number[] } => {
+        let score1 = scores1[1], score2 = scores2[1];
+        const winners: number[] = [];
+        if (winningSets > 1) {
+            score1 = 0;
+            score2 = 0;
+            for (let i = 1; i <= Object.keys(scores1).length; i++) {
+                const subScore1 = scores1[i];
+                const subScore2 = scores2[i];
+                if (subScore1 > subScore2) {
+                    score1 += 1;
+                    winners.push(1);
+                }
+                if (subScore1 < subScore2) {
+                    score2 += 1;
+                    winners.push(2);
+                }
+            }
         }
+        return { score1, score2, winners };
     }
 
-    const handleLScoreSelectRight = (score: number) => {
-        setScore2(score);
-        if (score1 === undefined && score < numberOfGoals) {
-            setScore1(numberOfGoals);
+    const getNewNumberOfGames = (scores1: StateScore, scores2: StateScore) => {
+        const { score1, score2, winners } = getMultipleSetScores(scores1, scores2);
+        let newNumberOfGames = numberOfGames;
+        if (score1 < winningSets && score2 < winningSets && score1 + score2 === numberOfGames) {
+            newNumberOfGames = numberOfGames + 1;
         }
+        else if ((score1 >= winningSets || score2 >= winningSets)) {
+            newNumberOfGames = winningSets;
+            const player1WinningIndex = getNthIndexOf(winners, 1, winningSets);
+            const player2WinningIndex = getNthIndexOf(winners, 2, winningSets);
+            if (score1 < winningSets) {
+                newNumberOfGames += score1;
+            }
+            if (score2 < winningSets) {
+                newNumberOfGames += score2;
+            }
+            if (player1WinningIndex + 1 !== numberOfGames && player2WinningIndex + 1 !== numberOfGames) {
+                newNumberOfGames = player1WinningIndex > player2WinningIndex ? player1WinningIndex + 1 : player2WinningIndex + 1;
+            }
+            // if (score1 >= winningSets && score2 >= winningSets) {
+            //     newNumberOfGames = winningSets + 1;
+            // }
+            // winners.
+            // for (let i = 0; i < winners.length; i++) {
+            //     const element = array[i];
+
+            // }
+
+
+        }
+        return newNumberOfGames;
     }
 
-    const renderPointsLeft = () => {
-        const points: JSX.Element[] = [];
-        const maxPoint = numberOfGoals + 5;
-        let minPoint = numberOfGoals - 14 < 0 ? 0 : numberOfGoals - 14;
-        do {
-            points.push(
-                <Score
-                    scoreNumber={minPoint}
-                    left={(numberOfGoals + minPoint - 7) * 34}
-                    onScoreSelect={handleLScoreSelectLeft}
-                    selectedNumber={score1}
-                />
-            )
-            minPoint++;
-        } while (minPoint <= maxPoint);
+    const getNewScores = (scores1: StateScore, scores2: StateScore, numberOfGames: number) => {
+        const newScore1: StateScore = {};
+        const newScore2: StateScore = {};
 
-        return points;
+        for (let i = 1; i <= numberOfGames; i++) {
+            newScore1[i] = scores1[i]
+            newScore2[i] = scores2[i]
+
+        }
+        return { score1: newScore1, score2: newScore2 }
+        // setScore1(newScore1);
+        // setScore2(newScore2);
+
+
+        // debugger
+        // if ((score1 >= winningSets || score2 >= winningSets)) {
+        //     // const newScore1 = { ...scores1 };
+        //     // const newScore2 = { ...scores2 };
+        //     if (score1 < winningSets) {
+        //         newNumberOfGames += score1;
+        //         if (score2 > winningSets) {
+        //             for (let i = 1; i <= Object.keys(scores2).length; i++) {
+        //                 if (i > newNumberOfGames) delete (scores2[i]);
+        //             }
+
+        //         }
+        //     }
+        //     if (score2 < winningSets) {
+        //         newNumberOfGames += score2;
+        //         if (score1 > winningSets) {
+        //             for (let i = 1; i <= Object.keys(scores1).length; i++) {
+        //                 if (i > newNumberOfGames) delete (scores1[i]);
+        //             }
+        //         }
+        //     }
+        //     // const loserScore = score1 < winningSets ? score1 : score2;
+        //     // //const newNumberOfGames = winningSets + loserScore;
+        //     // delete (newScore1[Object.keys(scores1).length]);
+        //     // delete (newScore2[Object.keys(scores2).length]);
+
+        // }
+        // if ((score1 >= winningSets || score2 >= winningSets) && (Object.keys(scores1).length > numberOfGames || Object.keys(scores2).length > numberOfGames) && numberOfGames >= winningSets) {
+        //     const newScore1 = { ...scores1 };
+        //     const newScore2 = { ...scores2 };
+        //     delete (newScore1[Object.keys(scores1).length]);
+        //     delete (newScore2[Object.keys(scores2).length]);
+        //     setScore1(newScore1);
+        //     setScore2(newScore2);
+        //     setNumberOfGames(numberOfGames - 1);
+        // }
+        // if (score2 > winningSets) {
+        //     setNumberOfGames(numberOfGames - 1);            
+        //     delete (scores1[Object.keys(scores1).length]);
+        //     delete (scores2[Object.keys(scores1).length]);
+        // }
     }
 
-    const handlePlusButtonLeft = () => {
-
+    const handleScoreSelectLeft = (score: number, setNumber: number) => {
+        const newScore1: StateScore = { ...score1, [setNumber]: score }
+        let newScore2: StateScore = { ...score2 }
+        if (typeof score2[setNumber] !== 'number' && score < numberOfGoals) {
+            newScore2 = { ...newScore2, [setNumber]: numberOfGoals }
+        }
+        const newNumberOfGames = getNewNumberOfGames(newScore1, newScore2);
+        const { score1: stateScore1, score2: stateScore2 } = getNewScores(newScore1, newScore2, newNumberOfGames);
+        debugger
+        setNumberOfGames(newNumberOfGames);
+        setScore1(stateScore1);
+        setScore2(stateScore2);
     }
 
-    const handleMinusButtonLeft = () => {
-
+    const handleScoreSelectRight = (score: number, setNumber: number) => {
+        const newScore2: StateScore = { ...score2, [setNumber]: score }
+        let newScore1: StateScore = { ...score1 }
+        if (typeof score1[setNumber] !== 'number' && score < numberOfGoals) {
+            newScore1 = { ...newScore1, [setNumber]: numberOfGoals }
+        }
+        const newNumberOfGames = getNewNumberOfGames(newScore1, newScore2);
+        const { score1: stateScore1, score2: stateScore2 } = getNewScores(newScore1, newScore2, newNumberOfGames);
+        
+        setNumberOfGames(newNumberOfGames);
+        setScore1(stateScore1);
+        setScore2(stateScore2);
     }
 
-    const renderPointsRight = () => {
-        const points: JSX.Element[] = [];
-        const maxPoint = numberOfGoals + 5;
-        let minPoint = numberOfGoals - 14 < 0 ? 0 : numberOfGoals - 14;
-        do {
-            points.push(
-                <Score
-                    scoreNumber={minPoint}
-                    left={(numberOfGoals + minPoint - 7) * 34}
-                    onScoreSelect={handleLScoreSelectRight}
-                    selectedNumber={score2}
-                />
-            )
-            minPoint++;
-        } while (minPoint <= maxPoint);
-
-        return points;
-    }
-
-    const handlePlusButtonRight = () => {
-
-    }
-
-    const handleMinusButtonRight = () => {
-
+    const handleClose = () => {
+        // setScore1({});
+        // setScore2({});
+        onClose()
     }
 
     return (
@@ -137,48 +206,21 @@ const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2 }: Props)
                 <div className={classes.dialogHeaderPlayer}>{player1}</div>
                 <div className={classes.dialogHeaderPlayer}>{player2}</div>
             </div>
-
-            <div className={classes.pointsContainer}>
-                <div className={classes.pointsInputContainer}>
-                    {
-                        <div>
-                            <IconButton aria-label="close" onClick={handleMinusButtonLeft} className={classes.iconButtons}>
-                                <RemoveIcon fontSize='small' />
-                            </IconButton>
-                        </div>
-                    }
-                    <div className={classes.pointsInput}>
-                        {renderPointsLeft()}
-                    </div>
-                    <div>
-                        <IconButton aria-label="close" onClick={handleMinusButtonLeft} className={classes.iconButtons}>
-                            <AddIcon fontSize='small' />
-                        </IconButton>
-                    </div>
-                </div>
-                <div className={classes.pointsMiddle}>- : -</div>
-                <div className={classes.pointsInputContainer}>
-                    {
-                        <div>
-                            <IconButton aria-label="close" onClick={handleMinusButtonRight} className={classes.iconButtons}>
-                                <RemoveIcon fontSize='small' />
-                            </IconButton>
-                        </div>
-                    }
-                    <div className={classes.pointsInput}>
-                        {renderPointsRight()}
-                    </div>
-                    <div>
-                        <IconButton aria-label="close" onClick={handleMinusButtonRight} className={classes.iconButtons}>
-                            <AddIcon fontSize='small' />
-                        </IconButton>
-                    </div>
-                </div>
-            </div>
-
-
+            {[...Array(numberOfGames).keys()].map(key => {
+                return (
+                    <EnterScoreDialogScoresConainer
+                        key={key}
+                        score1={score1[key + 1]}
+                        score2={score2[key + 1]}
+                        onScoreSelect1={(score) => handleScoreSelectLeft(score, key + 1)}
+                        onScoreSelect2={(score) => handleScoreSelectRight(score, key + 1)}
+                        disallowTie
+                    />
+                )
+            })
+            }
             <DialogActions className={classes.dialogFooter}>
-                <Button onClick={onClose} color="default" size='small' className={classes.dialogButton}>
+                <Button onClick={handleClose} color="default" size='small' className={classes.dialogButton}>
                     {t('Cancel')}
                 </Button>
                 <Button onClick={handleConfirm} color="primary" size='small' type='submit' className={`${classes.dialogButton} primary`}>
