@@ -33,7 +33,7 @@ const Elimination = (props: Props) => {
     const { t } = useTranslation();
 
     useEffect(() => {
-        
+
         setGames({ ...entityState.games })
 
     }, [/* entityState.players */])
@@ -49,7 +49,6 @@ const Elimination = (props: Props) => {
     const handleStartTournament = (e: React.FormEvent, name: string) => {
         e.preventDefault();
         alert(name);
-        submitGamesToStore();
         //setDialogOpen(false);
     };
 
@@ -65,44 +64,6 @@ const Elimination = (props: Props) => {
         ]
     }
 
-    const submitGamesToStore = () => {
-        // const storePlayers: StatePlayers = players[1]
-        //     .filter(player => !!player.name)
-        //     .map((player, i) => {
-        //         return { name: player.name, category: player.category, bye: player.bye }
-        //     })
-
-
-
-        // const storeGames: StateGames = [];
-        // for (let i = 0; i < players[1].length; i = i + 2) {
-        //     storeGames.push({ player1: players[1][i].name, player2: players[1][i + 1].name, index: 1 })
-
-        // }
-
-        //dispatch(updateGames(storeGames));
-    }
-
-    // const insertByePlayers = (players: StatePlayers) => {
-    //     let byePlayers = byePlayerNumber;
-    //     const byeI = getByeIndexes(numberOfPlayers + byePlayerNumber);
-
-    //     for (let i = 0; i < byePlayerNumber; i++) {
-    //         if (byePlayers <= 0) break;
-    //         if (byeI![i]) {
-    //             players[byeI![i] - 1] = { name: "", category: null, bye: true }
-    //         }
-    //         else {
-    //             const q = players.findIndex((x, i) => i % 2 !== 0 && !x?.bye && !players[i + 1]?.bye)
-    //             players[q] = { name: "", category: null, bye: true }
-    //         }
-    //         byePlayers--;
-    //     }
-    // }
-
-    // const handleSidebarChange = (players: StatePlayers) => {
-    //     setPlayers({ 1: [...players] })
-    // }
 
     const handleSubmit = (e: React.FormEvent): void => {
         e.preventDefault()
@@ -138,64 +99,31 @@ const Elimination = (props: Props) => {
         return result;
     }
 
-    const renderTree2 = () => {
-        const result = [];
-        for (const key in games) {
-            if (Object.prototype.hasOwnProperty.call(games, key)) {
-                const finalNumberDivider: number = 2 ** (columns - splitGameKey(key).round);
-                result.push(
-                    <div key={`gameColumn_${splitGameKey(key).round}`}>
-                        <div className={classes.gameColumn}>
-                            <div>
-                                <div className={classes.gameColumnHeader}>
-                                    <span>{finalNumberDivider >= 4 && '1/' + finalNumberDivider} </span>
-                                    <span>{finalNumberDivider === 2 ? t('Semifinal') : t('Final', { count: finalNumberDivider })} </span>
-                                </div>
-                                <div className={classes.gameColumnContent}>
-                                    {renderCards(splitGameKey(key).round)}
-                                </div>
-                            </div>
-                            {
-                                columns - splitGameKey(key).round >= 1 &&
-                                <div className={classes.gameBetweenColumnsSpace}>
-                                    {renderBetweenColumnSpaces(splitGameKey(key).round)}
-                                </div>
-                            }
-                        </div>
-                    </div>
-                )
-
-            }
-        }
-
-        return result;
-    }
-
     const renderCards = (columnNumber: number) => {
         const result = [];
         const numberOfGames = firstRoundGameNumber / (2 ** (columnNumber - 1));
         for (let i = 1; i <= numberOfGames; i++) {
             const p1 = games[`${columnNumber}-${i}`]?.player1;
             const p2 = games[`${columnNumber}-${i}`]?.player2;
+            const final1 = games[`final`]?.player1;
+            const final2 = games[`final`]?.player2;
             const thirdPlaceP1 = games[`thirdPlace`]?.player1;
             const thirdPlaceP2 = games[`thirdPlace`]?.player2;
-            //const p2 = players[columnNumber] && players[columnNumber][(numberOfGames - i) * 2 + 1]
             if (i === 1 && columnNumber === columns && entityState.tournament.thirdPlace) {
                 result.push(
                     <div className={classes.gameColumnWithThirdPlace} key={`gameCard_${columnNumber}_${i}`}>
                         <EliminationCard
                             key={`gameCard_${columnNumber}_${i}`}
-                            player1={p1}
-                            player2={p2}
+                            player1={final1}
+                            player2={final2}
                             active
-                            gameKey={`${columnNumber}-${i}`}
+                            gameKey={`final`}
                         />
                         <div className={classes.gameCardThirdPlace}>
                             <div className={classes.gameColumnHeader}>
                                 <span>{t('Third Place')}</span>
                             </div>
                             <EliminationCard
-                                key={`gameCard_${columnNumber}_${i}`}
                                 player1={thirdPlaceP1}
                                 player2={thirdPlaceP2}
                                 active

@@ -1,23 +1,19 @@
-import React, { ReactElement, useEffect, useState } from 'react';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import clsx from 'clsx';
-import { CssBaseline } from '@material-ui/core';
 import HeaderGeneric from './HeaderGeneric';
 import HeaderHome from './HeaderHome';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 import headerStyles from './headerStyles';
-import HeaderTournamentForm from './HeaderTournamentForm';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
+import { updateSettings } from '../../../redux/settings/actions';
 
 interface Props {
     menuOpen: boolean,
@@ -26,19 +22,20 @@ interface Props {
 const Header = (props: Props) => {
     const classes = headerStyles();
     const history = useHistory();
-    const [path, setPath] = useState('');
+    const fullScreen = useSelector((state: RootState) => state.settings.fullScreen);
+    const dispatch = useDispatch();
     const { t } = useTranslation();
 
-    useEffect(() => {
-        setPath(history.location.pathname)
-
-    })
+    const handleExitFullScreen = () => {
+        dispatch(updateSettings({ fullScreen: false }))
+    }
 
     return (
         <AppBar
             position="fixed"
             className={clsx(classes.appBar, {
                 [classes.appBarShift]: props.menuOpen,
+                [classes.appBarHide]: fullScreen,
             })}
         >
             <Typography variant="h6" noWrap className={classes.title}>
@@ -87,6 +84,7 @@ const Header = (props: Props) => {
                         <HeaderGeneric
                             title={t('Elimination')}
                             zoomSlider
+                            fullScreenButton
                         />
                         {/* <HeaderTournamentForm /> */}
                     </Route>
@@ -95,6 +93,18 @@ const Header = (props: Props) => {
                     </Route>
                 </Switch>
             </Typography>
+            {fullScreen &&
+                <div className={classes.exitFullScreenButtonContainer}>
+                    <Tooltip title={`${t("Exit Full Screen")}`}>
+                        <IconButton
+                            className={classes.exitFullScreenButton}
+                            onClick={handleExitFullScreen}
+                            aria-label="exit-full-screen">
+                            <FullscreenExitIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
+            }
         </AppBar>
     )
 }

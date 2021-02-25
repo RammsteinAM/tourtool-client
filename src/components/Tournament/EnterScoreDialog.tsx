@@ -9,6 +9,8 @@ import enterScoreDialogStyles from './enterScoreDialogStyles';
 import EnterScoreDialogScoresConainer from './EnterScoreDialogScoresConainer';
 import { StateScore } from '../../types/entities';
 import { getNthIndexOf } from '../../utils/arrayUtils';
+import toast from '../IndependentSnackbar';
+import { getMultipleSetScores } from '../../utils/scoreUtils';
 
 interface Props {
     open: boolean;
@@ -43,41 +45,21 @@ const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2, gameKey 
 
 
     const handleConfirm = (e: React.FormEvent) => {
-        // const scores1 = for (const key in score1) {
-        //     if (Object.prototype.hasOwnProperty.call(object, key)) {
-        //         const element = object[key];
+        if (winningSets > 1) {
+            const finalScores = getMultipleSetScores(score1, score2, winningSets);
+            if (finalScores.score1 < winningSets && finalScores.score2 < winningSets) {
+                toast.error(t('less-than-winning-sets-message', { winningSets }))
+                return;
+            }
+        }
 
-        //     }
-        // }
         if (score1 !== null && score2 !== null) {
             onConfirm(score1, score2);
         }
     }
 
-    const getMultipleSetScores = (scores1: StateScore, scores2: StateScore): { score1: number, score2: number, winners: number[] } => {
-        let score1 = scores1[1], score2 = scores2[1];
-        const winners: number[] = [];
-        if (winningSets > 1) {
-            score1 = 0;
-            score2 = 0;
-            for (let i = 1; i <= Object.keys(scores1).length; i++) {
-                const subScore1 = scores1[i];
-                const subScore2 = scores2[i];
-                if (subScore1 > subScore2) {
-                    score1 += 1;
-                    winners.push(1);
-                }
-                if (subScore1 < subScore2) {
-                    score2 += 1;
-                    winners.push(2);
-                }
-            }
-        }
-        return { score1, score2, winners };
-    }
-
     const getNewNumberOfGames = (scores1: StateScore, scores2: StateScore) => {
-        const { score1, score2, winners } = getMultipleSetScores(scores1, scores2);
+        const { score1, score2, winners } = getMultipleSetScores(scores1, scores2, winningSets);
         let newNumberOfGames = numberOfGames;
         if (score1 < winningSets && score2 < winningSets && score1 + score2 === numberOfGames) {
             newNumberOfGames = numberOfGames + 1;
@@ -95,16 +77,6 @@ const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2, gameKey 
             if (player1WinningIndex + 1 !== numberOfGames && player2WinningIndex + 1 !== numberOfGames) {
                 newNumberOfGames = player1WinningIndex > player2WinningIndex ? player1WinningIndex + 1 : player2WinningIndex + 1;
             }
-            // if (score1 >= winningSets && score2 >= winningSets) {
-            //     newNumberOfGames = winningSets + 1;
-            // }
-            // winners.
-            // for (let i = 0; i < winners.length; i++) {
-            //     const element = array[i];
-
-            // }
-
-
         }
         return newNumberOfGames;
     }
@@ -116,57 +88,18 @@ const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2, gameKey 
         for (let i = 1; i <= numberOfGames; i++) {
             newScore1[i] = scores1[i]
             newScore2[i] = scores2[i]
-
         }
         return { score1: newScore1, score2: newScore2 }
-        // setScore1(newScore1);
-        // setScore2(newScore2);
-
-
-        // debugger
-        // if ((score1 >= winningSets || score2 >= winningSets)) {
-        //     // const newScore1 = { ...scores1 };
-        //     // const newScore2 = { ...scores2 };
-        //     if (score1 < winningSets) {
-        //         newNumberOfGames += score1;
-        //         if (score2 > winningSets) {
-        //             for (let i = 1; i <= Object.keys(scores2).length; i++) {
-        //                 if (i > newNumberOfGames) delete (scores2[i]);
-        //             }
-
-        //         }
-        //     }
-        //     if (score2 < winningSets) {
-        //         newNumberOfGames += score2;
-        //         if (score1 > winningSets) {
-        //             for (let i = 1; i <= Object.keys(scores1).length; i++) {
-        //                 if (i > newNumberOfGames) delete (scores1[i]);
-        //             }
-        //         }
-        //     }
-        //     // const loserScore = score1 < winningSets ? score1 : score2;
-        //     // //const newNumberOfGames = winningSets + loserScore;
-        //     // delete (newScore1[Object.keys(scores1).length]);
-        //     // delete (newScore2[Object.keys(scores2).length]);
-
-        // }
-        // if ((score1 >= winningSets || score2 >= winningSets) && (Object.keys(scores1).length > numberOfGames || Object.keys(scores2).length > numberOfGames) && numberOfGames >= winningSets) {
-        //     const newScore1 = { ...scores1 };
-        //     const newScore2 = { ...scores2 };
-        //     delete (newScore1[Object.keys(scores1).length]);
-        //     delete (newScore2[Object.keys(scores2).length]);
-        //     setScore1(newScore1);
-        //     setScore2(newScore2);
-        //     setNumberOfGames(numberOfGames - 1);
-        // }
-        // if (score2 > winningSets) {
-        //     setNumberOfGames(numberOfGames - 1);            
-        //     delete (scores1[Object.keys(scores1).length]);
-        //     delete (scores2[Object.keys(scores1).length]);
-        // }
     }
 
-    const handleScoreSelectLeft = (score: number, setNumber: number) => {
+    const handleScoreSelectLeft = (score: number, setNumber: number): void => {
+        if (winningSets === 1) {
+            setScore1({ 1: score });
+            if (typeof score2[1] !== 'number' && score < numberOfGoals) {
+                setScore2({ 1: numberOfGoals });
+            }
+            return;
+        }
         const newScore1: StateScore = { ...score1, [setNumber]: score }
         let newScore2: StateScore = { ...score2 }
         if (typeof score2[setNumber] !== 'number' && score < numberOfGoals) {
@@ -174,13 +107,19 @@ const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2, gameKey 
         }
         const newNumberOfGames = getNewNumberOfGames(newScore1, newScore2);
         const { score1: stateScore1, score2: stateScore2 } = getNewScores(newScore1, newScore2, newNumberOfGames);
-        debugger
         setNumberOfGames(newNumberOfGames);
         setScore1(stateScore1);
         setScore2(stateScore2);
     }
 
-    const handleScoreSelectRight = (score: number, setNumber: number) => {
+    const handleScoreSelectRight = (score: number, setNumber: number): void => {
+        if (winningSets === 1) {
+            setScore2({ 1: score });
+            if (typeof score2[1] !== 'number' && score < numberOfGoals) {
+                setScore1({ 1: numberOfGoals });
+            }
+            return;
+        }
         const newScore2: StateScore = { ...score2, [setNumber]: score }
         let newScore1: StateScore = { ...score1 }
         if (typeof score1[setNumber] !== 'number' && score < numberOfGoals) {
@@ -188,7 +127,7 @@ const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2, gameKey 
         }
         const newNumberOfGames = getNewNumberOfGames(newScore1, newScore2);
         const { score1: stateScore1, score2: stateScore2 } = getNewScores(newScore1, newScore2, newNumberOfGames);
-        
+
         setNumberOfGames(newNumberOfGames);
         setScore1(stateScore1);
         setScore2(stateScore2);

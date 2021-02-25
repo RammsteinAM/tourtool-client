@@ -99,9 +99,13 @@ const styles = makeStyles((theme) =>
       backgroundColor: '#ffffff',
       padding: '20px',
     },
+    fullScreen: {
+      width: 0,
+    },
     backdrop: {
       zIndex: theme.zIndex.drawer - 1,
     },
+
   }),
 );
 

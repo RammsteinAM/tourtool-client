@@ -14,16 +14,17 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import Tooltip from '@material-ui/core/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { shuffleArray } from '../../../utils/arrayUtils';
 import { updatePlayers, updateTournament } from '../../../redux/tournamentEntities/actions';
-import headerStyles from './headerStyles';
 import ImportParticipantsDialog from '../../Tournament/ImportParticipantsDialog';
 import { HeaderSlider } from '../../Slider';
 import { debounce, throttle } from 'lodash';
 import { updateSettings } from '../../../redux/settings/actions';
+import headerStyles from './headerStyles';
 
 interface Props {
     title: string;
@@ -34,6 +35,7 @@ interface Props {
     nextButtonForm?: string;
     thirdPlaceCheckbox?: boolean;
     zoomSlider?: boolean;
+    fullScreenButton?: boolean;
 }
 
 const HeaderGeneric = (props: Props) => {
@@ -84,6 +86,10 @@ const HeaderGeneric = (props: Props) => {
         //setZoomValue(newValue as number);
     };
 
+    const handleEnterFullScreen = () => {
+        dispatch(updateSettings({ fullScreen: true }))
+    }
+
     return (
         <Toolbar>
             <Typography variant="h6" noWrap className={classes.title}>
@@ -91,6 +97,13 @@ const HeaderGeneric = (props: Props) => {
             </Typography>
             {props.zoomSlider &&
                 <HeaderSlider onChange={handleZoomSliderChange} defaultValue={100} />
+            }
+            {props.fullScreenButton &&
+                <Tooltip title={`${t("Full Screen")}`}>
+                    <IconButton className={classes.iconButton} aria-label="full-screen" onClick={handleEnterFullScreen}>
+                        <FullscreenIcon />
+                    </IconButton>
+                </Tooltip>
             }
             {props.thirdPlaceCheckbox &&
                 <FormControlLabel

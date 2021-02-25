@@ -4,7 +4,7 @@ import enterScoreDialogStyles from './enterScoreDialogStyles';
 interface Props {
     scoreNumber: number;
     onSelect: (score: number) => void;
-    style: { left?: string, right?: string, transitionDelay: string};
+    style: { left?: string, right?: string, transitionDelay: string };
     disabled?: boolean;
 }
 
@@ -15,7 +15,11 @@ const EnterScoreDialogScoreItem = ({ scoreNumber, onSelect, style, disabled }: P
     }
 
     return (
-        <div id={`score-item-${scoreNumber}`} className={`${classes.scoreItem}${disabled ? ' disabled' : ''}`} style={style} onClick={handleScoreSelect}>
+        <div
+            className={`${classes.scoreItem}${disabled ? ' disabled' : ''}`}
+            style={scoreNumber < 100 ? style : { ...style, fontSize: '12px' }}
+            onClick={handleScoreSelect}
+        >
             {scoreNumber}
         </div>
     )

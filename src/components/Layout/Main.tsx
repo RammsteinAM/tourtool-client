@@ -8,6 +8,7 @@ interface Props {
     menuOpen: boolean,
     backdropVisible: boolean,
     backdropCallback: (e: React.MouseEvent) => void,
+    fullScreen?: boolean,
 }
 
 const Main = (props: Props) => {
@@ -16,7 +17,7 @@ const Main = (props: Props) => {
         <>
             <Header menuOpen={props.menuOpen} />
             <main className={classes.content}>
-                <div className={classes.toolbar} />
+                {!props.fullScreen && <div className={classes.toolbar} />}
                 {props.children}
             </main>
             <Backdrop open={props.backdropVisible} onClick={props.backdropCallback} className={classes.backdrop} />

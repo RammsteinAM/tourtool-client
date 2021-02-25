@@ -15,7 +15,8 @@ export {
 }
 
 export type SettingsReducerState = {
-    eliminationScale: number,
+    eliminationScale?: number,
+    fullScreen?: boolean,
 }
 
 export type UpdateSettingsActionParams = PayloadedAction<typeof UPDATE_SETTINGS, SettingsReducerState>;

@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from "react-i18next";
-import { ActionStatus, Nullable } from '../../types/main';
+import { Nullable } from '../../types/main';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import IconButton from '@material-ui/core/IconButton';
-import enterScoreDialogStyles from './enterScoreDialogStyles';
 import EnterScoreDialogScoreItem from './EnterScoreDialogScoreItem';
+import enterScoreDialogStyles from './enterScoreDialogStyles';
 
 interface PreviousHookValue {
     selection: number;
@@ -17,33 +17,33 @@ interface PreviousHookValue {
 function usePrevious(value: any) {
     const ref = useRef<PreviousHookValue>();
     useEffect(() => {
-      ref.current = value;
+        ref.current = value;
     });
     return ref.current;
-  }
+}
 interface Props {
     selectedNumber?: Nullable<number>;
-    onScoreSelect: (score: number) => void;    
+    onScoreSelect: (score: number) => void;
     disabledScore?: number;
 }
 
 const EnterScoreDialogScoreSelectorRTL = ({ selectedNumber, onScoreSelect, disabledScore }: Props) => {
     const [rightShift, setRightShift] = useState<number>(0);
     const [plusMinusAction, setPlusMinusAction] = useState<'plus' | 'minus' | null>();
-    const entityState = useSelector((state: RootState) => state.entities);    
+    const entityState = useSelector((state: RootState) => state.entities);
     const prevState = usePrevious({ selection: selectedNumber, rightShift })
     const classes = enterScoreDialogStyles();
     const { t } = useTranslation();
     const numberOfGoals = entityState.tournament.numberOfGoals || 7;
     const firstVisiblePoint = numberOfGoals < 14 ? rightShift : numberOfGoals - 13 + rightShift;
     let rightStep = numberOfGoals < 9 ? 0 : -1 * (numberOfGoals > 13 ? 5 : numberOfGoals - 8);
-    
+
     useEffect(() => {
         //const fouthShift = Math.floor(selectedNumber / 4) >= 1
         selectedNumber && setRightShift(((Math.floor(selectedNumber / 4) || 1) - 1) * 4);
     }, [])
 
-    const handleScoreSelect = (score: number) => {        
+    const handleScoreSelect = (score: number) => {
         setPlusMinusAction(null);
         onScoreSelect(score);
     }
@@ -78,7 +78,7 @@ const EnterScoreDialogScoreSelectorRTL = ({ selectedNumber, onScoreSelect, disab
                 }
                 break;
         }
-        if (prevState !== undefined && (prevState.selection < prevState.rightShift - 4 || prevState.selection  > prevState.rightShift + 12 )) {
+        if (prevState !== undefined && (prevState.selection < prevState.rightShift - 4 || prevState.selection > prevState.rightShift + 12)) {
             selectionCircle = 0;
         }
 
@@ -102,15 +102,19 @@ const EnterScoreDialogScoreSelectorRTL = ({ selectedNumber, onScoreSelect, disab
                                 <EnterScoreDialogScoreItem
                                     key={key}
                                     scoreNumber={key}
-                                    onSelect={handleScoreSelect}                                    
-                                    style={{ right: `${left - leftShiftPx}px`, transitionDelay: `${getTransactionDelays(key).score}ms`  }}
+                                    onSelect={handleScoreSelect}
+                                    style={{ right: `${left - leftShiftPx}px`, transitionDelay: `${getTransactionDelays(key).score}ms` }}
                                     disabled={disabledScore === key}
                                 />
                             )
                         })
                     }
                     {selectedNumber !== null && selectedNumber !== undefined &&
-                        <div className={classes.scoreItemSelected} style={{ right: `${(selectedNumber - rightShift) * 34 + 4}px`, transitionDelay: `${getTransactionDelays().selectionCircle}ms` }} ></div>
+                        <div
+                            className={classes.scoreItemSelected}
+                            style={{ right: `${(selectedNumber - rightShift) * 34 + 4}px`, transitionDelay: `${getTransactionDelays().selectionCircle}ms` }}
+                        >
+                        </div>
                     }
                 </div>
                 <div style={rightShift <= 0 ? { visibility: 'hidden' } : {}}>

@@ -6,6 +6,7 @@ import {
 
 const initialState: SettingsReducerState | null = {
   eliminationScale: 1,
+  fullScreen: false,
 };
 
 const reducer = (state: SettingsReducerState = initialState, action: UserActionParams): SettingsReducerState => {

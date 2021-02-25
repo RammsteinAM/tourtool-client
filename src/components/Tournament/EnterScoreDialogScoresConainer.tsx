@@ -17,7 +17,6 @@ const EnterScoreDialogScoresConainer = ({ score1, score2, onScoreSelect1, onScor
     const classes = enterScoreDialogStyles();
     const { t } = useTranslation();
 
-    
     const handleScoreSelect1 = (score: number) => {
         if (disallowTie && score2 === score) return;
         onScoreSelect1(score);

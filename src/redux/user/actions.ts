@@ -64,7 +64,6 @@ const updateUser = (data: UserUpdateReqData) => {
         userServices.update(data)
             .then(
                 (res: AxiosResponse<ResponseData<UserStateData>>) => {
-                    debugger
                     dispatch(updateSuccess(res.data));
                     dispatch(userUpdateSuccess(res.data));
                     toast.success(i18n.t('Changes saved'))

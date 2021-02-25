@@ -50,7 +50,8 @@ const Layout = (props: Props) => {
   const [showSidePanel, setShowSidePanel] = React.useState(false);
   const [panelContent, setPanelContent] = useState<SidePanelState>(SidePanelState.Initial);
   const history = useHistory();
-  const authState = useSelector((state: RootState) => state.auth);
+  const authState = useSelector((state: RootState) => state.auth);  
+  const fullScreen = useSelector((state: RootState) => state.settings.fullScreen);
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -132,6 +133,9 @@ const Layout = (props: Props) => {
         variant="permanent"
         anchor="left"
         classes={{
+          root: clsx({
+            [classes.fullScreen]: fullScreen,
+          }),
           paper: clsx({
             [classes.sidePanelOpen]: showSidePanel,
             [classes.sidePanelClose]: !showSidePanel,
@@ -158,11 +162,15 @@ const Layout = (props: Props) => {
           [classes.drawerClose]: !open,
         })}
         classes={{
+          root: clsx({
+            [classes.fullScreen]: fullScreen,
+          }),
           paper: clsx(classes.paper, {
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
             [classes.drawerSettingsOpen]: showSidePanel,
             [classes.drawerSettingsClose]: !showSidePanel,
+            [classes.fullScreen]: fullScreen,
           }),
         }}
       >
@@ -200,7 +208,7 @@ const Layout = (props: Props) => {
         </List>
       </Drawer>
 
-      <Main menuOpen={open} backdropVisible={showSidePanel} backdropCallback={closeSidePanel}>
+      <Main menuOpen={open} backdropVisible={showSidePanel} backdropCallback={closeSidePanel} fullScreen={fullScreen}>
         {props.children}
       </Main>
       

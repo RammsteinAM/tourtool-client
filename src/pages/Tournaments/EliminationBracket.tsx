@@ -72,7 +72,8 @@ const EliminationBracket = (props: Props) => {
         for (let col = 1; col <= columns; col++) {
             const prevCol = col - 1;
             for (let i = 0, j = 1; i < players.length / (2 ** prevCol); i = i + 2, j++) {
-                const gameKey: string = `${col}-${j}`;
+                debugger
+                const gameKey: string = col === columns ? 'final' : `${col}-${j}`;
                 storeGames[gameKey] = { player1: '', player2: '', index: gameKey }
                 if (col === 1) {
                     storeGames[gameKey].player1 = players[i].name;
@@ -92,17 +93,6 @@ const EliminationBracket = (props: Props) => {
                 const parent2HasOnePlayer = (p2p1 && !p2p2) || (p2p2 && !p2p1);
                 if ((parent2HasNoPlayer || parent1HasNoPlayer) && ((parent1HasByePlayer && parent2HasOnePlayer) || (parent2HasByePlayer && parent1HasOnePlayer))) {
                     storeGames[gameKey].hasByePlayer = true;
-                }
-                // if (
-                //     !parent1HasByePlayer &&
-                //     !parent1HasByePlayer &&
-                //     (!parent1HasNoPlayer || !parent2HasNoPlayer) &&
-                //     (parent1HasOnePlayer || parent2HasOnePlayer)
-                // ) {
-                //     continue;
-                // }
-                if(gameKey === '2-4') {
-                    debugger
                 }
                 if (!parent1HasByePlayer && !parent2HasByePlayer) {
                     continue;

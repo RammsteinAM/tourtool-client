@@ -140,6 +140,9 @@ const localization = {
             'delete-account-success-message': 'Your account has been successfully deleted. Sorry you\'re leaving.',
             'vs': 'vs',
             'Enter Result': 'Enter Result',
+            'less-than-winning-sets-message': 'One of the Players Should Have {{winningSets}} Wins According to the Number of Winning Sets.',
+            'Full Screen': 'Full Screen',
+            'Exit Full Screen': 'Exit Full Screen',
         }
     },
     hy: {
@@ -280,9 +283,12 @@ const localization = {
             'Delete Account': 'Ջնջել հաշիվը',
             'delete-account-confirmation-message': 'Դուք պատրաստվում եք ջնջել Ձեր հաշիվը, ներառյալ Ձեր բոլոր մրցաշարերի տվյալները։ Եթե համոզված եք, հաստատեք Ձեր գործողությունը։ Դուք կստանաք հաշվի ջնջման հղումով նամակ Ձեր էլ. փոստին։',
             'request-delete-account-success-message': 'Ձեր դիմումն ընդունված է, խնդրում ենք ստուգել Ձեր էլ. փոստը։',
-            'delete-account-success-message': 'Ձեր հաշիվը հաջողությամբ ջնջված է։ Ցավում ենք, որ հեռանում եք։',            
+            'delete-account-success-message': 'Ձեր հաշիվը հաջողությամբ ջնջված է։ Ցավում ենք, որ հեռանում եք։',
             'vs': 'ընդ.',
             'Enter Result': 'Մուտքագրել արդյունքը',
+            'less-than-winning-sets-message': 'Խաղացողներից մեկնումեկը պետք է ունենա {{winningSets}} հաղթանակ՝ ըստ հաղթանակի սեթերի քանակի։',
+            'Full Screen': 'Լիաէկրան ռեժիմ',
+            'Exit Full Screen': 'Ելք լիաէկրան ռեժիմից',
         }
     },
     ru: {
@@ -430,9 +436,12 @@ const localization = {
             'Delete Account': 'Удалить учетную запись',
             'delete-account-confirmation-message': 'Вы собираетесь удалить свою учетную запись, включая все данные о турнирах. Если вы уверены, подтвердите свое действие. Вы получите электронное письмо со ссылкой для удаления учетной записи.',
             'request-delete-account-success-message': 'Ваш запрос обработан, проверьте вашу электронную почту.',
-            'delete-account-success-message': 'Ваша учетная запись была успешно удалена. Нам жаль, что вы уходите.',            
+            'delete-account-success-message': 'Ваша учетная запись была успешно удалена. Нам жаль, что вы уходите.',
             'vs': 'X',
             'Enter Result': 'Вводить счет',
+            'less-than-winning-sets-message': 'Один из игроков должен иметь {{winningSets}} выигрышей согласно количеству сетов для победы.',
+            'Full Screen': 'Полный экран',
+            'Exit Full Screen': 'Выход из полноэкранного режима',
         }
     }
 }

@@ -9,6 +9,7 @@ import { updateGames, updatePlayers } from '../../redux/tournamentEntities/actio
 import { Nullable } from '../../types/main';
 import EnterScoreDialog from '../../components/Tournament/EnterScoreDialog';
 import { splitGameKey } from '../../utils/stringUtils';
+import { getMultipleSetScores } from '../../utils/scoreUtils';
 
 interface Props {
     player1?: string;
@@ -22,11 +23,11 @@ const EliminationCard = (props: Props) => {
     const tournamentState = useSelector((state: RootState) => state.entities.tournament);
     const [game, setGame] = useState<StateGame>();
     const [scoreDialogOpen, setScoreDialogOpen] = useState<boolean>(false);
-    const { player1, player2 } = props.gameKey && game ? game : props;
+    const { player1: player1Name, player2: player2Name } = props.gameKey && game ? game : props;
     const dispatch = useDispatch();
     const classes = tournamentStyles();
     const { t } = useTranslation();
-    const isBye = props.active ? !!game?.hasByePlayer : (!player1 || !player2)
+    const isBye = props.active ? !!game?.hasByePlayer : (!player1Name || !player2Name)
 
     useEffect(() => {
         props.gameKey && setGame(gamesState[props.gameKey]);
@@ -34,45 +35,38 @@ const EliminationCard = (props: Props) => {
 
     let winner = null;
     if (game && game.score1 !== undefined && game.score2 !== undefined && game.score1 > game.score2) {
-        winner = player1;
+        winner = player1Name;
     }
     if (game && game.score1 !== undefined && game.score2 !== undefined && game.score1 < game.score2) {
-        winner = player2;
+        winner = player2Name;
     }
 
     const handleScoreInput = (scores1: StateScore, scores2: StateScore) => {
-        if (!props.gameKey || !player1 || !player2) return;
-        const finalRoundNumber = Object.keys(gamesState).map(key => splitGameKey(key).round).sort(function (a, b) { return b - a })[0];
-        let score1 = scores1[1], score2 = scores2[1];
-        if (Object.keys(scores1).length > 1 && Object.keys(scores1).length === Object.keys(scores2).length) {
-            score1 = 0;
-            score2 = 0;
-            for (let i = 1; i <= Object.keys(scores1).length; i++) {
-                const subScore1 = scores1[i];
-                const subScore2 = scores2[i];
-                score1 = score1 + Number(subScore1 > subScore2)
-                score2 = score2 + Number(subScore2 > subScore1)
-            }
-        }
-        debugger
+        if (!props.gameKey || !player1Name || !player2Name) return;
+        const finalRoundNumber = Object.keys(gamesState).map(key => splitGameKey(key).round).sort(function (a, b) { return b - a })[0] + 1;
+        const { score1, score2 } = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length)
         const round = splitGameKey(props.gameKey).round;
         const gameNumber = splitGameKey(props.gameKey).gameNumber;
         const isGameOdd = gameNumber % 2 === 1;
-        const winner = score1 > score2 ? player1 : player2;
+        const winner = score1 > score2 ? player1Name : player2Name;
         const nextGameKey = `${round + 1}-${isGameOdd ? (gameNumber + 1) / 2 : gameNumber / 2}`;
 
-        dispatch(updateGames({ [props.gameKey]: { ...gamesState[props.gameKey], score1, score2 } }));
-        if (round < finalRoundNumber) {
+        dispatch(updateGames({ [props.gameKey]: { ...gamesState[props.gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) } }));
+        if (round < finalRoundNumber - 1) {
             isGameOdd ?
-                dispatch(updateGames({ [nextGameKey]: { ...gamesState[nextGameKey], player1: winner } })) :
-                dispatch(updateGames({ [nextGameKey]: { ...gamesState[nextGameKey], player2: winner } }));
+                dispatch(updateGames({ [props.gameKey]: { ...gamesState[props.gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) }, [nextGameKey]: { ...gamesState[nextGameKey], player1: winner } })) :
+                dispatch(updateGames({ [props.gameKey]: { ...gamesState[props.gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) }, [nextGameKey]: { ...gamesState[nextGameKey], player2: winner } }));
         }
-
-        if (round === finalRoundNumber - 1 && tournamentState.thirdPlace) {
-            const loser = score1 > score2 ? player2 : player1;
+        if (round === finalRoundNumber - 1) {
             isGameOdd ?
-                dispatch(updateGames({ ['thirdPlace']: { ...gamesState['thirdPlace'], player1: loser } })) :
-                dispatch(updateGames({ ['thirdPlace']: { ...gamesState['thirdPlace'], player2: loser } }));
+                dispatch(updateGames({ [props.gameKey]: { ...gamesState[props.gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) }, ['final']: { ...gamesState['final'], player1: winner } })) :
+                dispatch(updateGames({ [props.gameKey]: { ...gamesState[props.gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) }, ['final']: { ...gamesState['final'], player2: winner } }));
+            if (tournamentState.thirdPlace) {
+                const loser = score1 > score2 ? player2Name : player1Name;
+                isGameOdd ?
+                    dispatch(updateGames({ ['thirdPlace']: { ...gamesState['thirdPlace'], player1: loser } })) :
+                    dispatch(updateGames({ ['thirdPlace']: { ...gamesState['thirdPlace'], player2: loser } }));
+            }
         }
         handleScoreDialogClose()
     }
@@ -87,19 +81,19 @@ const EliminationCard = (props: Props) => {
     if (isBye) {
         return (
             <div className={classes.gameCardBye}>
-                {!player1 && player2 && <div>{player2}</div>}
-                {!player2 && player1 && <div>{player1}</div>}
+                {!player1Name && player2Name && <div>{player2Name}</div>}
+                {!player2Name && player1Name && <div>{player1Name}</div>}
             </div>
         );
     }
 
     return (
         <div className={classes.gameCard}>
-            <div className={props.active && winner === player2 ? classes.loser : undefined}>
-                {player1}
+            <div className={props.active && winner === player2Name ? classes.loser : undefined}>
+                {player1Name}
             </div>
-            <div className={props.active && winner === player1 ? classes.loser : undefined}>
-                {player2}
+            <div className={props.active && winner === player1Name ? classes.loser : undefined}>
+                {player2Name}
             </div>
             {props.active &&
                 <>
@@ -110,7 +104,7 @@ const EliminationCard = (props: Props) => {
                         </div> :
                         <div className={classes.gameCardScore}>{t('vs')}</div>
                     }
-                    {player1 && player2 &&
+                    {player1Name && player2Name &&
                         <div className={classes.gameCardEnterResult} onClick={handleScoreDialogOpen}>
                             <div className={classes.gameCardEnterResultBtn}>{t('Enter Result')}</div>
                         </div>
@@ -122,8 +116,8 @@ const EliminationCard = (props: Props) => {
                     open={scoreDialogOpen}
                     onClose={handleScoreDialogClose}
                     onConfirm={handleScoreInput}
-                    player1={player1}
-                    player2={player2}
+                    player1={player1Name}
+                    player2={player2Name}
                     gameKey={props.gameKey}
                 />}
         </div>

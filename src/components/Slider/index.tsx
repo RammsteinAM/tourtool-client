@@ -5,8 +5,8 @@ import Slider from '@material-ui/core/Slider';
 export const HeaderSlider = withStyles({
     root: {
       color: '#8ebd5e',
-      height: 8,
       width: '128px',
+      margin: '0 18px',
     },
     thumb: {
       height: 14,
@@ -24,16 +24,7 @@ export const HeaderSlider = withStyles({
       },
     },
     active: {},
-    // valueLabel: {
-    //   left: 'calc(-50% + 4px)',
-    // },
-    // track: {
-    //   height: 8,
-    //   borderRadius: 4,
-    // },
     rail: {
-    //   height: 8,
-    //   borderRadius: 4,
       backgroundColor: '#000',
     },
   })(Slider);
