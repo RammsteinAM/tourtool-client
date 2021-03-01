@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const styles = makeStyles((theme) => ({
     form: {
-        width: '100%', // Fix IE 11 issue.
+        width: '100%', // Fix IE 11 issue.        
         marginTop: theme.spacing(1),
     },
     formBlock: {
@@ -28,37 +28,12 @@ const styles = makeStyles((theme) => ({
         borderRadius: 0,
         paddingBottom: 20,
     },
-    // playerFormField: {
-    //     '& .MuiInputBase-root': {
-    //         fontWeight: 400,
-    //         fontSize: 13,
-    //     }
-    // },
-    // button: {
-    //     margin: theme.spacing(1, 2, 0),
-    //     //height: '35px',        
-    //     minWidth: '250px',
-    //     borderRadius: '2px',
-    //     '&:hover': {
-    //     },
-    //     '&:active': {
-    //         boxShadow: 'none',
-    //     },
-    // },
-    // textField: {
-    //     marginTop: 6,
-    //     '& .MuiFormLabel-asterisk': {
-    //         display: 'none',
-    //     },
-    //     '& .MuiInputLabel-root': {
-    //         fontSize: '14px',
-    //         fontWeight: '400',
-    //     },
-    //     '& .MuiInput-underline:hover:before': {
-    //         borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
-    //     }
-
-    // },
+    dypConfigPaper: {
+        maxWidth: '790px',
+        margin: '24px auto 0',
+        borderRadius: 0,
+        paddingBottom: 20,
+    },
     formTextField: {
         marginBottom: 12,
         width: 60,
@@ -75,13 +50,7 @@ const styles = makeStyles((theme) => ({
         '& input': {
             textAlign: 'center',
         }
-
     },
-    // formTextFieldContainer: {
-    //     display: "flex",
-    //     alignItems: "baseline",
-    //     minWidth: '130px',
-    // },
     formTextFieldSuffix: {
         minWidth: '55px',
         marginLeft: 8,
@@ -135,54 +104,6 @@ const styles = makeStyles((theme) => ({
             cursor: 'pointer',
         }
     },
-    // formSubheader: {
-    //     color: "#9b9b9b",
-    //     padding: "0 16px",
-    //     overflow: "hidden",
-    //     height: '38px',
-    //     transition: theme.transitions.create('height', {
-    //         duration: '0.2s',
-    //     })
-    // },
-    // formSubheaderTitle: {
-    //     display: "flex",
-    //     justifyContent: "initial",
-    //     alignItems: "center",
-    //     margin: '7px',
-    //     fontSize: "16px",
-    //     '& button': {
-    //         color: '#9b9b9b',
-    //         padding: 0,
-    //     },
-    //     '& .MuiIconButton-root:hover': {
-    //         backgroundColor: 'initial',
-    //     }
-    // },
-    // formSubheaderText: {
-    //     fontSize: "13px",
-    // },
-    // subheaderExpand: {
-    //     transform: 'rotate(0deg)',
-    //     marginLeft: 'auto',
-    //     transition: theme.transitions.create('transform', {
-    //         duration: theme.transitions.duration.shortest,
-    //     }),
-    // },
-    // subheaderExpandOpen: {
-    //     transform: 'rotate(180deg)',
-    // },
-    // playerFormFieldContainer: {
-    //     display: "flex",
-    //     margin: "0 16px 16px",
-    //     alignItems: "baseline",
-    //     color: "#9b9b9b",
-    //     fontSize: 13,
-    // },
-    // playerFormFieldNumber: {
-    //     color: "#9b9b9b",
-    //     marginRight: 6,
-    //     marginTop: 16,
-    // },
     playerFormHeader: {
         color: "#ffffff",
         borderRadius: "2px 2px 0 0",
@@ -208,6 +129,7 @@ const styles = makeStyles((theme) => ({
     eliminationCardsContainer: {
         display: 'flex',
         paddingLeft: '26px',
+        marginTop: theme.spacing(1),
     },
     gameColumn: {
         display: 'flex',
@@ -255,7 +177,7 @@ const styles = makeStyles((theme) => ({
         position: 'relative',
         '&:hover': {
             '& $gameCardEnterResult': {
-                display: "flex"
+                opacity: 1,
             }
         }
     },
@@ -284,9 +206,11 @@ const styles = makeStyles((theme) => ({
         height: "100%",
         top: "0",
         left: "0",
-        display: "none",
+        display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        opacity: 0,
+        transition: 'opacity 200ms',
     },
     gameCardEnterResultBtn: {
         backgroundColor: "#e16f3d",
@@ -316,7 +240,7 @@ const styles = makeStyles((theme) => ({
     },
     loser: {
         color: "#767d84",
-        textDecoration: "line-through" ,
+        textDecoration: "line-through",
     },
     gameBetweenColumnSpaceItem: {
         width: "80px",
@@ -375,12 +299,28 @@ const styles = makeStyles((theme) => ({
         bottom: "0",
         left: "34px",
     },
-    // createTournamentDialog: {
-    //     width: 474,
-    //     '& .MuiDialogTitle-root': {
-    //         paddingBottom: 0,
-    //     }
-    // },
+    dypConfigItemContainer: {
+        display: 'flex',
+        padding: '20px 20px 0',
+        alignItems: 'center',
+    },
+    dypConfigItemIcon: {
+        margin: 10,
+        fontSize: 24,
+        color: '#bdbdbd',
+    },
+    dypConfigSelect: {
+        height: '20px',
+        fontSize: '13px',
+    },
+    dypConfigSelectMenuPaper: {
+        maxHeight: '280px',
+    },
+    dypConfigSelectMenuList: {
+        '& li': {
+            fontSize: '13px',
+        }
+    },
 }));
 
 export default styles;

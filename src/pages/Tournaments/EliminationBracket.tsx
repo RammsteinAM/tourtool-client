@@ -4,7 +4,7 @@ import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
 import { EliminationGames, EliminationPlayers, StateGames, StatePlayers } from '../../types/entities';
 import EliminationSidebar from '../../components/Tournament/EliminationSidebar';
-import { resetGames, updateGames, updatePlayers } from '../../redux/tournamentEntities/actions';
+import { resetGames, updateGames } from '../../redux/tournamentEntities/actions';
 import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
 import tournamentStyles from './tournamentStyles';
 import { useHistory } from 'react-router-dom';
@@ -72,7 +72,6 @@ const EliminationBracket = (props: Props) => {
         for (let col = 1; col <= columns; col++) {
             const prevCol = col - 1;
             for (let i = 0, j = 1; i < players.length / (2 ** prevCol); i = i + 2, j++) {
-                debugger
                 const gameKey: string = col === columns ? 'final' : `${col}-${j}`;
                 storeGames[gameKey] = { player1: '', player2: '', index: gameKey }
                 if (col === 1) {
@@ -227,7 +226,7 @@ const EliminationBracket = (props: Props) => {
     }
 
     return (
-        <div>
+        <>
             <form className={classes.form} onSubmit={handleSubmit} id='elimination-form'>
                 <EliminationSidebar
                     players={players}
@@ -242,7 +241,7 @@ const EliminationBracket = (props: Props) => {
                 onClose={handleDialogClose}
                 onSubmit={handleStartTournament}
             />
-        </div>
+        </>
     )
 }
 

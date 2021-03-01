@@ -11,8 +11,8 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close'
 import { useTranslation } from "react-i18next";
 import { useDispatch } from 'react-redux';
-import { StatePlayers } from '../../types/entities';
-import { updatePlayers } from '../../redux/tournamentEntities/actions';
+import { StateParticipants, StatePlayers } from '../../types/entities';
+import { updateParticipants } from '../../redux/tournamentEntities/actions';
 import toast from '../IndependentSnackbar';
 import importParticipantsDialogStyles from './importParticipantsDialogStyles';
 
@@ -80,12 +80,12 @@ const ImportParticipantsDialog = ({ open, onClose }: Props): ReactElement => {
     }
 
     const submitPlayersToStore = (participants: string[]) => {
-        const storePlayers: StatePlayers = participants
+        const storeParticipants: StateParticipants = participants
             .map((name) => {
                 return { name, category: null }
             })
 
-        dispatch(updatePlayers(storePlayers));
+        dispatch(updateParticipants(storeParticipants));
     }
 
     return (

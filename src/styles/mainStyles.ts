@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const mainStyles = makeStyles((theme) => ({
-    formErrorContainer: {        
+    formErrorContainer: {
         minHeight: '20px',
     },
     formError: {
@@ -55,6 +55,14 @@ const mainStyles = makeStyles((theme) => ({
             display: 'none',
         },
 
+    },
+    select: {
+        '& .MuiSelect-select:focus': {
+            backgroundColor: 'transparent'
+        },
+        '&:hover.MuiInput-underline:before': {
+            borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
+        },
     }
 }));
 

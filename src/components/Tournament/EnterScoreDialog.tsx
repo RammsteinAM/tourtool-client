@@ -16,8 +16,8 @@ interface Props {
     open: boolean;
     onClose: () => void;
     onConfirm: (score1: StateScore, score2: StateScore) => void;
-    player1?: string;
-    player2?: string;
+    player1?: string | [string, string];
+    player2?: string | [string, string];
     gameKey: string;
 }
 

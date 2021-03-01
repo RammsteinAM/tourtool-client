@@ -6,6 +6,7 @@ import Select from '@material-ui/core/Select';
 import languageSelectStyles from './languageSelectStyles';
 import i18n, { updateAxiosLocale } from '../../utils/i18n';
 import { useTranslation } from "react-i18next";
+import mainStyles from '../../styles/mainStyles';
 
 interface Props {
 
@@ -20,7 +21,7 @@ export enum AppLanguageNames {
 }
 
 const LanguageSelect = (props: Props) => {
-    const classes = languageSelectStyles();
+    const mainClasses = mainStyles();
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         //console.log()
         i18n.changeLanguage(event.target.value as string);
@@ -34,11 +35,10 @@ const LanguageSelect = (props: Props) => {
         <div>
             <InputLabel id="demo-simple-select-label">{t('Language')}</InputLabel>
             <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
                 fullWidth
                 value={currentLanguage}
-                onChange={handleChange}
+                onChange={handleChange}                
+                className={mainClasses.select}
             >
                 <MenuItem value={'en'}>{t('English')}</MenuItem>
                 <MenuItem value={'hy'}>{t('Armenian')}</MenuItem>

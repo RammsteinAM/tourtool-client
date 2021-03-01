@@ -2,73 +2,30 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import { EliminationGames, EliminationPlayers, StateGames, StatePlayers } from '../../types/entities';
-import EliminationSidebar from '../../components/Tournament/EliminationSidebar';
-import { updateGames, updatePlayers } from '../../redux/tournamentEntities/actions';
-import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
+import { EliminationGames } from '../../types/entities';
 import tournamentStyles from './tournamentStyles';
 import { splitGameKey } from '../../utils/stringUtils';
 import EliminationCard from './EliminationCard';
-
-const initialPlayers = { 1: [] }
 
 interface Props {
 
 }
 
 const Elimination = (props: Props) => {
-    const [players, setPlayers] = useState<EliminationPlayers>(initialPlayers);
-
     const [games, setGames] = useState<EliminationGames>({});
-    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const entityState = useSelector((state: RootState) => state.entities);
     const settingsState = useSelector((state: RootState) => state.settings);
     const firstRoundGameNumber = Object.keys(games).filter(gameKey => splitGameKey(gameKey).round === 1).length;
     const dispatch = useDispatch();
-    const numberOfPlayers = entityState.players.length;
-    //const firstRoundGameNumber: number = 2 ** Math.ceil((Math.log(numberOfPlayers) / Math.log(2)) - 1);
-    // const byePlayerNumber: number = 2 ** Math.ceil(Math.log(numberOfPlayers) / Math.log(2)) - numberOfPlayers;
     const columns = Math.log(Object.keys(games).length + 1) / Math.log(2);
     const classes = tournamentStyles();
     const { t } = useTranslation();
 
     useEffect(() => {
 
-        setGames({ ...entityState.games })
+        setGames({ ...entityState.eliminationGames })
 
     }, [/* entityState.players */])
-
-    const handleDialogOpen = () => {
-        setDialogOpen(true);
-    };
-
-    const handleDialogClose = () => {
-        setDialogOpen(false);
-    };
-
-    const handleStartTournament = (e: React.FormEvent, name: string) => {
-        e.preventDefault();
-        alert(name);
-        //setDialogOpen(false);
-    };
-
-    const getByeIndexes = (n: number) => {
-        if (Math.log(32) / Math.log(2) % 1 !== 0) return null;
-        return [
-            2, n,
-            n / 2, n / 2 + 2,
-            n / 4, 3 * n / 4, n / 4 + 2, 3 * n / 4 + 2,
-            n / 8, 5 * n / 8, 3 * n / 8, 7 * n / 8, n / 8 + 2, 5 * n / 8 + 2, 3 * n / 8 + 2, 7 * n / 8 + 2,
-            n / 16, 9 * n / 16, 5 * n / 16, 13 * n / 16, 3 * n / 16, 11 * n / 16, 7 * n / 16, 15 * n / 16, n / 16 + 2, 9 * n / 16 + 2, 5 * n / 16 + 2, 13 * n / 16 + 2, 3 * n / 16 + 2, 11 * n / 16 + 2, 7 * n / 16 + 2
-            //n / 32, 17 * n / 32, 9 * n / 32, 25 * n / 32, 5 * n / 32
-        ]
-    }
-
-
-    const handleSubmit = (e: React.FormEvent): void => {
-        e.preventDefault()
-        handleDialogOpen();
-    }
 
     const renderTree = () => {
         const result = [];
@@ -131,8 +88,22 @@ const Elimination = (props: Props) => {
                             />
                         </div>
                     </div>
-                    )
-                    continue;
+                )
+                continue;
+            }
+            if (i === 1 && columnNumber === columns) {
+                result.push(
+                    <div className={classes.gameColumnWithThirdPlace} key={`gameCard_${columnNumber}_${i}`}>
+                        <EliminationCard
+                            key={`gameCard_${columnNumber}_${i}`}
+                            player1={final1}
+                            player2={final2}
+                            active
+                            gameKey={`final`}
+                        />
+                    </div>
+                )
+                continue;
             }
             result.push(
                 <EliminationCard
@@ -169,20 +140,11 @@ const Elimination = (props: Props) => {
     }
 
     return (
-        <div>
-            <form className={classes.form} onSubmit={handleSubmit} id='elimination-form'>
-                <div
-                    className={classes.eliminationCardsContainer}
-                    style={{ transform: `scale(${settingsState.eliminationScale || '1'})`, transformOrigin: 'top left', }}
-                >
-                    {renderTree()}
-                </div>
-            </form>
-            <CreateTournamentDialog
-                open={dialogOpen}
-                onClose={handleDialogClose}
-                onSubmit={handleStartTournament}
-            />
+        <div
+            className={classes.eliminationCardsContainer}
+            style={{ transform: `scale(${settingsState.eliminationScale || '1'})`, transformOrigin: 'top left', }}
+        >
+            {renderTree()}
         </div>
     )
 }

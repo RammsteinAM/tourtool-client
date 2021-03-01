@@ -12,64 +12,82 @@ import { ReactComponent as Teams } from '../../resources/icons/teams.svg';
 import { ReactComponent as Single } from '../../resources/icons/single.svg';
 import { ReactComponent as DrawYourPartner } from '../../resources/icons/drawYourPartner.svg';
 import { ReactComponent as MonsterDYP } from '../../resources/icons/monsterDYP.svg';
-import { PlayerCategory, StatePlayers } from '../../types/entities';
+import { PlayerCategory, StateParticipants } from '../../types/entities';
 import toast from '../../components/IndependentSnackbar';
-import { updatePlayers } from '../../redux/tournamentEntities/actions';
+import { updateParticipants, updatePlayers } from '../../redux/tournamentEntities/actions';
 import PlayerFormTextField from '../../components/Tournament/PlayerFormTextField';
 import FormControl from '@material-ui/core/FormControl';
 import mainStyles from '../../styles/mainStyles';
 import tournamentStyles from './tournamentStyles';
+import DYPConfigForm from './DYPConfigForm';
+import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
 
 interface Duplicate {
     player: string;
     index: number;
 }
 
-enum GoalValues {
-    Quick = 'quick',
-    Number = 'number',
-}
-
-const initialPlayer = { name: '', category: null };
+const initialParticipants = { name: '', category: null };
 
 interface Props {
 
 }
 
 const PlayerForm = (props: Props) => {
-    const [players, setPlayers] = useState<StatePlayers>([{ ...initialPlayer }]);
+    const [participants, setParticipants] = useState<StateParticipants>([{ ...initialParticipants }]);
     const [checkboxSetPlayers, setCheckboxSetPlayers] = useState<boolean>(false);
     const [fieldRefs, setFieldRefs] = useState<React.RefObject<HTMLInputElement>[]>([]);
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const entityState = useSelector((state: RootState) => state.entities);
     const classes = tournamentStyles();
     const dispatch = useDispatch();
     const mainClasses = mainStyles();
     const history = useHistory();
-    const { playerType } = useParams<{ playerType: 'single' | 'teams' | 'dyp' | 'monster-dyp' }>();
+    const { tournamentType, playerType, config } = useParams
+        <{
+            tournamentType: 'elimination' | 'lms' | 'round-robin',
+            playerType: 'single' | 'teams' | 'dyp' | 'monster-dyp',
+            config?: 'config'
+        }>();
     const { t } = useTranslation();
 
     const dyp = playerType === 'dyp';
+    const dypConfig = dyp && config === 'config';
 
     useEffect(() => {
         setFieldRefs(fieldRefs => (
-            Array(players.length).fill(null).map((_, i) => fieldRefs[i] || createRef())
+            Array(participants.length).fill(null).map((_, i) => fieldRefs[i] || createRef())
         ));
-    }, [players.length]);
+    }, [participants.length]);
 
     useEffect(() => {
-        const storePlayers = entityState.players;
-        setPlayers([...storePlayers, { ...initialPlayer }])
-    }, [entityState.players]);
+        const storeParticipants = entityState.participants;
+        setParticipants([...storeParticipants, { ...initialParticipants }])
+    }, [entityState.participants]);
 
     useEffect(() => {
-        const storePlayers = entityState.players;
-        if (storePlayers.length === players.length - 1) {
-            setPlayers([...storePlayers, { ...initialPlayer }])
+        const storeParticipants = entityState.participants;
+        if (storeParticipants.length === participants.length - 1) {
+            setParticipants([...storeParticipants, { ...initialParticipants }])
         }
-    }, [entityState.players]);
+    }, [entityState.participants]);
 
     const handleCheckboxChange = () => {
         setCheckboxSetPlayers(!checkboxSetPlayers);
+    };
+
+    const handleDialogOpen = () => {
+        setDialogOpen(true);
+    };
+
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    };
+
+    const handleStartTournament = (e: React.FormEvent, name: string) => {
+        e.preventDefault();
+        //submitGamesToStore();
+        history.push(`/${tournamentType}`)
     };
 
     const handleSubmit = (e: React.FormEvent): void => {
@@ -80,26 +98,38 @@ const PlayerForm = (props: Props) => {
             toast.warning(t('player-form-duplicate-name', { name: duplicate.player }));
             fieldRefs[duplicate.index]?.current?.focus();
             fieldRefs[duplicate.index]?.current?.select();
+            return;
         }
-        else if (players.length - 1 < minPlayers) {
+        if (participants.length - 1 < minPlayers) {
             toast.warning(t('player-form-few-players', { number: minPlayers }));
+            return;
         }
-        else {
-            submitPlayersToStore([...players]);
+        if (playerType === 'dyp') {
+            if ((participants.length - 1) % 2 === 1) {
+                toast.warning(t('player-form-odd-players-error'));
+                return;
+            }
+            history.push(`/tournament/${tournamentType}/player-form/dyp/config`);
+            return;
+        }
+        submitPlayersToStore([...participants]);
+        if (tournamentType === 'elimination') {
             history.push('/elimination-bracket');
+            return;
         }
+        handleDialogOpen();
     }
 
     const getDuplicate = (index?: number, name?: string): Duplicate => {
         const duplicates: Duplicate[] = [];
-        const newPlayers = [...players];
+        const newPlayers = [...participants];
         if (index && name) {
             newPlayers[index].name = name;
         }
-        const playerNames = players.map(player => player.name);
+        const playerNames = participants.map(player => player.name);
         playerNames.forEach((name, index) => {
             if (name && playerNames.indexOf(name) !== index) {
-                duplicates.push({ player: name, index })
+                duplicates.push({ player: name as string, index })
             }
         })
         return duplicates[0];
@@ -112,24 +142,24 @@ const PlayerForm = (props: Props) => {
         //     newPlayers.push({ ...initialPlayer });
         // }
         // setPlayers([...newPlayers]);
-        if (players[players.length - 1].name || index === players.length - 1) {
-            setPlayers([...players, { ...initialPlayer }]);
+        if (participants[participants.length - 1].name || index === participants.length - 1) {
+            setParticipants([...participants, { ...initialParticipants }]);
             //players.push({ ...initialPlayer });
         }
     };
 
     const handleCategoryChange = (index: number, category: PlayerCategory) => {
-        let newPlayers = [...players];
+        let newPlayers = [...participants];
         newPlayers[index].category = category;
-        setPlayers([...newPlayers]);
+        setParticipants([...newPlayers]);
         submitPlayersToStore([...newPlayers]);
     };
 
     const insertMiddleRow = (index: number) => {
-        const newPlayers = [...players];
-        if (players[index - 1]) {
-            newPlayers.splice(index, 0, { ...initialPlayer })
-            setPlayers([...newPlayers]);
+        const newPlayers = [...participants];
+        if (participants[index - 1]) {
+            newPlayers.splice(index, 0, { ...initialParticipants })
+            setParticipants([...newPlayers]);
         }
     }
 
@@ -137,7 +167,7 @@ const PlayerForm = (props: Props) => {
         if (e.key === "Enter" || e.key === "ArrowDown") {
             e.preventDefault();
             const duplicate = getDuplicate(index, name);
-            if (duplicate && index >= players.length - 2) {
+            if (duplicate && index >= participants.length - 2) {
                 toast.warning(t('player-form-duplicate-name', { name: duplicate.player }));
                 fieldRefs[duplicate.index]?.current?.focus();
                 fieldRefs[duplicate.index]?.current?.select();
@@ -146,7 +176,7 @@ const PlayerForm = (props: Props) => {
                 fieldRefs[index + 1]?.current?.focus();
                 if (e.key === "Enter") {
                     if (e.ctrlKey) insertMiddleRow(index + 1);
-                    else fieldRefs[players.length - 1]?.current?.focus();
+                    else fieldRefs[participants.length - 1]?.current?.focus();
                 }
             }
         }
@@ -160,17 +190,17 @@ const PlayerForm = (props: Props) => {
     }
 
     const handleBlur = (e: React.FocusEvent, index: number, name: string) => {
-        let newPlayers = [...players];
+        let newPlayers = [...participants];
         newPlayers[index].name = name;
         newPlayers = newPlayers.filter((val, i, arr) => {
             return (!!val.name || i === arr.length - 1);
         });
-        setPlayers([...newPlayers]);
+        setParticipants([...newPlayers]);
         submitPlayersToStore([...newPlayers]);
     }
 
-    const submitPlayersToStore = (newPlayers: StatePlayers) => {
-        const storePlayers: StatePlayers = newPlayers
+    const submitPlayersToStore = (newPlayers: StateParticipants) => {
+        const storeParticipants: StateParticipants = newPlayers
             .filter(player => !!player.name)
             .map((player, i) => {
                 return checkboxSetPlayers ?
@@ -178,7 +208,8 @@ const PlayerForm = (props: Props) => {
                     { name: player.name, category: null };
             })
 
-        dispatch(updatePlayers(storePlayers));
+        dispatch(updateParticipants(storeParticipants));
+        dispatch(updatePlayers(storeParticipants));
     }
 
     const renderHeader = () => {
@@ -229,29 +260,33 @@ const PlayerForm = (props: Props) => {
         }
     }
 
+    if (dypConfig) {
+        return <DYPConfigForm tournamentType={tournamentType} />
+    }
+
     return (
         <Paper elevation={3} className={classes.playerFormPaper}>
             <form className={classes.form} onSubmit={handleSubmit} id='player-form'>
                 {renderHeader()}
-                <FormSubheader title={t('Names')} text={dyp ? t('form-subheader-names-dyp-text') : t('form-subheader-names-text')} width={366} />
+                <FormSubheader title={t('Names')} text={dyp ? t('form-subheader-names-dyp-text') : t('form-subheader-names-text')} descriptionWidth={366} />
                 {dyp &&
-                <FormControl>
-                    <FormControlLabel
-                        className={classes.playerFormCheckbox}
-                        control={
-                            <Checkbox
-                                size='small'
-                                checked={checkboxSetPlayers}
-                                onChange={handleCheckboxChange}
-                                name="setPlayers"
-                                color="primary"
-                            />
-                        }
-                        label={t('Set Players')}
-                    /></FormControl>
+                    <FormControl>
+                        <FormControlLabel
+                            className={classes.playerFormCheckbox}
+                            control={
+                                <Checkbox
+                                    size='small'
+                                    checked={checkboxSetPlayers}
+                                    onChange={handleCheckboxChange}
+                                    name="setPlayers"
+                                    color="primary"
+                                />
+                            }
+                            label={t('Set Players')}
+                        /></FormControl>
                 }
                 <div>
-                    {players.map((player, index) => {
+                    {participants.map((player, index) => {
                         return (
                             <PlayerFormTextField
                                 key={index}
@@ -268,6 +303,11 @@ const PlayerForm = (props: Props) => {
                     })}
                 </div>
             </form>
+            <CreateTournamentDialog
+                open={dialogOpen}
+                onClose={handleDialogClose}
+                onSubmit={handleStartTournament}
+            />
         </Paper>
     )
 }

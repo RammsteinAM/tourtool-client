@@ -13,6 +13,7 @@ interface Props {
 const EliminationSidebarItem = (props: Props) => {
     const classes = eliminationSidebarStyles();
     const { t } = useTranslation();
+    const playerName = typeof props.player.name === 'object' ? props.player.name.join('/') : props.player.name
 
     const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
         background: isDragging ? "#ffffff44" : "initial",
@@ -23,7 +24,7 @@ const EliminationSidebarItem = (props: Props) => {
     });
 
     return (
-        <Draggable key={props.player.name + props.index} draggableId={props.player.name + props.index} index={props.index}>
+        <Draggable key={playerName + props.index} draggableId={playerName + props.index} index={props.index}>
             {(provided, snapshot) => (
                 <div
                     className={classes.eliminationSidebarItem}

@@ -19,7 +19,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { shuffleArray } from '../../../utils/arrayUtils';
-import { updatePlayers, updateTournament } from '../../../redux/tournamentEntities/actions';
+import { updateParticipants, updatePlayers, updateTournament } from '../../../redux/tournamentEntities/actions';
 import ImportParticipantsDialog from '../../Tournament/ImportParticipantsDialog';
 import { HeaderSlider } from '../../Slider';
 import { debounce, throttle } from 'lodash';
@@ -31,6 +31,7 @@ interface Props {
     backButton?: boolean;
     importPlayersButton?: boolean;
     shufflePlayersButton?: boolean;
+    shuffleParticipantsButton?: boolean;
     nextButton?: boolean;
     nextButtonForm?: string;
     thirdPlaceCheckbox?: boolean;
@@ -62,9 +63,15 @@ const HeaderGeneric = (props: Props) => {
         history.goBack()
     }
 
+    const handleShuffleParticipantsButton = () => {
+        const storeParticipants = entityState.participants;
+        const shuffledParticipants = shuffleArray(storeParticipants);
+        dispatch(updateParticipants(shuffledParticipants));
+    }
+
     const handleShufflePlayersButton = () => {
-        const storePlayer = entityState.players;
-        const shuffledPlayers = shuffleArray(storePlayer);
+        const storePlayers = entityState.players;
+        const shuffledPlayers = shuffleArray(storePlayers);
         dispatch(updatePlayers(shuffledPlayers));
     }
 
@@ -129,9 +136,16 @@ const HeaderGeneric = (props: Props) => {
                     </IconButton>
                 </Tooltip>
             }
-            {props.shufflePlayersButton &&
+            {props.shuffleParticipantsButton &&
                 <Tooltip title={`${t("Shuffle Participants")}`}>
-                    <IconButton className={classes.iconButton} aria-label="shuffle-participants" onClick={handleShufflePlayersButton}>
+                    <IconButton className={classes.iconButton} aria-label="shuffle-participants" onClick={handleShuffleParticipantsButton}>
+                        <ShuffleIcon />
+                    </IconButton>
+                </Tooltip>
+            }
+            {props.shufflePlayersButton &&
+                <Tooltip title={`${t("Shuffle Players")}`}>
+                    <IconButton className={classes.iconButton} aria-label="shuffle-players" onClick={handleShufflePlayersButton}>
                         <ShuffleIcon />
                     </IconButton>
                 </Tooltip>

@@ -27,7 +27,7 @@ const Home = (props: Props) => {
     const { t } = useTranslation();
 
     const handleCreateTournament = () => {
-        history.push(authState.status === ActionStatus.Success ? '/new' : '/login');
+        history.push(authState.status === ActionStatus.Success ? '/tournament/new' : '/login');
     }
 
     return (

@@ -7,7 +7,7 @@ import useStyles from './styles';
 
 interface Props {
     title: string;
-    width: number;
+    descriptionWidth?: number;
     text?: string;
 }
 
@@ -32,7 +32,7 @@ const FormSubheader = (props: Props) => {
     return (
         <div
             className={classes.formSubheader}
-            style={isOpen ? { height: `${getDescriptionHeight(props.text, props.width)}px` } : {}}
+            style={isOpen && props.descriptionWidth ? { height: `${getDescriptionHeight(props.text, props.descriptionWidth)}px` } : {}}
         >
             <div className={classes.formSubheaderTitle}>
                 <div>{props.title}</div>

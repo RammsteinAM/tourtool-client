@@ -16,19 +16,28 @@ export interface EntityStateData<E> {
 }
 
 export interface StateGame extends BaseEntity {
-    player1: string,
-    player2: string,
+    player1: string | [string, string],
+    player2: string | [string, string],
     score1?: number,
     score2?: number,
     scores1?: number[],
     scores2?: number[],
+}
+
+export interface StateEliminationGame extends StateGame {
     index: string,
     hasByePlayer?: boolean,
 }
 
-export interface StatePlayer extends BaseEntity {
+export interface StateParticipant extends BaseEntity {
     name: string,
-    category: PlayerCategory,
+    category?: PlayerCategory,
+    bye?: boolean,
+}
+
+export interface StatePlayer extends BaseEntity {
+    name: string | [string, string],
+    category?: PlayerCategory,
     bye?: boolean,
 }
 
@@ -43,15 +52,20 @@ export interface StateTournament extends BaseEntity {
     thirdPlace?: boolean,
 }
 
+export type StateParticipants = StateParticipant[];
 export type StatePlayers = StatePlayer[];
-export type StateGames = StateGame[];
+export type StateGames = StateEliminationGame[];
 
 export type EliminationPlayers = { 
     [col: number]: StatePlayers
 }
 
-export type EliminationGames = { 
+export type Games = { 
     [key: string]: StateGame
+}
+
+export type EliminationGames = { 
+    [key: string]: StateEliminationGame
 }
 export interface StateScore {
     [set: number]: number;

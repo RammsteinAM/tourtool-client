@@ -47,7 +47,7 @@ const TournamentForm = (props: Props) => {
         numberOfGoals: 7,
         draw: false,
         winningSets: 1,
-        numberOfLives: 1,
+        numberOfLives: 3,
     });
     const classes = tournamentStyles();
     const history = useHistory();
@@ -70,7 +70,7 @@ const TournamentForm = (props: Props) => {
     const handleSubmit = (e: React.FormEvent): void => {
         e.preventDefault();        
         dispatch(updateTournament(formState))
-        history.push(`/tournament-player-type-select/${tournamentType}`);
+        history.push(`/tournament/player-type-select/${tournamentType}`);
         //alert(e.target)
         // setFormValues(values);
         // dispatch(registerActions.register(values));
@@ -111,7 +111,7 @@ const TournamentForm = (props: Props) => {
             <form className={classes.form} onSubmit={handleSubmit} id='tournament-form'>
                 {tournamentType === 'lms' &&
                     <>
-                        <FormSubheader title={t('Last Man Standing')} text={t('form-subheader-lms-text')} width={454} />
+                        <FormSubheader title={t('Last Man Standing')} text={t('form-subheader-lms-text')} descriptionWidth={454} />
                         <div className={classes.formBlock}>
                             <span className={classes.formLabel}>{t('Number of Lives')}</span>
                             <Select
@@ -131,7 +131,7 @@ const TournamentForm = (props: Props) => {
                         </div>
                     </>
                 }
-                <FormSubheader title={t('Tables')} text={t('form-subheader-tables-text')} width={454} />
+                <FormSubheader title={t('Tables')} text={t('form-subheader-tables-text')} descriptionWidth={454} />
                 <div className={classes.formBlock}>
                     <span className={classes.formLabel}>{t('Number of Tables')}</span>
                     <FormControlLabel
@@ -152,7 +152,7 @@ const TournamentForm = (props: Props) => {
                         }
                     />
                 </div>
-                <FormSubheader title={t('Goals')} text={t('form-subheader-goals-text')} width={454} />
+                <FormSubheader title={t('Goals')} text={t('form-subheader-goals-text')} descriptionWidth={454} />
                 <div className={classes.formBlock}>
                     <RadioGroup aria-label="goals" name="goals" value={formState.goals} onChange={handleFormStateChange}>
                         <FormControlLabel value={false} control={<Radio color='primary' />} label={t('Quick Entry')} />
@@ -192,7 +192,7 @@ const TournamentForm = (props: Props) => {
                         label={t('Draw')}
                     />
                 </div>
-                <FormSubheader title={t('Winning Sets')} width={454} />
+                <FormSubheader title={t('Winning Sets')} descriptionWidth={454} />
                 <div className={classes.formBlock}>
                     <span className={classes.formLabel}>{t('Winning Sets')}</span>
                     <Select

@@ -5,6 +5,8 @@ import {
   UserActionParams,
   UPDATE_TOURNAMENT,
   UPDATE_PLAYERS,
+  UPDATE_PARTICIPANTS,
+  UPDATE_ELIMINATION_GAMES,
   UPDATE_GAMES,
   RESET_GAMES,
   UPDATE_PLAYERS_REQUEST,
@@ -25,12 +27,10 @@ const initialState: EntitiesReducerState | null = {
     winningSets: 1,
     numberOfLives: 3,
   },
-  players: [] /* {
-    byId: {},
-    allIds: [],
-  } */,
-  //games: []
+  participants: [],
+  players: [],
   games: {},
+  eliminationGames: {},
 };
 
 const reducer = (state: EntitiesReducerState = initialState, action: UserActionParams): EntitiesReducerState => {
@@ -42,6 +42,12 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
           ...state.tournament,
           ...action.payload
         }
+      };
+    }
+    case UPDATE_PARTICIPANTS: {
+      return {
+        ...state,
+        participants: [...action.payload]
       };
     }
     case UPDATE_PLAYERS: {
@@ -56,10 +62,16 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
         games: { ...state.games, ...action.payload }
       };
     }
+    case UPDATE_ELIMINATION_GAMES: {
+      return {
+        ...state,
+        eliminationGames: { ...state.eliminationGames, ...action.payload }
+      };
+    }
     case RESET_GAMES: {
       return {
         ...state,
-        games: { ...initialState.games }
+        eliminationGames: { ...initialState.eliminationGames }
       };
     }
     case UPDATE_PLAYERS_REQUEST: {

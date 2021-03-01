@@ -2,26 +2,26 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import { EliminationPlayers, StateGame, StatePlayer, StateScore } from '../../types/entities';
+import { EliminationPlayers, StateEliminationGame, StatePlayer, StateScore } from '../../types/entities';
 import tournamentStyles from './tournamentStyles';
 import EliminationSidebar from '../../components/Tournament/EliminationSidebar';
-import { updateGames, updatePlayers } from '../../redux/tournamentEntities/actions';
+import { updateGames } from '../../redux/tournamentEntities/actions';
 import { Nullable } from '../../types/main';
 import EnterScoreDialog from '../../components/Tournament/EnterScoreDialog';
 import { splitGameKey } from '../../utils/stringUtils';
 import { getMultipleSetScores } from '../../utils/scoreUtils';
 
 interface Props {
-    player1?: string;
-    player2?: string;
+    player1?: string | [string, string];
+    player2?: string | [string, string];
     active?: boolean;
     gameKey?: string;
 }
 
 const EliminationCard = (props: Props) => {
-    const gamesState = useSelector((state: RootState) => state.entities.games);
+    const gamesState = useSelector((state: RootState) => state.entities.eliminationGames);
     const tournamentState = useSelector((state: RootState) => state.entities.tournament);
-    const [game, setGame] = useState<StateGame>();
+    const [game, setGame] = useState<StateEliminationGame>();
     const [scoreDialogOpen, setScoreDialogOpen] = useState<boolean>(false);
     const { player1: player1Name, player2: player2Name } = props.gameKey && game ? game : props;
     const dispatch = useDispatch();

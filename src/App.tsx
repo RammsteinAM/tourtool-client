@@ -29,7 +29,7 @@ function App() {
           {/* <PrivateRoute exact path="/">
             <Tournaments />
           </PrivateRoute> */}
-          <PrivateRoute exact path="/new/">
+          <PrivateRoute exact path="/tournament/new">
             <TournamentTypeSelect />
           </PrivateRoute>
           <PrivateRoute exact path="/tournament-form/:tournamentType">
@@ -41,10 +41,10 @@ function App() {
           <PrivateRoute exact path="/elimination">
             <Elimination />
           </PrivateRoute>
-          <PrivateRoute exact path="/tournament-player-type-select/:tournamentType">
+          <PrivateRoute exact path="/tournament/player-type-select/:tournamentType">
             <PlayerTypeSelect />
           </PrivateRoute>
-          <PrivateRoute exact path="/tournament-player-form/:playerType">
+          <PrivateRoute exact path="/tournament/:tournamentType/player-form/:playerType/:config?">
             <PlayerForm />
           </PrivateRoute>
           <PrivateRoute exact path="/tournaments/">

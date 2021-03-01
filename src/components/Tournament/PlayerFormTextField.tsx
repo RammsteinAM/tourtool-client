@@ -17,12 +17,12 @@ interface Props {
 }
 
 const PlayerFormTextField = (props: Props) => {
-    const [playerName, setPlayerName] = useState<string>(props.player.name);
+    const [playerName, setPlayerName] = useState<string>(props.player.name as string);
     const classes = playerFormTextFieldStyles();
     const { t } = useTranslation();
 
     useEffect(() => {
-        setPlayerName(props.player.name);
+        setPlayerName(props.player.name as string);
     }, [props.player.name])
 
     const handleChange = (name: string) => {

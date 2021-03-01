@@ -5,6 +5,7 @@ import { userServices } from "../../services/user";
 import { ForgotPasswordReqData } from "../auth/types";
 import {
     UPDATE_TOURNAMENT,
+    UPDATE_PARTICIPANTS,
     UPDATE_PLAYERS,
     UPDATE_GAMES,
     RESET_GAMES,
@@ -12,6 +13,7 @@ import {
     UPDATE_PLAYERS_SUCCESS,
     UPDATE_PLAYERS_FAILURE,
     UpdateTournamentActionParams,
+    UpdateParticipantsActionParams,
     UpdatePlayersActionParams,
     ResetGamesActionParams,
     UpdateGamesActionParams,
@@ -27,6 +29,8 @@ import { ResponseData } from "../../types/main";
 export const updateTournament = payloadedActionCreator<UpdateTournamentActionParams>(UPDATE_TOURNAMENT);
 
 export const updatePlayers = payloadedActionCreator<UpdatePlayersActionParams>(UPDATE_PLAYERS);
+
+export const updateParticipants = payloadedActionCreator<UpdateParticipantsActionParams>(UPDATE_PARTICIPANTS);
 
 export const updateGames = payloadedActionCreator<UpdateGamesActionParams>(UPDATE_GAMES);
 
