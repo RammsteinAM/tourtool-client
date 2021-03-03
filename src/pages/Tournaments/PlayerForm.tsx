@@ -14,7 +14,7 @@ import { ReactComponent as DrawYourPartner } from '../../resources/icons/drawYou
 import { ReactComponent as MonsterDYP } from '../../resources/icons/monsterDYP.svg';
 import { PlayerCategory, StateParticipants } from '../../types/entities';
 import toast from '../../components/IndependentSnackbar';
-import { updateParticipants, updatePlayers } from '../../redux/tournamentEntities/actions';
+import { updateParticipants, updateEliminationPlayers, updateTournament, updateLMSPlayers } from '../../redux/tournamentEntities/actions';
 import PlayerFormTextField from '../../components/Tournament/PlayerFormTextField';
 import FormControl from '@material-ui/core/FormControl';
 import mainStyles from '../../styles/mainStyles';
@@ -87,7 +87,8 @@ const PlayerForm = (props: Props) => {
     const handleStartTournament = (e: React.FormEvent, name: string) => {
         e.preventDefault();
         //submitGamesToStore();
-        history.push(`/${tournamentType}`)
+        dispatch(updateTournament({ name }));
+        history.push(`/${tournamentType}/${playerType}`)
     };
 
     const handleSubmit = (e: React.FormEvent): void => {
@@ -104,19 +105,21 @@ const PlayerForm = (props: Props) => {
             toast.warning(t('player-form-few-players', { number: minPlayers }));
             return;
         }
+        submitParticipantsToStore([...participants]);
         if (playerType === 'dyp') {
             if ((participants.length - 1) % 2 === 1) {
                 toast.warning(t('player-form-odd-players-error'));
                 return;
             }
-            history.push(`/tournament/${tournamentType}/player-form/dyp/config`);
+            history.push(`/tournament/player-form/${tournamentType}/dyp/config`);
             return;
         }
-        submitPlayersToStore([...participants]);
         if (tournamentType === 'elimination') {
-            history.push('/elimination-bracket');
+            dispatch(updateEliminationPlayers(participants.filter(x => !!x.name)));
+            history.push('/tournament/elimination-bracket');
             return;
         }
+        dispatch(updateLMSPlayers(participants.filter(x => !!x.name)));
         handleDialogOpen();
     }
 
@@ -152,7 +155,7 @@ const PlayerForm = (props: Props) => {
         let newPlayers = [...participants];
         newPlayers[index].category = category;
         setParticipants([...newPlayers]);
-        submitPlayersToStore([...newPlayers]);
+        submitParticipantsToStore([...newPlayers]);
     };
 
     const insertMiddleRow = (index: number) => {
@@ -196,10 +199,10 @@ const PlayerForm = (props: Props) => {
             return (!!val.name || i === arr.length - 1);
         });
         setParticipants([...newPlayers]);
-        submitPlayersToStore([...newPlayers]);
+        submitParticipantsToStore([...newPlayers]);
     }
 
-    const submitPlayersToStore = (newPlayers: StateParticipants) => {
+    const submitParticipantsToStore = (newPlayers: StateParticipants) => {
         const storeParticipants: StateParticipants = newPlayers
             .filter(player => !!player.name)
             .map((player, i) => {
@@ -209,7 +212,7 @@ const PlayerForm = (props: Props) => {
             })
 
         dispatch(updateParticipants(storeParticipants));
-        dispatch(updatePlayers(storeParticipants));
+        // dispatch(updateEliminationPlayers(storeParticipants));
     }
 
     const renderHeader = () => {

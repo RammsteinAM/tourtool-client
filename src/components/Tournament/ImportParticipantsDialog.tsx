@@ -11,7 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close'
 import { useTranslation } from "react-i18next";
 import { useDispatch } from 'react-redux';
-import { StateParticipants, StatePlayers } from '../../types/entities';
+import { StateParticipants, StateEliminationPlayers } from '../../types/entities';
 import { updateParticipants } from '../../redux/tournamentEntities/actions';
 import toast from '../IndependentSnackbar';
 import importParticipantsDialogStyles from './importParticipantsDialogStyles';

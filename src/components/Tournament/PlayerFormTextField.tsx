@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import clsx from 'clsx';
 import TextField from '@material-ui/core/TextField';
 import { useTranslation } from "react-i18next";
-import { PlayerCategory, StatePlayer, StatePlayers } from '../../types/entities';
+import { PlayerCategory, StateEliminationPlayer, StateEliminationPlayers } from '../../types/entities';
 import playerFormTextFieldStyles from './playerFormTextFieldStyles';
 
 interface Props {
     index: number;
-    player: StatePlayer;
+    player: StateEliminationPlayer;
     inputRef: React.RefObject<HTMLInputElement>[];
     showCategories: boolean;
     onKeyDown: (e: React.KeyboardEvent, index: number, name: string) => void;

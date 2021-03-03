@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
 import { useTranslation } from "react-i18next";
 import { Nullable } from '../../types/main';
-import EnterScoreDialogScoreSelectorLTR from './EnterScoreDialogScoreSelectorLTR';
-import EnterScoreDialogScoreSelectorRTL from './EnterScoreDialogScoreSelectorRTL';
-import enterScoreDialogStyles from './enterScoreDialogStyles';
+import EnterScoreSelector from './EnterScoreSelector';
+import enterScoreDialogStyles from './enterScoresStyles';
 
 interface Props {
     score1: Nullable<number>;
     score2: Nullable<number>;
     onScoreSelect1: (score: number) => void;
     onScoreSelect2: (score: number) => void;
+    visibleScores?: number;
     disallowTie?: boolean;
 }
 
-const EnterScoreDialogScoresConainer = ({ score1, score2, onScoreSelect1, onScoreSelect2, disallowTie }: Props) => {
+const EnterScoreScoresConainer = ({ score1, score2, onScoreSelect1, onScoreSelect2, disallowTie, visibleScores }: Props) => {
     const classes = enterScoreDialogStyles();
     const { t } = useTranslation();
 
@@ -21,27 +21,34 @@ const EnterScoreDialogScoresConainer = ({ score1, score2, onScoreSelect1, onScor
         if (disallowTie && score2 === score) return;
         onScoreSelect1(score);
     }
-    
+
     const handleScoreSelect2 = (score: number) => {
         if (disallowTie && score1 === score) return;
         onScoreSelect2(score);
     }
- 
+    
     return (
         <div className={classes.pointsContainer}>
-            <EnterScoreDialogScoreSelectorLTR
+            <EnterScoreSelector
                 selectedNumber={score1}
                 onScoreSelect={handleScoreSelect1}
                 disabledScore={disallowTie && typeof score2 === 'number' ? score2 : undefined}
+                visibleScores={visibleScores}
             />
-            <div className={classes.pointsMiddle}>{score1 !== null ? score1 : '-'} : {score2 !== null ? score2 : '-'}</div>
-            <EnterScoreDialogScoreSelectorRTL
+            <div className={classes.pointsMiddle}>
+                <span>{typeof score1 === 'number' ? score1 : '-'} </span>
+                <span> : </span>
+                <span>{typeof score2 === 'number' ? score2 : '-'}</span>
+                </div>
+            <EnterScoreSelector
                 selectedNumber={score2}
                 onScoreSelect={handleScoreSelect2}
                 disabledScore={disallowTie && typeof score1 === 'number' ? score1 : undefined}
+                visibleScores={visibleScores}
+                mirrored
             />
         </div>
     )
 }
 
-export default EnterScoreDialogScoresConainer
+export default EnterScoreScoresConainer

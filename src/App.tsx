@@ -18,6 +18,7 @@ import PlayerForm from './pages/Tournaments/PlayerForm';
 import EliminationBracket from './pages/Tournaments/EliminationBracket';
 import DeleteAccountResult from './pages/DeleteAccount/DeleteAccountResult';
 import Elimination from './pages/Tournaments/Elimination';
+import LastManStanding from './pages/Tournaments/LastManStanding';
 
 function App() {
 
@@ -35,16 +36,22 @@ function App() {
           <PrivateRoute exact path="/tournament-form/:tournamentType">
             <TournamentForm />
           </PrivateRoute>
-          <PrivateRoute exact path="/elimination-bracket">
+          <PrivateRoute exact path="/tournament/elimination-bracket">
             <EliminationBracket />
           </PrivateRoute>
           <PrivateRoute exact path="/elimination">
             <Elimination />
           </PrivateRoute>
+          {/* <PrivateRoute exact path="/:tournamentType/:playerType">
+            <Elimination />
+          </PrivateRoute> */}
+          <PrivateRoute exact path="/lms/:playerType">
+            <LastManStanding />
+          </PrivateRoute>
           <PrivateRoute exact path="/tournament/player-type-select/:tournamentType">
             <PlayerTypeSelect />
           </PrivateRoute>
-          <PrivateRoute exact path="/tournament/:tournamentType/player-form/:playerType/:config?">
+          <PrivateRoute exact path="/tournament/player-form/:tournamentType/:playerType/:config?">
             <PlayerForm />
           </PrivateRoute>
           <PrivateRoute exact path="/tournaments/">

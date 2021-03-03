@@ -9,6 +9,10 @@ const styles = makeStyles((theme) => ({
             paddingBottom: 0,
         }
     },
+    content: {
+        color: '#ffffff',
+        backgroundColor: '#333333',
+    },
     dialogHeader: {
         paddingTop: '35px',
         paddingBottom: '20px',
@@ -46,20 +50,30 @@ const styles = makeStyles((theme) => ({
         padding: "0px 24px",
         margin: "auto",
         alignItems: 'center',
+        justifyContent: 'center',
     },
     pointsInput: {
         position: 'relative',
-        width: 'calc(100% - 16px)',
         overflow: 'hidden',
         margin: '0 16px',
         height: '40px',
     },
     pointsMiddle: {
-        display: "inline-block",
         fontSize: "20px",
         lineHeight: "28px",
         textAlign: "center",
         alignSelf: 'center',
+        display: 'grid',
+        gridTemplateColumns:' calc(50% - 9px) 18px calc(50% - 9px)',
+        '& span:first-child': {
+            textAlign: 'right',
+        },
+        '& span': {
+            textAlign: 'middle',
+        },
+        '& span:last-child': {
+            textAlign: 'left',
+        }
     },
     scoreItem: {
         position: 'absolute',

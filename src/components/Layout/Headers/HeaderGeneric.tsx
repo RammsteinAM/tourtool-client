@@ -19,7 +19,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { shuffleArray } from '../../../utils/arrayUtils';
-import { updateParticipants, updatePlayers, updateTournament } from '../../../redux/tournamentEntities/actions';
+import { updateParticipants, updateEliminationPlayers, updateTournament } from '../../../redux/tournamentEntities/actions';
 import ImportParticipantsDialog from '../../Tournament/ImportParticipantsDialog';
 import { HeaderSlider } from '../../Slider';
 import { debounce, throttle } from 'lodash';
@@ -30,7 +30,7 @@ interface Props {
     title: string;
     backButton?: boolean;
     importPlayersButton?: boolean;
-    shufflePlayersButton?: boolean;
+    shuffleEliminationPlayersButton?: boolean;
     shuffleParticipantsButton?: boolean;
     nextButton?: boolean;
     nextButtonForm?: string;
@@ -69,10 +69,10 @@ const HeaderGeneric = (props: Props) => {
         dispatch(updateParticipants(shuffledParticipants));
     }
 
-    const handleShufflePlayersButton = () => {
-        const storePlayers = entityState.players;
+    const handleShuffleEliminationPlayersButton = () => {
+        const storePlayers = entityState.eliminationPlayers;
         const shuffledPlayers = shuffleArray(storePlayers);
-        dispatch(updatePlayers(shuffledPlayers));
+        dispatch(updateEliminationPlayers(shuffledPlayers));
     }
 
     const handleImportparticipantsOpen = () => {
@@ -143,9 +143,9 @@ const HeaderGeneric = (props: Props) => {
                     </IconButton>
                 </Tooltip>
             }
-            {props.shufflePlayersButton &&
+            {props.shuffleEliminationPlayersButton &&
                 <Tooltip title={`${t("Shuffle Players")}`}>
-                    <IconButton className={classes.iconButton} aria-label="shuffle-players" onClick={handleShufflePlayersButton}>
+                    <IconButton className={classes.iconButton} aria-label="shuffle-players" onClick={handleShuffleEliminationPlayersButton}>
                         <ShuffleIcon />
                     </IconButton>
                 </Tooltip>

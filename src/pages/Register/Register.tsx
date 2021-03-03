@@ -16,7 +16,7 @@ import mainStyles from '../../styles/mainStyles';
 import { RegisterFormValues } from '../../types/user';
 import { userServices } from '../../services/user';
 import { ErrorNames } from '../../types/error';
-import { debounce } from 'lodash'
+import { debounce } from 'lodash';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';

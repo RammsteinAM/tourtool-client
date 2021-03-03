@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import { EliminationGames, EliminationPlayers, StateGames, StatePlayers } from '../../types/entities';
+import { EliminationGames, EliminationPlayers, StateGames, StateEliminationPlayers } from '../../types/entities';
 import EliminationSidebar from '../../components/Tournament/EliminationSidebar';
-import { resetGames, updateGames } from '../../redux/tournamentEntities/actions';
+import { resetEliminationGames, resetGames, updateEliminationGames } from '../../redux/tournamentEntities/actions';
 import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
 import tournamentStyles from './tournamentStyles';
 import { useHistory } from 'react-router-dom';
@@ -17,11 +17,11 @@ interface Props {
 }
 
 const EliminationBracket = (props: Props) => {
-    const [players, setPlayers] = useState<StatePlayers>([]);
+    const [players, setPlayers] = useState<StateEliminationPlayers>([]);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const entityState = useSelector((state: RootState) => state.entities);
     const dispatch = useDispatch();
-    const numberOfPlayers = entityState.players.length;
+    const numberOfPlayers = entityState.eliminationPlayers.length;
     const firstRoundGameNumber: number = 2 ** Math.ceil((Math.log(numberOfPlayers) / Math.log(2)) - 1);
     const byePlayerNumber: number = 2 ** Math.ceil(Math.log(numberOfPlayers) / Math.log(2)) - numberOfPlayers;
     const columns = Math.ceil((Math.log(numberOfPlayers) / Math.log(2)));
@@ -30,8 +30,8 @@ const EliminationBracket = (props: Props) => {
     const { t } = useTranslation();
 
     useEffect(() => {
-        const newPlayers: StatePlayers = [];
-        const tempPlayers: StatePlayers = [...entityState.players];
+        const newPlayers: StateEliminationPlayers = [];
+        const tempPlayers: StateEliminationPlayers = [...entityState.eliminationPlayers];
         insertByePlayers(newPlayers);
         for (let i = 0; i < numberOfPlayers + byePlayerNumber; i++) {
             if (newPlayers[i]?.bye) continue;
@@ -39,7 +39,7 @@ const EliminationBracket = (props: Props) => {
             tempPlayers.shift();
         }
         setPlayers([...newPlayers])
-    }, [entityState.players])
+    }, [entityState.eliminationPlayers])
 
     const handleDialogOpen = () => {
         setDialogOpen(true);
@@ -108,11 +108,11 @@ const EliminationBracket = (props: Props) => {
         // players.forEach(player => {
         //     storeGame
         // })
-        dispatch(resetGames());
-        dispatch(updateGames(storeGames));
+        dispatch(resetEliminationGames());
+        dispatch(updateEliminationGames(storeGames));
     }
 
-    const insertByePlayers = (players: StatePlayers) => {
+    const insertByePlayers = (players: StateEliminationPlayers) => {
         let byePlayers = byePlayerNumber;
         const byeI = getByeIndexes(numberOfPlayers + byePlayerNumber);
 
@@ -129,7 +129,7 @@ const EliminationBracket = (props: Props) => {
         }
     }
 
-    const handleSidebarChange = (players: StatePlayers) => {
+    const handleSidebarChange = (players: StateEliminationPlayers) => {
         setPlayers([...players])
     }
 

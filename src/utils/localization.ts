@@ -108,6 +108,8 @@ const localization = {
             'Final_plural': 'Finals',
             'Set': '{{count}} Set',
             'Set_plural': '{{count}} Sets',
+            'Point': '{{count}} Point',
+            'Point_plural': '{{count}} Points',
             'form-subheader-tables-text': 'Tables can be added or deactivated during the tournament.',
             'form-subheader-goals-text': 'If \'Quick Entry\' is selected, you can only choose the winning team or draw. This option can be changed before starting the elimination system. \'Goals for Win\' can be changed during the tournament.',
             'form-subheader-names-text': 'The order entered here, reflects the initial ranking in the table.',
@@ -150,6 +152,11 @@ const localization = {
             'Assigned': 'Assigned',
             'Create Teams': 'Create Teams',
             'You need 2 players per team.': 'You need 2 players per team.',
+            'Points': 'Points',
+            'Points for Win': 'Points for Win',
+            'Points for Draw': 'Points for Draw',
+            'form-subheader-points-text': 'The "points for scarce matches" setting allows points to be awarded, to the loser of a game, that has a scarce goal difference. For multiple sets or disciplines, all goals of that match are added.',
+            'select-both-scores-message': 'The score for both opponents must be selected.',
         }
     },
     hy: {
@@ -261,6 +268,8 @@ const localization = {
             'Final_plural': 'Եզրափակիչ',
             'Set': '{{count}} սեթ',
             'Set_plural': '{{count}} սեթ',
+            'Point': '{{count}} միավոր',
+            'Point_plural': '{{count}} միավոր',
             'form-subheader-tables-text': 'Սեղանները կարող են ակտիվացվել կամ ապաակտիվացվել մրցաշարի ընթացքում։',
             'form-subheader-goals-text': 'Եթե ընտրված է «Արագ մուտք», հնարավոր է ընտրել միայն հաղթող թիմին կամ Ոչ ոքի։ Այս ընտրանքը կարող է փոխվել մինչ հեռացման մեկնարկը։ «Գոլեր հաղթանակի համար» ընտրանքը հնարավոր է փոխել մրցաշարի ընթացքում։',
             'form-subheader-names-text': 'Այստեղ մուտքագրված հերթականությունը կանդրադառնա աղյուսակում սկզբնական դասավորության վրա։',
@@ -303,6 +312,11 @@ const localization = {
             'Assigned': 'Նշանակված',
             'Create Teams': 'Ստեղծեք թիմերը',
             'You need 2 players per team.': 'Թիմերը պետք է ունենան 2 խաղացող։',
+            'Points': 'Միավորներ',
+            'Points for Win': 'Միավորներ հաղթանակի համար',
+            'Points for Draw': 'Միավորներ ոչ ոքիի համար',
+            'form-subheader-points-text': 'The "points for scarce matches" setting allows points to be awarded, to the loser of a game, that has a scarce goal difference. For multiple sets or disciplines, all goals of that match are added.',
+            'select-both-scores-message': 'Երկու հակառակորդի հաշիվն էլ պետք է նշված լինի։',
         }
     },
     ru: {
@@ -421,6 +435,10 @@ const localization = {
             'Set_plural': '{{count}} сетов',
             'Set_1': '{{count}} сета',
             'Set_2': '{{count}} сетов',
+            'Point': '{{count}} очко',
+            'Point_plural': '{{count}} очков',
+            'Point_1': '{{count}} очка',
+            'Point_2': '{{count}} очков',
             'form-subheader-tables-text': 'Столы можно добавлять или удалять во время турнира.',
             'form-subheader-goals-text': 'Если выбран «Быстрый вход», вы можете выбрать только победившую команду или ничью. Этот параметр можно изменить перед запуском системы исключения. «Голы на победу» можно менять во время турнира.',
             'form-subheader-names-text': 'Очередность заданная здесь отразиться на первоначальном расположении в таблице.',
@@ -463,6 +481,11 @@ const localization = {
             'Assigned': 'Назначенные',
             'Create Teams': 'Создать команды',
             'You need 2 players per team.': 'Вам нужно 2 игрока на команду.',
+            'Points': 'Очки',
+            'Points for Win': 'Очки за победу',
+            'Points for Draw': 'Очки за ничью',
+            'form-subheader-points-text': 'The "points for scarce matches" setting allows points to be awarded, to the loser of a game, that has a scarce goal difference. For multiple sets or disciplines, all goals of that match are added.',
+            'select-both-scores-message': 'Необходимо выбрать счет для обоих соперников.',
         }
     }
 }

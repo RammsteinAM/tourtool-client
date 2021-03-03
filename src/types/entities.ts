@@ -29,16 +29,24 @@ export interface StateEliminationGame extends StateGame {
     hasByePlayer?: boolean,
 }
 
+export interface StateLMSGame extends StateGame {
+    round: string,
+}
+
 export interface StateParticipant extends BaseEntity {
     name: string,
+    category?: PlayerCategory,
+}
+
+export interface StateEliminationPlayer extends BaseEntity {
+    name: string | [string, string],
     category?: PlayerCategory,
     bye?: boolean,
 }
 
-export interface StatePlayer extends BaseEntity {
+export interface StateLMSPlayer extends BaseEntity {
     name: string | [string, string],
     category?: PlayerCategory,
-    bye?: boolean,
 }
 
 export interface StateTournament extends BaseEntity {
@@ -50,14 +58,17 @@ export interface StateTournament extends BaseEntity {
     winningSets?: number;
     numberOfLives?: number;
     thirdPlace?: boolean,
+    pointsForWin?: number,
+    pointsForDraw?: number;
 }
 
 export type StateParticipants = StateParticipant[];
-export type StatePlayers = StatePlayer[];
+export type StateEliminationPlayers = StateEliminationPlayer[];
+export type StateLMSPlayers = StateLMSPlayer[];
 export type StateGames = StateEliminationGame[];
 
 export type EliminationPlayers = { 
-    [col: number]: StatePlayers
+    [col: number]: StateEliminationPlayers
 }
 
 export type Games = { 

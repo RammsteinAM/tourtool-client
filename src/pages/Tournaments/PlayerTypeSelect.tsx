@@ -30,7 +30,7 @@ const PlayerTypeSelect = (props: Props) => {
 
     const { tournamentType } = useParams<{ tournamentType: string }>();
     const handleCardClick = (type: string) => {
-        history.push(`/tournament/${tournamentType}/player-form/${type}`)
+        history.push(`/tournament/player-form/${tournamentType}/${type}`)
     }
 
     const classes = tournamentStyles();

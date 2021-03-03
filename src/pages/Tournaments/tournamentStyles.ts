@@ -11,9 +11,12 @@ const styles = makeStyles((theme) => ({
         alignItems: "flex-end",
         marginBottom: 12,
         padding: '6px 24px',
+        '&.disabled': {
+            color: 'rgba(0, 0, 0, 0.38)'
+        }
     },
     formLabel: {
-        marginBottom: 12,
+        marginBottom: 8,
         fontSize: 16,
     },
     paper: {
@@ -57,6 +60,7 @@ const styles = makeStyles((theme) => ({
     },
     formSelect: {
         minWidth: 139,
+        marginBottom: 8,
     },
     menuPaper: {
         maxHeight: '200px'

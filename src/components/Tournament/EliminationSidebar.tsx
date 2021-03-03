@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from "react-i18next";
-import { StatePlayers } from '../../types/entities';
+import { StateEliminationPlayers } from '../../types/entities';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import EliminationSidebarItem from './EliminationSidebarItem';
 import eliminationSidebarStyles from './eliminationSidebarStyles';
 
-const reorder = (list: StatePlayers, startIndex: number, endIndex: number) => {
+const reorder = (list: StateEliminationPlayers, startIndex: number, endIndex: number) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
@@ -14,12 +14,12 @@ const reorder = (list: StatePlayers, startIndex: number, endIndex: number) => {
 };
 
 interface Props {
-    players: StatePlayers,
-    onChange: (players: StatePlayers) => void
+    players: StateEliminationPlayers,
+    onChange: (players: StateEliminationPlayers) => void
 }
 
 const EliminationSidebar = (props: Props) => {
-    const [players, setPlayers] = useState<StatePlayers>();
+    const [players, setPlayers] = useState<StateEliminationPlayers>();
     const classes = eliminationSidebarStyles();
     const { t } = useTranslation();
 

@@ -1,14 +1,14 @@
 import React from 'react'
-import enterScoreDialogStyles from './enterScoreDialogStyles';
+import enterScoreDialogStyles from './enterScoresStyles';
 
 interface Props {
     scoreNumber: number;
     onSelect: (score: number) => void;
-    style: { left?: string, right?: string, transitionDelay: string };
+    style: React.CSSProperties;
     disabled?: boolean;
 }
 
-const EnterScoreDialogScoreItem = ({ scoreNumber, onSelect, style, disabled }: Props) => {
+const EnterScoreItem = ({ scoreNumber, onSelect, style, disabled }: Props) => {
     const classes = enterScoreDialogStyles();
     const handleScoreSelect = () => {
         onSelect(scoreNumber);
@@ -25,4 +25,4 @@ const EnterScoreDialogScoreItem = ({ scoreNumber, onSelect, style, disabled }: P
     )
 }
 
-export default EnterScoreDialogScoreItem
+export default EnterScoreItem

@@ -23,6 +23,7 @@ const Header = (props: Props) => {
     const classes = headerStyles();
     const history = useHistory();
     const fullScreen = useSelector((state: RootState) => state.settings.fullScreen);
+    const tournament = useSelector((state: RootState) => state.entities.tournament);
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
@@ -53,12 +54,11 @@ const Header = (props: Props) => {
                             nextButton
                             nextButtonForm='tournament-form'
                         />
-                        {/* <HeaderTournamentForm /> */}
                     </Route>
                     <Route exact path="/tournament/player-type-select/:tournamentType">
                         <HeaderGeneric title={t('Add Participants')} backButton />
                     </Route>
-                    <Route exact path="/tournament/:tournamentType/player-form/:playerType">
+                    <Route exact path="/tournament/player-form/:tournamentType/:playerType">
                         <HeaderGeneric
                             title={t('Add Participants')}
                             backButton
@@ -68,7 +68,7 @@ const Header = (props: Props) => {
                             nextButtonForm='player-form'
                         />
                     </Route>
-                    <Route exact path="/tournament/:tournamentType/player-form/:playerType/:config">
+                    <Route exact path="/tournament/player-form/:tournamentType/:playerType/:config">
                         <HeaderGeneric
                             title={t('Create Teams')}
                             backButton
@@ -77,11 +77,12 @@ const Header = (props: Props) => {
                         />
                         {/* <HeaderTournamentForm /> */}
                     </Route>
-                    <Route exact path="/elimination-bracket">
+                    <Route exact path="/tournament/elimination-bracket">
                         <HeaderGeneric
                             title={t('Create Elimination Bracket')}
                             backButton
-                            shufflePlayersButton
+                            //shuffleEliminationPlayersButton
+                            shuffleParticipantsButton
                             nextButton
                             nextButtonForm='elimination-form'
                             thirdPlaceCheckbox
@@ -92,6 +93,13 @@ const Header = (props: Props) => {
                         <HeaderGeneric
                             title={t('Elimination')}
                             zoomSlider
+                            fullScreenButton
+                        />
+                        {/* <HeaderTournamentForm /> */}
+                    </Route>
+                    <Route exact path="/lms/:playerType">
+                        <HeaderGeneric
+                            title={tournament.name || ''}
                             fullScreenButton
                         />
                         {/* <HeaderTournamentForm /> */}

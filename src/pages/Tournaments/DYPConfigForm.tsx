@@ -6,10 +6,9 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import FormSubheader from '../../components/FormComponents/FormSubheader';
 import { ReactComponent as DrawYourPartner } from '../../resources/icons/drawYourPartner.svg';
-import { StatePlayers } from '../../types/entities';
+import { StateEliminationPlayers } from '../../types/entities';
 import toast from '../../components/IndependentSnackbar';
-import { updatePlayers } from '../../redux/tournamentEntities/actions';
-import { Nullable } from '../../types/main';
+import { updateEliminationPlayers } from '../../redux/tournamentEntities/actions';
 import DYPConfigFormItem from './DYPConfigFormItem';
 import { difference } from 'lodash';
 import tournamentStyles from './tournamentStyles';
@@ -26,11 +25,8 @@ interface Props {
 }
 
 const DYPConfigForm = ({ tournamentType }: Props) => {
-    const [players, setPlayers] = useState<StatePlayers>([]);
-    //const [playerNames, setPlayerNames] = useState<string[]>([]);
     const [teams, setTeams] = useState<Teams>([]);
     const [initialPlayers, setInitialPlayers] = useState<string[]>([]);
-    const [removedPlayerNames, setRemovedPlayerNames] = useState<string[]>([]);
     const storeParticipants = useSelector((state: RootState) => state.entities.participants);
     const classes = tournamentStyles();
     const dispatch = useDispatch();
@@ -57,9 +53,9 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
     }, [])
 
     const getInitialTeams = (): InitialTeams => {
-        const playersA: StatePlayers = storeParticipants.filter(player => player.category === 'A');
-        const playersB: StatePlayers = storeParticipants.filter(player => player.category === 'B');
-        const playersNeutral: StatePlayers = storeParticipants.filter(player => player.category !== 'A' && player.category !== 'B');
+        const playersA: StateEliminationPlayers = storeParticipants.filter(player => player.category === 'A');
+        const playersB: StateEliminationPlayers = storeParticipants.filter(player => player.category === 'B');
+        const playersNeutral: StateEliminationPlayers = storeParticipants.filter(player => player.category !== 'A' && player.category !== 'B');
         const teams: InitialTeams = [];
         for (let i = 0; i < storeParticipants.length / 2; i++) {
             let teamPlayer1, teamPlayer2;
@@ -100,10 +96,13 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
         }
         const newStorePlayers = teams.map(team => ({ name: team.join(' / ') }));
 
-        dispatch(updatePlayers(newStorePlayers));
         if (tournamentType === 'elimination') {
-            history.push('/elimination-bracket');
+            dispatch(updateEliminationPlayers(newStorePlayers));
+            history.push('/tournament/elimination-bracket');
+            return;
         }
+        
+        //dispatch(updateEliminationPlayers(newStorePlayers));
     }
 
     // const submitPlayersToStore = (newPlayers: StatePlayers) => {

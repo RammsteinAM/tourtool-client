@@ -11,18 +11,21 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { useParams } from 'react-router-dom';
 import { formMinMaxValues } from '../../utils/constants';
-import tournamentStyles from './tournamentStyles';
 import FormSubheader from '../../components/FormComponents/FormSubheader';
 import { useDispatch } from 'react-redux';
 import { updateTournament } from '../../redux/tournamentEntities/actions';
+import clsx from 'clsx';
+import tournamentStyles from './tournamentStyles';
 
-interface TournamentForm {
+interface ITournamentForm {
     numberOfTables: number,
     goals: boolean,
     numberOfGoals: number,
     draw: boolean,
     winningSets: number;
     numberOfLives?: number;
+    pointsForWin?: number;
+    pointsForDraw?: number;
 }
 
 enum SubheaderStateValues {
@@ -41,13 +44,15 @@ interface Props {
 
 const TournamentForm = (props: Props) => {
     //const [tournamentData, setTournamentData] = React.useState<TournamentForm>()
-    const [formState, setFormState] = React.useState<TournamentForm>({
+    const [formState, setFormState] = React.useState<ITournamentForm>({
         numberOfTables: 1,
         goals: true,
         numberOfGoals: 7,
         draw: false,
         winningSets: 1,
         numberOfLives: 3,
+        pointsForWin: 2,
+        pointsForDraw: 1,
     });
     const classes = tournamentStyles();
     const history = useHistory();
@@ -68,7 +73,7 @@ const TournamentForm = (props: Props) => {
     };
 
     const handleSubmit = (e: React.FormEvent): void => {
-        e.preventDefault();        
+        e.preventDefault();
         dispatch(updateTournament(formState))
         history.push(`/tournament/player-type-select/${tournamentType}`);
         //alert(e.target)
@@ -210,6 +215,50 @@ const TournamentForm = (props: Props) => {
                         }
                     </Select>
                 </div>
+                {(tournamentType === 'lms' || tournamentType === 'round-robin') &&
+                    <>
+                        <FormSubheader title={t('Points')} /* text={t('form-subheader-points-text')} descriptionWidth={454} */ />
+                        <div className={classes.formBlock}>
+                            <span className={classes.formLabel}>{t('Points for Win')}</span>
+                            <Select
+                                id="pointsForWin"
+                                name="pointsForWin"
+                                value={formState.pointsForWin}
+                                onChange={handleFormStateChange}
+                                className={classes.formSelect}
+                                MenuProps={{ classes: { paper: classes.menuPaper } }}
+                            >
+                                {
+                                    [...Array(100).keys()].map(key => (
+                                        <MenuItem key={key} value={key + 1}>{t('Point', { count: key + 1 })}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </div>
+                        <div
+                            className={clsx(classes.formBlock,
+                                { 'disabled': !formState.draw }
+                            )}
+                        >
+                            <span className={classes.formLabel}>{t('Points for Draw')}</span>
+                            <Select
+                                disabled={!formState.draw}
+                                id="pointsForDraw"
+                                name="pointsForDraw"
+                                value={formState.pointsForDraw}
+                                onChange={handleFormStateChange}
+                                className={classes.formSelect}
+                                MenuProps={{ classes: { paper: classes.menuPaper } }}
+                            >
+                                {
+                                    [...Array(100).keys()].map(key => (
+                                        <MenuItem key={key} value={key + 1}>{t('Point', { count: key + 1 })}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </div>
+                    </>
+                }
             </form>
         </Paper>
     )
