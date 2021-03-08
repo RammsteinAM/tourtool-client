@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import enterScoreDialogStyles from './enterScoresStyles';
-import { StateScore } from '../../types/entities';
+import { EliminationGames, Games, StateScore } from '../../types/entities';
 import EnterScoreContent from './EnterScoreContent';
 
 interface Props {
@@ -13,12 +13,12 @@ interface Props {
     onConfirm: (score1: StateScore, score2: StateScore) => void;
     player1?: string | [string, string];
     player2?: string | [string, string];    
-    gameType: 'elimination' | 'lms' | 'round-robin';
+    games: Games | EliminationGames;
     gameKey: string;
     visibleScores?: number;
 }
 
-const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2, gameKey, gameType, visibleScores }: Props) => {
+const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2, gameKey, games, visibleScores }: Props) => {
     const classes = enterScoreDialogStyles();
     const [score1, setScore1] = useState<StateScore>({});
     const [score2, setScore2] = useState<StateScore>({});
@@ -44,7 +44,7 @@ const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2, gameKey,
                 onClose={onClose}
                 onConfirm={onConfirm}
                 gameKey={gameKey}
-                gameType={gameType}
+                games={games}
                 visibleScores={visibleScores}
             />
         </Dialog>

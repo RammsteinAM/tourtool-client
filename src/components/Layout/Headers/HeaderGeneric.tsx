@@ -37,6 +37,8 @@ interface Props {
     thirdPlaceCheckbox?: boolean;
     zoomSlider?: boolean;
     fullScreenButton?: boolean;
+    showIcon?: boolean;
+    icon?: React.ReactNode;
 }
 
 const HeaderGeneric = (props: Props) => {
@@ -97,8 +99,12 @@ const HeaderGeneric = (props: Props) => {
         dispatch(updateSettings({ fullScreen: true }))
     }
 
+    const { icon: Icon } = props;
     return (
         <Toolbar>
+            {props.showIcon &&
+                <div style={{ marginRight: '12px', display: 'flex' }}>{props.icon}</div>
+            }
             <Typography variant="h6" noWrap className={classes.title}>
                 {props.title}
             </Typography>

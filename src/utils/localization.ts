@@ -157,6 +157,10 @@ const localization = {
             'Points for Draw': 'Points for Draw',
             'form-subheader-points-text': 'The "points for scarce matches" setting allows points to be awarded, to the loser of a game, that has a scarce goal difference. For multiple sets or disciplines, all goals of that match are added.',
             'select-both-scores-message': 'The score for both opponents must be selected.',
+            'Round': 'Round {{round}}',
+            'New Round': 'New Round',
+            'Show Result': 'Show Result',
+            'enter-score-hint-text': 'You can enter the scores by typing both numbers followed by the Enter key.',
         }
     },
     hy: {
@@ -317,6 +321,10 @@ const localization = {
             'Points for Draw': 'Միավորներ ոչ ոքիի համար',
             'form-subheader-points-text': 'The "points for scarce matches" setting allows points to be awarded, to the loser of a game, that has a scarce goal difference. For multiple sets or disciplines, all goals of that match are added.',
             'select-both-scores-message': 'Երկու հակառակորդի հաշիվն էլ պետք է նշված լինի։',
+            'Round': 'Փուլ {{round}}',
+            'New Round': 'Նոր փուլ',
+            'Show Result': 'Ցուցադրել արդյունքը',
+            'enter-score-hint-text': 'Դուք կարող եք նշել հաշիվը ստեղնաշարով՝ մուտքագրելով միավորն ու սեղմելով Enter յուրաքանչյուրից հետո։',
         }
     },
     ru: {
@@ -486,6 +494,10 @@ const localization = {
             'Points for Draw': 'Очки за ничью',
             'form-subheader-points-text': 'The "points for scarce matches" setting allows points to be awarded, to the loser of a game, that has a scarce goal difference. For multiple sets or disciplines, all goals of that match are added.',
             'select-both-scores-message': 'Необходимо выбрать счет для обоих соперников.',
+            'Round': 'Раунд {{round}}',
+            'New Round': 'Новый раунд',
+            'Show Result': 'Показать результат',
+            'enter-score-hint-text': 'Вы можете ввести очки, набрав оба числа и нажав клавишу Enter после каждого.',
         }
     }
 }

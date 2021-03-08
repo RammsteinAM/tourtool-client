@@ -11,11 +11,11 @@ import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import { CardHeader } from '@material-ui/core';
 import { resetGames, updateGames } from '../../redux/tournamentEntities/actions';
-import EnterScoreContent from '../../components/Tournament/EnterScoreContent';
 import GameListRow from '../../components/Tournament/GameListRow';
 import { debounce } from 'lodash';
 import { useResizeDetector } from 'react-resize-detector';
 import lastManStandingStyles from './lastManStandingStyles';
+import GameListRound from '../../components/Tournament/GameListRound';
 
 interface Props {
 }
@@ -54,11 +54,9 @@ const LastManStanding = (props: Props) => {
 
     const updateMaxScores = (width: number) => {
         const score = Math.round((width - 391) / 71);
-        console.log('width', width)
-        console.log('updated', score)
         if (score < 3) {
             setMaxScores(2);
-            return
+            return;
         }
         setMaxScores(score);
     }
@@ -69,14 +67,6 @@ const LastManStanding = (props: Props) => {
 
     const handleNewRound = () => {
         setRounds(rounds + 1);
-    }
-
-    const handleScoreClose = () => {
-
-    }
-
-    const handleScoreConfirm = () => {
-
     }
 
     const submitInitialGamesToStore = () => {
@@ -92,53 +82,19 @@ const LastManStanding = (props: Props) => {
         dispatch(resetGames());
         dispatch(updateGames(storeGames));
     }
-
+    //  debugger
     return (
-        <Card ref={resizeRef} className={classes.cardRoot} id='lms-games-container'>
+        <Card ref={resizeRef} className={classes.cardRoot}>
             <div className={classes.tournamentGameContainerHeader}>
             </div>
             <CardContent
-            //className={classes.cardContent}
+                className={classes.cardContent}
             >
-                {[...Array(rounds).keys()].map((_, index) => {
-                    return <>
-                        <div className={classes.tournamentGameRound}></div>
-                        {[...Array(Math.floor(entityState.lmsPlayers.length / 2)).keys()].map((_, index) =>
-                            <GameListRow
-                                gameKey={`1-${index + 1}`}
-                                maxScores={maxScores}
-                            />
-                        )
-
-                        }
-                    </>
-
-
-
+                {[...Array(rounds).keys()].map((i) => {
+                    return (
+                        <GameListRound key={`gameListRound_${i}`} roundNubmer={i + 1} maxScores={maxScores} />
+                    )
                 })}
-                {/* <div className={classes.tournamentGameRound}></div>
-                {[...Array(Math.floor(entityState.lmsPlayers.length / 2)).keys()].map((_, index) =>
-                    // <div className={classes.tournamentGameRow}>
-                    //     <div>{entityState.games[`1-${index + 1}`]?.player1}</div>
-                    //     <div>
-                    //         {entityState.games[`1-${index + 1}`]?.score1}
-                    //         {entityState.games[`1-${index + 1}`]?.score2}
-                    //         <EnterScoreContent
-                    //             onClose={handleScoreClose}
-                    //             onConfirm={handleScoreConfirm}
-                    //             gameKey={''}
-                    //             gameType='lms'
-                    //         />
-                    //     </div>
-                    //     <div>{entityState.games[`1-${index + 1}`]?.player2}</div>
-                    // </div>
-                    <GameListRow 
-                        gameKey={`1-${index + 1}`}
-                    />
-                )
-
-                } */}
-
             </CardContent>
             <CardActions disableSpacing className={classes.cardActions}>
                 <Button onClick={handleShowResult} color="default" size='small' type='button' className={classes.dialogButton}>

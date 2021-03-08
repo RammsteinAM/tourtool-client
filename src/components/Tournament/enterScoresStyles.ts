@@ -12,10 +12,24 @@ const styles = makeStyles((theme) => ({
     content: {
         color: '#ffffff',
         backgroundColor: '#333333',
+        paddingTop: '20px',
+        // animation: "gradient 3s ease infinite",
+        '&:focus': {
+            // background: "linear-gradient(180deg, #333333, #777777, #777777, #333333)",
+            // backgroundSize: "400% 400%" 
+            outline: 'none',
+        },
+        '&:focus $hint': {
+            visibility: 'visible',
+        }
+    },
+    contentFewWinningSets: {        
+        '&:focus:before': {
+            content: 'none !important',
+        }
     },
     dialogHeader: {
         paddingTop: '35px',
-        paddingBottom: '20px',
     },
     dialogHeaderPlayer: {
         display: "inline-block",
@@ -26,7 +40,7 @@ const styles = makeStyles((theme) => ({
         fontSize: "16px"
     },
     dialogFooter: {
-        borderTop: '1px solid rgba(0, 0, 0, 0.12)',        
+        borderTop: '1px solid rgba(0, 0, 0, 0.12)',
         marginTop: '40px',
     },
     dialogButton: {
@@ -64,7 +78,7 @@ const styles = makeStyles((theme) => ({
         textAlign: "center",
         alignSelf: 'center',
         display: 'grid',
-        gridTemplateColumns:' calc(50% - 9px) 18px calc(50% - 9px)',
+        gridTemplateColumns: ' calc(50% - 9px) 18px calc(50% - 9px)',
         '& span:first-child': {
             textAlign: 'right',
         },
@@ -112,6 +126,13 @@ const styles = makeStyles((theme) => ({
         color: '#ffffff',
         width: '22px',
         height: '22px',
+    },
+    hint: {
+        visibility: 'hidden',
+        margin: "0 0 8px 24px",
+        fontSize: "12px",
+        color: "#909090",
+        textAlign: "center",
     }
 }));
 

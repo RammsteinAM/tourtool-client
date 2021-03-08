@@ -15,7 +15,7 @@ const Elimination = (props: Props) => {
     const [games, setGames] = useState<EliminationGames>({});
     const entityState = useSelector((state: RootState) => state.entities);
     const settingsState = useSelector((state: RootState) => state.settings);
-    const firstRoundGameNumber = Object.keys(games).filter(gameKey => splitGameKey(gameKey).round === 1).length;
+    const firstRoundGameNumber = Object.keys(games).length === 1 ? 1 : Object.keys(games).filter(gameKey => splitGameKey(gameKey).round === 1).length;
     const dispatch = useDispatch();
     const columns = Math.log(Object.keys(games).length + 1) / Math.log(2);
     const classes = tournamentStyles();
@@ -29,6 +29,7 @@ const Elimination = (props: Props) => {
 
     const renderTree = () => {
         const result = [];
+        // debugger
         for (let colNumber = 1; colNumber <= columns; colNumber++) {
             const finalNumberDivider: number = 2 ** (columns - colNumber);
             result.push(

@@ -26,7 +26,7 @@ const EnterScoreScoresConainer = ({ score1, score2, onScoreSelect1, onScoreSelec
         if (disallowTie && score1 === score) return;
         onScoreSelect2(score);
     }
-    
+
     return (
         <div className={classes.pointsContainer}>
             <EnterScoreSelector
@@ -39,7 +39,7 @@ const EnterScoreScoresConainer = ({ score1, score2, onScoreSelect1, onScoreSelec
                 <span>{typeof score1 === 'number' ? score1 : '-'} </span>
                 <span> : </span>
                 <span>{typeof score2 === 'number' ? score2 : '-'}</span>
-                </div>
+            </div>
             <EnterScoreSelector
                 selectedNumber={score2}
                 onScoreSelect={handleScoreSelect2}

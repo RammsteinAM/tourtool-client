@@ -1,3 +1,5 @@
+import { Nullable } from "../types/main";
+
 export const shuffleArray = <A>(array: A[]): A[] => {
   var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -28,6 +30,31 @@ export const getNthIndexOf = (arr: any[], value: any, n: number) => {
   });
   return position.index;
 };
+
+export const getScoresFromPressedKeys = (arr: string[]): Nullable<[number, number]> => {
+  const score1Arr: string[] = [];
+  const score2Arr: string[] = [];
+  if (arr.filter(val => val === 'Enter').length !== 2) {
+    return null;
+  }
+  const enterPosition = arr.indexOf('Enter');
+  arr.forEach((val, i: number) => {
+    if (Number(val) >= 0) {
+      if (i < enterPosition) {
+        score1Arr.push(val);
+      }
+      else {
+        score2Arr.push(val);
+      }
+    }
+  })
+  if (score1Arr.length  === 0 || score2Arr.length  === 0 ) {
+    return null;
+  }
+  const score1 = parseInt(score1Arr.join(''))
+  const score2 = parseInt(score2Arr.join(''))
+  return [score1, score2];
+}
 
 // export const getDiff = <T>(a1: T[], a2: T[]) => {
 //   const a = [], diff: T[]  = [];

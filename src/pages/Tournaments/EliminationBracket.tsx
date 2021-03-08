@@ -51,8 +51,8 @@ const EliminationBracket = (props: Props) => {
 
     const handleStartTournament = (e: React.FormEvent, name: string) => {
         e.preventDefault();
-        history.push('/elimination')
         submitGamesToStore();
+        history.push('/elimination');
     };
 
     const getByeIndexes = (n: number) => {

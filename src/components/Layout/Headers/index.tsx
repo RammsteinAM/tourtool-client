@@ -9,11 +9,14 @@ import HeaderGeneric from './HeaderGeneric';
 import HeaderHome from './HeaderHome';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import headerStyles from './headerStyles';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
+import { ReactComponent as RoundRobinIcon } from '../../../resources/icons/roundRobin.svg';
+import { ReactComponent as LastManStandingIcon } from '../../../resources/icons/lms.svg';
+import { ReactComponent as EliminationIcon } from '../../../resources/icons/elimination.svg';
 import { updateSettings } from '../../../redux/settings/actions';
+import headerStyles from './headerStyles';
 
 interface Props {
     menuOpen: boolean,
@@ -91,6 +94,8 @@ const Header = (props: Props) => {
                     </Route>
                     <Route exact path="/elimination">
                         <HeaderGeneric
+                            showIcon
+                            icon={<EliminationIcon width={36} height={36} fill='#404040' />}
                             title={t('Elimination')}
                             zoomSlider
                             fullScreenButton
@@ -99,6 +104,8 @@ const Header = (props: Props) => {
                     </Route>
                     <Route exact path="/lms/:playerType">
                         <HeaderGeneric
+                            showIcon
+                            icon={<LastManStandingIcon width={36} height={36} fill='#404040' />}
                             title={tournament.name || ''}
                             fullScreenButton
                         />

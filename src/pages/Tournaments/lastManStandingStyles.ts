@@ -14,9 +14,6 @@ const styles = makeStyles((theme) => ({
         borderRadius: "2px 2px 0 0",
         padding: "0 24px",
     },
-    tournamentGameRound: {
-
-    },
 
     paper: {
         width: '720px',
@@ -36,13 +33,14 @@ const styles = makeStyles((theme) => ({
         borderRadius: "0",
     },
     cardContent: {
-        display: 'flex',
-        fontWeight: 200,
-        flexDirection: 'column',
-        color: '#ffffff',
-        justifyContent: 'space-between',
-        height: 'calc(100% - 50px)',
-        cursor: 'pointer',
+        // display: 'flex',
+        // fontWeight: 200,
+        // flexDirection: 'column',
+        // color: '#ffffff',
+        // justifyContent: 'space-between',
+        // height: 'calc(100% - 50px)',
+        // cursor: 'pointer',
+        padding: 0,
     },
     cardActions: {
         height: '48px',

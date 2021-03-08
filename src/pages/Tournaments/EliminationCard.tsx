@@ -119,7 +119,7 @@ const EliminationCard = (props: Props) => {
                     player1={player1Name}
                     player2={player2Name}
                     gameKey={props.gameKey}
-                    gameType='elimination'
+                    games={gamesState}
                     visibleScores={tournamentState.numberOfGoals && tournamentState.numberOfGoals < 9 ? tournamentState.numberOfGoals + 1 : 9}
                 />}
         </div>

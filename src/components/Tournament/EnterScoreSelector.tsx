@@ -49,15 +49,19 @@ const EnterScoreSelector = ({ selectedNumber, onScoreSelect, disabledScore, mirr
     const prevState = usePrevious({ selection: selectedNumber, lastVisibleScore })
 
     useEffect(() => {
-        if (!isInitial) {
-            return;
-        }
+
         if (typeof selectedNumber !== 'number') {
             if (numberOfGoals < visibleScores) { // normally shouldn't be a case
                 setInitiallyLastVisibleScore(visibleScores - 1);
                 return;
             }
             setInitiallyLastVisibleScore(numberOfGoals);
+            return;
+        }
+        if (lastVisibleScore - selectedNumber >= visibleScores || lastVisibleScore - selectedNumber < 0){
+            setScoreShift(0);
+        }
+        if (lastVisibleScore - selectedNumber < visibleScores && lastVisibleScore - selectedNumber >= 0) {
             return;
         }
         if (selectedNumber < numberOfGoals && selectedNumber > numberOfGoals - visibleScores) {
