@@ -105,8 +105,9 @@ const Header = (props: Props) => {
                     <Route exact path="/lms/:playerType">
                         <HeaderGeneric
                             showIcon
+                            tournamentSidebar
                             icon={<LastManStandingIcon width={36} height={36} fill='#404040' />}
-                            title={tournament.name || ''}
+                            tournamentName={tournament.name || ''}
                             fullScreenButton
                         />
                         {/* <HeaderTournamentForm /> */}

@@ -50,7 +50,7 @@ const Layout = (props: Props) => {
   const [showSidePanel, setShowSidePanel] = React.useState(false);
   const [panelContent, setPanelContent] = useState<SidePanelState>(SidePanelState.Initial);
   const history = useHistory();
-  const authState = useSelector((state: RootState) => state.auth);  
+  const authState = useSelector((state: RootState) => state.auth);
   const fullScreen = useSelector((state: RootState) => state.settings.fullScreen);
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -211,7 +211,7 @@ const Layout = (props: Props) => {
       <Main menuOpen={open} backdropVisible={showSidePanel} backdropCallback={closeSidePanel} fullScreen={fullScreen}>
         {props.children}
       </Main>
-      
+
       <Menu
         keepMounted
         open={rightClick.mouseY !== null}

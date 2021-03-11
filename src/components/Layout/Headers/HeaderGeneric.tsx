@@ -10,6 +10,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import InputIcon from '@material-ui/icons/Input';
 import ShuffleIcon from '@material-ui/icons/Shuffle';
+import ListIcon from '@material-ui/icons/List';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
@@ -27,7 +28,7 @@ import { updateSettings } from '../../../redux/settings/actions';
 import headerStyles from './headerStyles';
 
 interface Props {
-    title: string;
+    title?: string;
     backButton?: boolean;
     importPlayersButton?: boolean;
     shuffleEliminationPlayersButton?: boolean;
@@ -37,7 +38,9 @@ interface Props {
     thirdPlaceCheckbox?: boolean;
     zoomSlider?: boolean;
     fullScreenButton?: boolean;
+    tournamentName?: string;
     showIcon?: boolean;
+    tournamentSidebar?: boolean;
     icon?: React.ReactNode;
 }
 
@@ -95,6 +98,10 @@ const HeaderGeneric = (props: Props) => {
         //setZoomValue(newValue as number);
     };
 
+    const handleToggleTournamentSidebarButton = () => {
+        dispatch(updateSettings({ tournamentSidebar: !settingsState.tournamentSidebar }))
+    }
+
     const handleEnterFullScreen = () => {
         dispatch(updateSettings({ fullScreen: true }))
     }
@@ -105,11 +112,21 @@ const HeaderGeneric = (props: Props) => {
             {props.showIcon &&
                 <div style={{ marginRight: '12px', display: 'flex' }}>{props.icon}</div>
             }
+            {props.tournamentName && <Typography variant="h6" noWrap className={classes.tournamentName}>
+                {props.tournamentName}
+            </Typography>}
             <Typography variant="h6" noWrap className={classes.title}>
                 {props.title}
             </Typography>
             {props.zoomSlider &&
                 <HeaderSlider onChange={handleZoomSliderChange} defaultValue={100} />
+            }
+            {props.tournamentSidebar &&
+                <Tooltip title={`${t("Toggle Standings")}`}>
+                    <IconButton className={classes.iconButton} aria-label="toggle-standings" onClick={handleToggleTournamentSidebarButton}>
+                        <ListIcon />
+                    </IconButton>
+                </Tooltip>
             }
             {props.fullScreenButton &&
                 <Tooltip title={`${t("Full Screen")}`}>

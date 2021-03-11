@@ -80,6 +80,17 @@ const styles = makeStyles((theme) =>
         display: 'block',
       },
     },
+    tournamentName: {
+      fontSize: '24px',
+      fontWeight: 400,
+      color: '#404040',
+      flexGrow: 1,
+      display: 'none',
+      userSelect: 'none',
+      [theme.breakpoints.up('sm')]: {
+        display: 'block',
+      },
+    },
     button: {
       height: '40px',
       padding: '0 30px',

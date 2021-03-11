@@ -33,6 +33,9 @@ const styles = makeStyles((theme) => ({
         textTransform: 'uppercase',
         cursor: 'pointer',
         userSelect: 'none',
+        backgroundColor: '#ffffff',
+        padding: 0,
+        border: 'none',
         '&:hover': {
             backgroundColor: '#f5f5f5',
         },
@@ -44,6 +47,10 @@ const styles = makeStyles((theme) => ({
         },
         '&:hover $winningScoreRight:after': {
             borderLeftColor: '#e0e0e0',
+        },
+        '&:focus': {
+            outline: '1px dashed #e16f3d',
+            outlineOffset: '-1px',
         }
     },
     winningScoreLeft: {
@@ -95,7 +102,7 @@ const styles = makeStyles((theme) => ({
         //animation: `$heightIncrease 1s ${theme.transitions.easing.easeInOut}`
     },
     gameListRowEnterScoreContainer: {
-        transition: "max-height 0.5s cubic-bezier(0.7, 0, 0.4, 0.78)",
+        transition: "max-height 0.33s cubic-bezier(0.7, 0, 0.4, 0.78)",
         overflow: "hidden",
         //animation: `$heightIncrease 1s ${theme.transitions.easing.easeInOut}`
     },

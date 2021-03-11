@@ -1,4 +1,5 @@
 import { Action } from "redux";
+import { LMSColOrderKeys } from "../../pages/Tournaments/LastManStandingPlayerStatsRow";
 import { StateTournament } from "../../types/entities";
 import { PayloadedAction } from "../helpers";
 
@@ -17,6 +18,8 @@ export {
 export type SettingsReducerState = {
     eliminationScale?: number,
     fullScreen?: boolean,
+    tournamentSidebar?: boolean,
+    tournamentSidebarColumnOrder?: LMSColOrderKeys[]
 }
 
 export type UpdateSettingsActionParams = PayloadedAction<typeof UPDATE_SETTINGS, SettingsReducerState>;

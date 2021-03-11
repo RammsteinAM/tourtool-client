@@ -20,9 +20,9 @@ const GameListEnterScoreButton = ({ scoresOpen, score1, score2 }: Props) => {
                     {t('Enter Result')}
                 </div> :
                 <div className={classes.enterScoreButtonScoreDisplay}>
-                    <span className={score1 > score2 ? classes.winningScoreLeft : ''}>{score1}</span>
+                    <span className={score1 > score2 || score1 === score2 ? classes.winningScoreLeft : ''}>{score1}</span>
                     <span> : </span>
-                    <span className={score1 < score2 ? classes.winningScoreRight : ''}>{score2}</span>
+                    <span className={score1 < score2 || score1 === score2 ? classes.winningScoreRight : ''}>{score2}</span>
                 </div>
             }
         </div>

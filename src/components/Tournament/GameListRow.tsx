@@ -14,9 +14,10 @@ import GameListEnterScoreButton from './GameListEnterScoreButton';
 interface Props {
     gameKey: string;
     maxScores?: number;
+    tabIndex: number;
 }
 
-const GameListRow = ({ gameKey, maxScores = 10 }: Props) => {
+const GameListRow = ({ gameKey, tabIndex,       maxScores = 10 }: Props) => {
     const [games, setGames] = useState<Games>({});
     const [scoresOpen, setScoresOpen] = useState<boolean>(false);
     const [stateChanged, setStateChanged] = useState<boolean>(false);
@@ -41,7 +42,6 @@ const GameListRow = ({ gameKey, maxScores = 10 }: Props) => {
 
     const toggleScoresOpen = () => {
         const el = document.getElementById(`enter-score-content-${gameKey}`);
-        debugger
         if (scoresOpen) {
             setScoresOpen(false);
             el?.blur();
@@ -79,13 +79,13 @@ const GameListRow = ({ gameKey, maxScores = 10 }: Props) => {
         <div className={classes.gameRowContainer}>
             <div className={classes.gameRow}>
                 <div className={classes.gameRowP1}>{gamesState[gameKey]?.player1}</div>
-                <div className={classes.scoreContainer} onClick={toggleScoresOpen}>
+                <button className={classes.scoreContainer} onClick={toggleScoresOpen} type='button' tabIndex={tabIndex}>
                     <GameListEnterScoreButton
                         scoresOpen={scoresOpen}
                         score1={gamesState[gameKey]?.score1}
                         score2={gamesState[gameKey]?.score2}
                     />
-                </div>
+                </button>
                 <div className={classes.gameRowP2}>{gamesState[gameKey]?.player2}</div>
             </div>
             <div

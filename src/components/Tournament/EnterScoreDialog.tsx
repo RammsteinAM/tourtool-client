@@ -34,6 +34,7 @@ const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2, gameKey,
         onClose()
     }
 
+
     return (
         <Dialog open={open} onClose={onClose} classes={{ paper: classes.dialog }}>
             <div className={classes.dialogHeader}>

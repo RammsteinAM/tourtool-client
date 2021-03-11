@@ -37,40 +37,14 @@ const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, 
     const winningSets = entityState.tournament.winningSets || 1;
     let pressedKeys: string[] = [];
 
-    // switch (gameType) {
-    //     case 'elimination':
-    //         games = entityState.eliminationGames
-    //         break;
-    //     case 'lms':
-    //         games = entityState.games
-    //         break;
-    // }
-
-    const handleKeyDown = (e: KeyboardEvent, key = 1) => {
-        pressedKeys.push(e.key);
-        debugger
-        const scores = getScoresFromPressedKeys(pressedKeys);
-        if (scores) {
-            if (!entityState.tournament.draw && scores[0] === scores[1]) {
-                pressedKeys = [];
-                return;
-            }
-            setScore1({ 1: scores[0] });
-            setScore2({ 1: scores[1] });
-            pressedKeys = [];
-            return;
-        }
-        if (pressedKeys.filter(key => key === 'Enter').length > 2) {
-            pressedKeys = [];
-        }            
-    }
-
     useEffect(() => {
+        const el = document.getElementById(`enter-score-content-${gameKey}`);
+        el?.focus()
         if (winningSets === 1) {
-            document.getElementById(`enter-score-content-${gameKey}`)?.addEventListener('keydown', handleKeyDown);
+            el?.addEventListener('keydown', handleKeyDown);
         }
         return () => {
-            document.getElementById(`enter-score-content-${gameKey}`)?.removeEventListener('keydown', handleKeyDown)
+            el?.removeEventListener('keydown', handleKeyDown)
         }
     }, [])
 
@@ -100,14 +74,43 @@ const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, 
         setScore1(scores1);
         setScore2(scores2);
         setNumberOfGames(numberOfPlayedGames);
-        // setScore2(entityState.games[gameKey]?.score2);
-    }, [games[gameKey]])
+    }, [games[gameKey]]);
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.ctrlKey) {
+            return;
+        }
+        pressedKeys.push(e.key);
+        const scores = getScoresFromPressedKeys(pressedKeys);
+        if (scores) {
+            if (!entityState.tournament.draw && scores[0] === scores[1]) {
+                pressedKeys = [];
+                return;
+            }
+            // debugger
+            // setScore1((state) => {
+            //     return { 1: scores[0] };
+            // })
+            // setScore2((state) => {
+            //     return { 1: scores[1] };
+            // })
+            setScore1({ 1: scores[0] });
+            setScore2({ 1: scores[1] });
+            pressedKeys = [];
+            return;
+        }
+        if (pressedKeys.filter(key => key === 'Enter').length > 2) {
+            pressedKeys = [];
+        }            
+    }
+    
+    const handleKeyDown2 = (e: React.KeyboardEvent) => {
+        if (e.ctrlKey && e.key === 'Enter') {
+            handleConfirm();
+        }  
+    }
 
-    // useEffect(() => {
-    //     setNumberOfGames(entityState.tournament.winningSets || 1)
-    // }, [entityState.tournament.winningSets])
-
-    const handleConfirm = (e: React.FormEvent) => {
+    const handleConfirm = () => {
         if (winningSets > 1) {
             const finalScores = getMultipleSetScores(score1, score2, winningSets);
             if (finalScores.score1 < winningSets && finalScores.score2 < winningSets) {
@@ -115,7 +118,7 @@ const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, 
                 return;
             }
         }
-        else if (score1 === null || score2 === null) {
+        else if (typeof score1[1] !== 'number' || typeof score2[1] !== 'number') {
             toast.warning(t('select-both-scores-message'))
             return;
         }
@@ -213,6 +216,7 @@ const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, 
         className={clsx(classes.content, {
             [classes.contentFewWinningSets]: winningSets > 1,
         })}
+        onKeyDown={handleKeyDown2}
         id={`enter-score-content-${gameKey}`} tabIndex={tabIndex || 0} >
             {winningSets === 1 && <div className={classes.hint}>{t('enter-score-hint-text')}</div>}
             {[...Array(numberOfGames).keys()].map(key => {
@@ -233,7 +237,7 @@ const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, 
                 <Button onClick={handleClose} color="default" size='small' className={classes.dialogButton}>
                     {t('Cancel')}
                 </Button>
-                <Button onClick={handleConfirm} color="primary" size='small' type='submit' className={`${classes.dialogButton} primary`}>
+                <Button onClick={handleConfirm} color="primary" size='small' className={`${classes.dialogButton} primary`}>
                     {t('Confirm')}
                 </Button>
             </DialogActions>
