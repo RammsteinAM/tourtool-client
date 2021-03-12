@@ -8,7 +8,8 @@ const initialState: SettingsReducerState | null = {
   eliminationScale: 1,
   fullScreen: false,
   tournamentSidebar: true,
-  tournamentSidebarColumnOrder: ['name', 'numberOfGames', 'lives']
+  tournamentSidebarColumnOrder: ['name', 'numberOfGames', 'goals', 'goalsIn', 'goalDiff', 'points', 'lives'],
+  tournamentSidebarEnabledColumns: ['name', 'numberOfGames', 'lives'],
 };
 
 const reducer = (state: SettingsReducerState = initialState, action: UserActionParams): SettingsReducerState => {

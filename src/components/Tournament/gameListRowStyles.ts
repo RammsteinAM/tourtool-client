@@ -97,14 +97,11 @@ const styles = makeStyles((theme) => ({
     },
     gameListRowEnterScoreContainerHidden: {
         position: 'fixed', visibility: 'hidden',
-        //transition: "max-height 0.5s cubic-bezier(0.7, 0, 0.4, 0.78)",
         overflow: "hidden",
-        //animation: `$heightIncrease 1s ${theme.transitions.easing.easeInOut}`
     },
     gameListRowEnterScoreContainer: {
         transition: "max-height 0.33s cubic-bezier(0.7, 0, 0.4, 0.78)",
         overflow: "hidden",
-        //animation: `$heightIncrease 1s ${theme.transitions.easing.easeInOut}`
     },
     enterScoreContentContainer: {
         position: 'relative',

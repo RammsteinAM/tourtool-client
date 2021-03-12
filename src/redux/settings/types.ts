@@ -20,6 +20,7 @@ export type SettingsReducerState = {
     fullScreen?: boolean,
     tournamentSidebar?: boolean,
     tournamentSidebarColumnOrder?: LMSColOrderKeys[]
+    tournamentSidebarEnabledColumns?: LMSColOrderKeys[]
 }
 
 export type UpdateSettingsActionParams = PayloadedAction<typeof UPDATE_SETTINGS, SettingsReducerState>;

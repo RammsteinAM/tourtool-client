@@ -1,5 +1,4 @@
 import React, { ReactElement, useEffect, useState } from 'react'
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -8,7 +7,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import { useTranslation } from "react-i18next";
-import { ActionStatus } from '../../types/main';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import profileStyles from './profileStyles';

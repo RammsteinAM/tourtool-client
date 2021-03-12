@@ -1,13 +1,9 @@
-import React, { ReactElement, useCallback, useEffect, useState } from 'react';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import InputIcon from '@material-ui/icons/Input';
 import ShuffleIcon from '@material-ui/icons/Shuffle';
 import ListIcon from '@material-ui/icons/List';
@@ -23,7 +19,7 @@ import { shuffleArray } from '../../../utils/arrayUtils';
 import { updateParticipants, updateEliminationPlayers, updateTournament } from '../../../redux/tournamentEntities/actions';
 import ImportParticipantsDialog from '../../Tournament/ImportParticipantsDialog';
 import { HeaderSlider } from '../../Slider';
-import { debounce, throttle } from 'lodash';
+import { debounce } from 'lodash';
 import { updateSettings } from '../../../redux/settings/actions';
 import headerStyles from './headerStyles';
 
@@ -61,7 +57,6 @@ const HeaderGeneric = (props: Props) => {
 
     const handleThirdPlaceCheckboxChange = () => {
         dispatch(updateTournament({ thirdPlace: !entityState.tournament.thirdPlace }))
-        //setCheckboxSetPlayers(!checkboxSetPlayers);
     };
 
     const handleBackButton = () => {
@@ -91,11 +86,8 @@ const HeaderGeneric = (props: Props) => {
     const delayedUpdateZoomLevel = useCallback(debounce((val: number) => dispatch(updateSettings({ eliminationScale: val })), 100), [settingsState.eliminationScale]);
 
     const handleZoomSliderChange = (event: any, newValue: number | number[]) => {
-        //throttle
-        //debugger
         const zoomLevel = (0.67 * (newValue as number) / 100) + 0.33;
         delayedUpdateZoomLevel(zoomLevel);
-        //setZoomValue(newValue as number);
     };
 
     const handleToggleTournamentSidebarButton = () => {
@@ -122,7 +114,7 @@ const HeaderGeneric = (props: Props) => {
                 <HeaderSlider onChange={handleZoomSliderChange} defaultValue={100} />
             }
             {props.tournamentSidebar &&
-                <Tooltip title={`${t("Toggle Standings")}`}>
+                <Tooltip title={settingsState.tournamentSidebar ? `${t("Hide Standings")}` : `${t("Show Standings")}`}>
                     <IconButton className={classes.iconButton} aria-label="toggle-standings" onClick={handleToggleTournamentSidebarButton}>
                         <ListIcon />
                     </IconButton>
@@ -187,7 +179,6 @@ const HeaderGeneric = (props: Props) => {
                     variant="contained"
                     color="secondary"
                     className={classes.button}
-                //onClick={handleSubmit}
                 >
                     {t('Next')}
                 </Button>

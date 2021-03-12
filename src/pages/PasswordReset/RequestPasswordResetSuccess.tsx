@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FC } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,8 +16,6 @@ const RequestPasswordResetSuccess = (props: Props) => {
     const classes = resetPasswordStyles();
     const dispatch = useDispatch();
     const [submitting, setSubmitting] = useState<boolean>(false);
-    const authState = useSelector((state: RootState) => state.auth);
-    const history = useHistory();
     const { t } = useTranslation();
 
     useEffect(() => {

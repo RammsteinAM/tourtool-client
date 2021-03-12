@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react'
+import React, { useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
 import { Games, StateScore } from '../../types/entities';
 import { splitGameKey } from '../../utils/stringUtils';
 import { resetGames, updateGames } from '../../redux/tournamentEntities/actions';
-import EnterScoreContent from '../../components/Tournament/EnterScoreContent';
+import EnterScoreContent from './EnterScore/EnterScoreContent';
 import gameListRowStyles from './gameListRowStyles';
 import clsx from 'clsx';
 import { getMultipleSetScores } from '../../utils/scoreUtils';
@@ -17,7 +17,7 @@ interface Props {
     tabIndex: number;
 }
 
-const GameListRow = ({ gameKey, tabIndex,       maxScores = 10 }: Props) => {
+const GameListRow = ({ gameKey, tabIndex, maxScores = 10 }: Props) => {
     const [games, setGames] = useState<Games>({});
     const [scoresOpen, setScoresOpen] = useState<boolean>(false);
     const [stateChanged, setStateChanged] = useState<boolean>(false);
@@ -32,13 +32,6 @@ const GameListRow = ({ gameKey, tabIndex,       maxScores = 10 }: Props) => {
     const columns = Math.log(Object.keys(games).length + 1) / Math.log(2);
     const classes = gameListRowStyles();
     const { t } = useTranslation();
-
-    // useEffect(() => {
-
-    //     setGames({ ...entityState.eliminationGames })
-
-    // }, [/* entityState.players */])
-
 
     const toggleScoresOpen = () => {
         const el = document.getElementById(`enter-score-content-${gameKey}`);
@@ -65,7 +58,6 @@ const GameListRow = ({ gameKey, tabIndex,       maxScores = 10 }: Props) => {
     }
 
     const handleScoreConfirm = (scores1: StateScore, scores2: StateScore) => {
-        //if (!gameKey || !player1Name || !player2Name) return;
         const { score1, score2 } = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length)
         const round = splitGameKey(gameKey).round;
 
@@ -90,9 +82,6 @@ const GameListRow = ({ gameKey, tabIndex,       maxScores = 10 }: Props) => {
             </div>
             <div
                 className={classes.gameListRowEnterScoreContainer}
-                // className={clsx(classes.gameListRowEnterScoreContainer, {
-                //     [classes.gameListRowEnterScoreContainerHidden]: !stateChanged,
-                // })}
                 style={
                     (scoresOpen ?
                         { maxHeight: `${scoresRef.current?.offsetHeight + numberOfAdditionalGames * 40}px` } :

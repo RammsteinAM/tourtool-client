@@ -6,7 +6,6 @@ import clsx from 'clsx';
 import mainStyles from '../../styles/mainStyles';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import tournamentStyles from './tournamentStyles';
-import { Nullable } from '../../types/main';
 
 interface Props {
     selectedPlayer: string | undefined,

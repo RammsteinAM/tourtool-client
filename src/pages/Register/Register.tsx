@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FC, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -10,7 +10,6 @@ import { registerActions } from '../../redux/register/actions'
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
 import { appName } from '../../utils/constants';
 import mainStyles from '../../styles/mainStyles';
 import { RegisterFormValues } from '../../types/user';
@@ -27,8 +26,6 @@ interface IError {
     email?: string;
     password?: string;
 }
-
-type EmailInUse = 'yes' | 'no' | 'loading'
 
 interface Props {
     onSuccessCallback: (values: RegisterFormValues) => void;
@@ -174,12 +171,6 @@ const Register = (props: Props) => {
                             {errors.email && touched.email &&
                                 <ErrorMessage name="email" component="div" className={mainClasses.formError} />
                             }
-                            {/* {emailInUseLoading ? <div className={mainClasses.formError}>Loading</div> :
-                                (
-                                    emailInUse ? <div className={mainClasses.formError}>{t(`ERROR_${ErrorNames.EmailInUse}`)}</div> : <div>OK</div>
-
-                                )
-                            } */}
                         </div>
                         <TextField
                             error={!!errors.password && touched.password}
@@ -214,11 +205,6 @@ const Register = (props: Props) => {
                                 <CircularProgress />
                             </div>
                         }
-                        {/* {registerState.status === ActionStatus.Failure &&
-                            <div className={mainClasses.errorMessage}>
-                                {t(`ERROR_${registerState.error}`)}
-                                </div>
-                        } */}
                     </form>
                 )}
             </Formik>

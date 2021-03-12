@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FC } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
@@ -9,7 +9,6 @@ import registerStyles from './registerStyles';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
 import mainStyles from '../../styles/mainStyles';
 import { registerActions } from '../../redux/register/actions';
 

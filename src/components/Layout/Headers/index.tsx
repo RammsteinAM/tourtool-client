@@ -78,19 +78,16 @@ const Header = (props: Props) => {
                             nextButton
                             nextButtonForm='player-form'
                         />
-                        {/* <HeaderTournamentForm /> */}
                     </Route>
                     <Route exact path="/tournament/elimination-bracket">
                         <HeaderGeneric
                             title={t('Create Elimination Bracket')}
                             backButton
-                            //shuffleEliminationPlayersButton
                             shuffleParticipantsButton
                             nextButton
                             nextButtonForm='elimination-form'
                             thirdPlaceCheckbox
                         />
-                        {/* <HeaderTournamentForm /> */}
                     </Route>
                     <Route exact path="/elimination">
                         <HeaderGeneric
@@ -100,7 +97,6 @@ const Header = (props: Props) => {
                             zoomSlider
                             fullScreenButton
                         />
-                        {/* <HeaderTournamentForm /> */}
                     </Route>
                     <Route exact path="/lms/:playerType">
                         <HeaderGeneric
@@ -110,7 +106,6 @@ const Header = (props: Props) => {
                             tournamentName={tournament.name || ''}
                             fullScreenButton
                         />
-                        {/* <HeaderTournamentForm /> */}
                     </Route>
                     <Route path="/">
                         <HeaderHome />

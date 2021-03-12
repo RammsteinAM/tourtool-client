@@ -1,15 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const styles = makeStyles((theme) => ({
-    // root: {
-    //     display: 'flex',
-    //     justifyContent: 'center',
-    //     minWidth: 500,
-
-    // },
-    // mainContainer: {
-    //     padding: theme.spacing(6, 20, 4, 20),
-    // },
     card: {
         marginTop: theme.spacing(4),
         display: 'block',
@@ -29,7 +20,6 @@ const styles = makeStyles((theme) => ({
     },
     button: {
         margin: theme.spacing(3, 2, 2),
-        //height: '35px',
         minWidth: '100px',
         borderRadius: '2px',
         '&:hover': {

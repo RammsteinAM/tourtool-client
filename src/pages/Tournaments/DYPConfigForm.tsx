@@ -8,10 +8,11 @@ import FormSubheader from '../../components/FormComponents/FormSubheader';
 import { ReactComponent as DrawYourPartner } from '../../resources/icons/drawYourPartner.svg';
 import { StateEliminationPlayers } from '../../types/entities';
 import toast from '../../components/IndependentSnackbar';
-import { updateEliminationPlayers } from '../../redux/tournamentEntities/actions';
+import { updateEliminationPlayers, updateLMSPlayers, updateTournament } from '../../redux/tournamentEntities/actions';
 import DYPConfigFormItem from './DYPConfigFormItem';
 import { difference } from 'lodash';
 import tournamentStyles from './tournamentStyles';
+import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
 
 type Team = [string | undefined, string | undefined];
 type InitialTeam = [string, string];
@@ -27,6 +28,7 @@ interface Props {
 const DYPConfigForm = ({ tournamentType }: Props) => {
     const [teams, setTeams] = useState<Teams>([]);
     const [initialPlayers, setInitialPlayers] = useState<string[]>([]);
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const storeParticipants = useSelector((state: RootState) => state.entities.participants);
     const classes = tournamentStyles();
     const dispatch = useDispatch();
@@ -102,7 +104,8 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
             return;
         }
         
-        //dispatch(updateEliminationPlayers(newStorePlayers));
+        dispatch(updateLMSPlayers(newStorePlayers));
+        handleDialogOpen();
     }
 
     // const submitPlayersToStore = (newPlayers: StatePlayers) => {
@@ -149,6 +152,21 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
         setTeams([...newTeams])
     }
 
+    const handleDialogOpen = () => {
+        setDialogOpen(true);
+    };
+
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    };
+
+    const handleStartTournament = (e: React.FormEvent, name: string) => {
+        e.preventDefault();
+        //submitGamesToStore();
+        dispatch(updateTournament({ name }));
+        history.push(`/${tournamentType}/dyp`)
+    };
+
     return (
         <Paper elevation={3} className={classes.dypConfigPaper}>
             <form className={classes.form} onSubmit={handleSubmit} id='player-form'>
@@ -176,6 +194,11 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
                     })}
                 </div>
             </form>
+            <CreateTournamentDialog
+                open={dialogOpen}
+                onClose={handleDialogClose}
+                onSubmit={handleStartTournament}
+            />
         </Paper>
     )
 }

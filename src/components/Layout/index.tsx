@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactEventHandler, useEffect, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import clsx from 'clsx';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -80,11 +80,6 @@ const Layout = (props: Props) => {
     setPanelContent(SidePanelState.Profile);
     setShowSidePanel(true);
   };
-
-  // const closeSettings = (e: React.MouseEvent) => {
-  //   e.stopPropagation();
-  //   setShowSidePanel(false);
-  // };
 
   const handleLoginButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation();

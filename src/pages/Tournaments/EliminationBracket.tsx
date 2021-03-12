@@ -2,15 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import { EliminationGames, EliminationPlayers, StateGames, StateEliminationPlayers } from '../../types/entities';
+import { EliminationGames, StateEliminationPlayers } from '../../types/entities';
 import EliminationSidebar from '../../components/Tournament/EliminationSidebar';
 import { resetEliminationGames, resetGames, updateEliminationGames } from '../../redux/tournamentEntities/actions';
 import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
 import tournamentStyles from './tournamentStyles';
 import { useHistory } from 'react-router-dom';
 import EliminationCard from './EliminationCard';
-
-const initialPlayers = []
 
 interface Props {
 

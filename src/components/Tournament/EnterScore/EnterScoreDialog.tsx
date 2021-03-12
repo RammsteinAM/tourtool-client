@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Dialog from '@material-ui/core/Dialog';
 import { useTranslation } from "react-i18next";
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { RootState } from '../../../redux/store';
 import enterScoreDialogStyles from './enterScoresStyles';
-import { EliminationGames, Games, StateScore } from '../../types/entities';
+import { EliminationGames, Games, StateScore } from '../../../types/entities';
 import EnterScoreContent from './EnterScoreContent';
 
 interface Props {
@@ -20,13 +20,7 @@ interface Props {
 
 const EnterScoreDialog = ({ open, onClose, onConfirm, player1, player2, gameKey, games, visibleScores }: Props) => {
     const classes = enterScoreDialogStyles();
-    const [score1, setScore1] = useState<StateScore>({});
-    const [score2, setScore2] = useState<StateScore>({});
-    const entityState = useSelector((state: RootState) => state.entities);
-    const [numberOfGames, setNumberOfGames] = useState<number>(entityState.tournament.winningSets || 1);
     const { t } = useTranslation();
-    const numberOfGoals = entityState.tournament.numberOfGoals || 7;
-    const winningSets = entityState.tournament.winningSets || 1;
 
     const handleClose = () => {
         // setScore1({});

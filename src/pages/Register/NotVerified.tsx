@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FC } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
@@ -18,13 +18,7 @@ interface FormikValues {
     password: string;
 }
 
-interface IError {
-    email?: string;
-    password?: string;
-}
-
 interface Props {
-    //resetPasswordCallback: () => void;
 }
 
 const NotVerified = (props: Props) => {
@@ -35,7 +29,6 @@ const NotVerified = (props: Props) => {
     const [timeLeft, setTimeLeft] = useState<number>(0);
     const authState = useSelector((state: RootState) => state.auth);
     const registerState = useSelector((state: RootState) => state.register);
-    const history = useHistory();
     const { t } = useTranslation();
 
     useEffect(() => {

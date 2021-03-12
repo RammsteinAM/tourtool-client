@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FC } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -30,7 +30,6 @@ const RequestPasswordReset = (props: Props) => {
     const dispatch = useDispatch();
     const [submitting, setSubmitting] = useState<boolean>(false);
     const authState = useSelector((state: RootState) => state.auth);
-    const history = useHistory();
     const { t } = useTranslation();
 
     useEffect(() => {

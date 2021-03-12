@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import { useTranslation } from "react-i18next";
@@ -43,7 +43,6 @@ interface Props {
 }
 
 const TournamentForm = (props: Props) => {
-    //const [tournamentData, setTournamentData] = React.useState<TournamentForm>()
     const [formState, setFormState] = React.useState<ITournamentForm>({
         numberOfTables: 1,
         goals: true,
@@ -60,10 +59,6 @@ const TournamentForm = (props: Props) => {
     const { tournamentType } = useParams<{ tournamentType: string }>();
     const { t } = useTranslation();
 
-    // const handleGoalsValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setGoalsValue(Number((event.target as HTMLInputElement).value));
-    // };
-
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const name = event.target.name as keyof typeof formState;
         setFormState({
@@ -76,9 +71,6 @@ const TournamentForm = (props: Props) => {
         e.preventDefault();
         dispatch(updateTournament(formState))
         history.push(`/tournament/player-type-select/${tournamentType}`);
-        //alert(e.target)
-        // setFormValues(values);
-        // dispatch(registerActions.register(values));
     }
 
     const handleFormStateChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {

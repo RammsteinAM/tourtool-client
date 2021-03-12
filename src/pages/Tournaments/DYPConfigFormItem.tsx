@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import AddIcon from '@material-ui/icons/Add';
 import tournamentStyles from './tournamentStyles';
 import DYPConfigFormItemPlayerSelect from './DYPConfigFormItemPlayerSelect';
-import { Nullable } from '../../types/main';
 
 interface Props {
     selectedPlayer1: string | undefined,

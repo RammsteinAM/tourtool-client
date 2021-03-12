@@ -4,18 +4,18 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import { useTranslation } from "react-i18next";
 import { connect, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { RootState } from '../../../redux/store';
 import EnterScoreScoresConainer from './EnterScoreScoresConainer';
-import { Games, EliminationGames, StateScore } from '../../types/entities';
-import { getNthIndexOf, getScoresFromPressedKeys } from '../../utils/arrayUtils';
-import toast from '../IndependentSnackbar';
-import { getMultipleSetScores } from '../../utils/scoreUtils';
-import { EntitiesReducerState } from '../../redux/tournamentEntities/types';
+import { Games, EliminationGames, StateScore } from '../../../types/entities';
+import { getNthIndexOf, getScoresFromPressedKeys } from '../../../utils/arrayUtils';
+import toast from '../../IndependentSnackbar';
+import { getMultipleSetScores } from '../../../utils/scoreUtils';
+import { EntitiesReducerState } from '../../../redux/tournamentEntities/types';
 import { withStyles } from '@material-ui/core';
 import { Styles } from '@material-ui/core/styles/withStyles';
 import clsx from 'clsx';
 import enterScoreDialogStyles from './enterScoresStyles';
-import { splitGameKey } from '../../utils/stringUtils';
+import { splitGameKey } from '../../../utils/stringUtils';
 
 interface Props {
     onClose: () => void;

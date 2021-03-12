@@ -8,7 +8,6 @@ import { splitGameKey } from '../../utils/stringUtils';
 import EliminationCard from './EliminationCard';
 
 interface Props {
-
 }
 
 const Elimination = (props: Props) => {

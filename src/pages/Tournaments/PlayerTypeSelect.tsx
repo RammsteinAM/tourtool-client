@@ -1,16 +1,9 @@
 import React from 'react'
-import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
-import EliminationForm from './TournamentForm';
-import clsx from 'clsx';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import Whatshot from '@material-ui/icons/Whatshot';
-import StarsIcon from '@material-ui/icons/Stars';
-import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from 'react-router-dom';
 import { ReactComponent as Teams } from '../../resources/icons/teams.svg';

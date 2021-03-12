@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from "react-i18next";
-import { ActionStatus, Nullable } from '../../types/main';
+import { Nullable } from '../../../types/main';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { RootState } from '../../../redux/store';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import IconButton from '@material-ui/core/IconButton';
@@ -94,7 +94,6 @@ const EnterScoreSelector = ({ selectedNumber, onScoreSelect, disabledScore, mirr
 
     const handleMinusButton = () => {
         setPlusMinusAction('minus');
-        //scoreShift - 4 <= 0 ? setScoreShift(0) : setScoreShift(scoreShift - 4);
         hiddenStartingScores <= shiftStep ? setScoreShift(scoreShift - hiddenStartingScores) : setScoreShift(scoreShift - shiftStep);
         isInitial && setIsInitial(false);
     }

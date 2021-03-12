@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslation } from "react-i18next";
 import gameListRowStyles from './gameListRowStyles';
-import { getMultipleSetScores } from '../../utils/scoreUtils';
 
 interface Props {
     scoresOpen: boolean;

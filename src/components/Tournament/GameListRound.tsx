@@ -23,7 +23,6 @@ const GameListRound = ({ roundNubmer, maxScores }: Props) => {
                 <GameListRow
                     key={`gameListRow_${i}`}
                     tabIndex={10}
-                    //tabIndex={numberOfGames * (roundNubmer - 1) + i + 1}
                     gameKey={`${roundNubmer}-${i + 1}`}
                     maxScores={maxScores}
                 />

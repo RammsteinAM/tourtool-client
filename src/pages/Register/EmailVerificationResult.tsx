@@ -19,8 +19,6 @@ import { ActionStatus } from '../../types/main';
 import { appName } from '../../utils/constants';
 import mainStyles from '../../styles/mainStyles';
 
-
-
 interface FormikValues {
     password: string;
     confirmPassword: string;
@@ -32,15 +30,6 @@ interface IError {
 }
 
 interface Props {
-    //children: ReactElement
-}
-
-enum LoginDialogState {
-    Login,
-    Register,
-    ResetPassword,
-    RegisterSuccess,
-    ResetPasswordSuccess
 }
 
 const EmailVerificationResult = (props: Props) => {
@@ -69,7 +58,6 @@ const EmailVerificationResult = (props: Props) => {
                 maxWidth={false}
                 fullScreen={fullScreen}
                 open
-                //className={classes.root}
                 classes={{
                     paper:
                         classes.paper

@@ -2,24 +2,19 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import { Games, StateLMSPlayer, StateLMSPlayers } from '../../types/entities';
-import { splitGameKey } from '../../utils/stringUtils';
-import EliminationCard from './EliminationCard';
+import { Games, StateLMSPlayers } from '../../types/entities';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
-import { CardHeader } from '@material-ui/core';
 import { resetGames, updateGames } from '../../redux/tournamentEntities/actions';
-import GameListRow from '../../components/Tournament/GameListRow';
 import { debounce, differenceBy, shuffle } from 'lodash';
 import { useResizeDetector } from 'react-resize-detector';
 import GameListRound from '../../components/Tournament/GameListRound';
 import LastManStandingPlayerStatsList from './LastManStandingPlayerStatsList';
-import LastManStandingPlayerStatsRow from './LastManStandingPlayerStatsRow';
 import lastManStandingStyles from './lastManStandingStyles';
 
-interface Player {
+export interface Players {
     [key: string]: {
         name: string;
         lives: number;
@@ -27,42 +22,35 @@ interface Player {
         points: number;
         goals: number;
         goalsIn: number;
-        // goalDiff: number;
     };
 }
 interface Props {
 }
 
 const LastManStanding = (props: Props) => {
-    const [games, setGames] = useState<Games>({});
     const [rounds, setRounds] = useState<number>(1);
+    const [playerData, setPlayerData] = useState<Players>({});
     const [maxScores, setMaxScores] = useState<number>(7);
     const { width, height, ref: resizeRef } = useResizeDetector();
     const entityState = useSelector((state: RootState) => state.entities);
     const settingsState = useSelector((state: RootState) => state.settings);
     const storeGames = useSelector((state: RootState) => state.entities.games);
     const lmsPlayers = useSelector((state: RootState) => state.entities.lmsPlayers);
-    const statsColOrder = useSelector((state: RootState) => state.settings.tournamentSidebarColumnOrder) || ['name', 'numberOfGames', 'lives'];
-    const firstRoundGameNumber = Object.keys(games).filter(gameKey => splitGameKey(gameKey).round === 1).length;
     const dispatch = useDispatch();
-    const columns = Math.log(Object.keys(games).length + 1) / Math.log(2);
     const classes = lastManStandingStyles();
     const { t } = useTranslation();
 
-    // useEffect(() => {
-
-    //     setGames({ ...entityState.eliminationGames })
-
-    // }, [/* entityState.players */])
-
     useEffect(() => {
-        submitInitialGamesToStore()
-        //setGames({ ...entityState.lmsPlayers })
-        // dispatch(updateGames())
+        submitInitialGamesToStore();
     }, [])
 
     useEffect(() => {
-        delayedUpdateMaxScores(width);
+        const playerData = getPlayersDataWithStats();
+        setPlayerData(playerData);
+    }, [storeGames, entityState.tournament])
+
+    useEffect(() => {
+        width && delayedUpdateMaxScores(width);
     }, [width])
 
     const delayedUpdateMaxScores = useCallback(debounce(score => updateMaxScores(score), 300), [maxScores])
@@ -73,8 +61,124 @@ const LastManStanding = (props: Props) => {
             setMaxScores(2);
             return;
         }
-        setMaxScores(score);
+        score > 0 && setMaxScores(score);
     }
+
+    const getPlayersDataWithStats = () => {
+        const gamesArr = Object.values(storeGames);
+
+        const { numberOfLives, pointsForWin, pointsForDraw } = entityState.tournament;
+
+        const players: Players = {};
+
+        if (typeof numberOfLives !== 'number' || typeof pointsForWin !== 'number' || typeof pointsForDraw !== 'number') return players;
+        debugger
+        lmsPlayers.forEach(player => {
+            if (typeof player.name === 'string') {
+                players[player.name] = {
+                    name: player.name,
+                    lives: numberOfLives,
+                    numberOfGames: 0,
+                    points: 0,
+                    goals: 0,
+                    goalsIn: 0,
+                }
+            }
+            // DYP
+            else if (player.name[0] && player.name[1]) {
+                players[player.name[0]] = {
+                    name: player.name[0],
+                    lives: numberOfLives,
+                    numberOfGames: 0,
+                    points: 0,
+                    goals: 0,
+                    goalsIn: 0,
+                }
+                players[player.name[1]] = {
+                    name: player.name[1],
+                    lives: numberOfLives,
+                    numberOfGames: 0,
+                    points: 0,
+                    goals: 0,
+                    goalsIn: 0,
+                }
+            }
+        })
+        const playersData = gamesArr.reduce(function (acc, val, i) {
+            if (!val.score1 || !val.score2) {
+                return acc;
+            }
+
+            // SINGLE, TEAM
+            if (typeof val.player1 === 'string' && typeof val.player2 === 'string') {
+
+                acc[val.player1].numberOfGames++;
+                acc[val.player2].numberOfGames++;
+
+                acc[val.player1].goals += val.score1;
+                acc[val.player2].goals += val.score2;
+
+                acc[val.player1].goalsIn += val.score2;
+                acc[val.player2].goalsIn += val.score1;
+
+                if (val.score1 > val.score2) {
+                    acc[val.player1].points += pointsForWin;
+                    acc[val.player2].lives--;
+                }
+                if (val.score1 < val.score2) {                    
+                    acc[val.player1].points += pointsForWin;
+                    acc[val.player1].lives--;
+                }
+                if (val.score1 === val.score2) {
+                    acc[val.player1].points += pointsForDraw;
+                    acc[val.player2].points += pointsForDraw;
+                }
+
+            }
+
+            // DYP
+            else if (val.player1[0] && val.player1[1] && val.player2[0] && val.player2[1]) {
+
+                acc[val.player1[0]].numberOfGames++;
+                acc[val.player1[1]].numberOfGames++;
+                acc[val.player2[0]].numberOfGames++;
+                acc[val.player2[1]].numberOfGames++;
+
+                acc[val.player1[0]].goals += val.score1;
+                acc[val.player1[1]].goals += val.score1;
+                acc[val.player2[0]].goals += val.score2;
+                acc[val.player2[1]].goals += val.score2;
+
+                acc[val.player1[0]].goalsIn += val.score2;
+                acc[val.player1[1]].goalsIn += val.score2;
+                acc[val.player2[0]].goalsIn += val.score1;
+                acc[val.player2[1]].goalsIn += val.score1;
+
+                if (val.score1 > val.score2) {                    
+                    acc[val.player1[0]].points += pointsForWin;
+                    acc[val.player1[1]].points += pointsForWin;
+                    acc[val.player2[0]].lives--;
+                    acc[val.player2[1]].lives--;
+                }
+                if (val.score1 < val.score2) {
+                    acc[val.player2[0]].points += pointsForWin;
+                    acc[val.player2[0]].points += pointsForWin;
+                    acc[val.player1[0]].lives--;
+                    acc[val.player1[1]].lives--;
+                }
+                if (val.score1 === val.score2) {
+                    acc[val.player1[0]].points += pointsForDraw;
+                    acc[val.player1[1]].points += pointsForDraw;
+                    acc[val.player2[0]].points += pointsForDraw;
+                    acc[val.player2[1]].points += pointsForDraw;
+                }
+            }
+
+            return acc;
+        }, players);
+
+        return playersData;
+    };
 
     const handleShowResult = () => {
 
@@ -93,18 +197,12 @@ const LastManStanding = (props: Props) => {
         return true;
     }
 
-    // const getLives = () => {
-    //     const games = entityState.games;
-    //     for (const key in games) {
-    //         if (Object.prototype.hasOwnProperty.call(games, key)) {
-    //             const game = games[key];
-    //             if (typeof game.score1 !== 'number' || typeof game.score2 !== 'number') {
-    //                 return false;
-    //             }
-    //         }
-    //     }
-    //     return true;
-    // }
+    const alivePlayerCount = Object.values(playerData).reduce((acc, val) => {
+        if (val.lives > 0) {
+            return acc + 1;
+        }
+        return acc;
+    }, 0);
 
     const handleNewRound = () => {
         setRounds(rounds + 1);
@@ -121,6 +219,7 @@ const LastManStanding = (props: Props) => {
             j++
         }
 
+        debugger
         dispatch(resetGames());
         dispatch(updateGames(storeGames));
     }
@@ -128,21 +227,21 @@ const LastManStanding = (props: Props) => {
     const submitNewRoundGamesToStore = (nextRound: number, currentRound: number) => {
         const players = entityState.lmsPlayers;
         const games = entityState.games;
-        const lastRoundPlayers: StateLMSPlayers/* (string | [string, string])[] */ = []
+        const lastRoundPlayers: StateLMSPlayers = []
         let nextRoundPlayers: StateLMSPlayers = [];
         const numberOfGames = Math.floor(players.length / 2);
 
-        debugger
         for (let i = 1; i <= numberOfGames; i++) {
             lastRoundPlayers.push({ name: games[`${currentRound}-${i}`].player1 });
             lastRoundPlayers.push({ name: games[`${currentRound}-${i}`].player2 });
         }
 
-
         const waitingPlayer = differenceBy(players, lastRoundPlayers, 'name');
         const shuffledLastRoundPlayers = shuffle(lastRoundPlayers);
-        shuffledLastRoundPlayers.pop();
-        waitingPlayer.length > 0 && shuffledLastRoundPlayers.push(waitingPlayer[0])
+        if (waitingPlayer.length > 0) {
+            shuffledLastRoundPlayers.pop();
+            shuffledLastRoundPlayers.push(waitingPlayer[0])
+        }
 
         nextRoundPlayers = shuffledLastRoundPlayers;
 
@@ -162,7 +261,7 @@ const LastManStanding = (props: Props) => {
             <Card
                 ref={resizeRef}
                 className={classes.cardRoot}
-                style={{ width: `calc(100% - ${settingsState.tournamentSidebar ? 350 : 0}px)`, marginRight: settingsState.tournamentSidebar ? '12px' : '0px' }}
+                style={{ width: `calc(100% - ${settingsState.tournamentSidebar ? 362 : 0}px)`, marginRight: settingsState.tournamentSidebar ? '12px' : '0px' }}
             >
                 <div className={classes.tournamentGameContainerHeader}>
                 </div>
@@ -177,7 +276,7 @@ const LastManStanding = (props: Props) => {
                     <Button onClick={handleShowResult} color="default" size='small' type='button' className={classes.dialogButton}>
                         {t('Show Result')}
                     </Button>
-                    {validateRoundComplete() &&
+                    {validateRoundComplete() && alivePlayerCount > 1 &&
                         <Button onClick={handleNewRound} color="default" size='small' type='button' className={classes.dialogButton}>
                             {t('New Round')}
                         </Button>
@@ -185,10 +284,10 @@ const LastManStanding = (props: Props) => {
                 </CardActions>
             </Card>
             {settingsState.tournamentSidebar && <div className={classes.tournamentGameSidebar}>
-                <Card className={classes.cardRootSide}>
-                    <LastManStandingPlayerStatsList />
+                <Card className={classes.cardRootSideTop}>
+                    <LastManStandingPlayerStatsList playersData={playerData} />
                 </Card>
-                <Card className={classes.cardRootSide}>
+                <Card className={classes.cardRootSideBottom}>
                     <CardContent className={classes.cardContent}>
                         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iste, dolorem quos cumque dolores ducimus
                     </CardContent>

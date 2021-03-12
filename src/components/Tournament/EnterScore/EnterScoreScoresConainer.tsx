@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslation } from "react-i18next";
-import { Nullable } from '../../types/main';
+import { Nullable } from '../../../types/main';
 import EnterScoreSelector from './EnterScoreSelector';
 import enterScoreDialogStyles from './enterScoresStyles';
 

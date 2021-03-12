@@ -1,43 +1,34 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import { splitGameKey } from '../../utils/stringUtils';
-import EliminationCard from './EliminationCard';
-import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import { debounce, differenceBy, shuffle } from 'lodash';
 import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
-
+import CloseIcon from '@material-ui/icons/Close';
 import clsx from 'clsx';
 import lastManStandingStyles from './lastManStandingStyles';
 import LastManStandingPlayerStatsRow, { LMSColOrderKeys } from './LastManStandingPlayerStatsRow';
+import { Typography } from '@material-ui/core';
+import { Players } from './LastManStanding';
+import toast from '../../components/IndependentSnackbar';
+import TournamentStatsSettingsList from '../../components/Tournament/TournamentStatsSettingsList';
+import { updateSettings } from '../../redux/settings/actions';
 
-interface Player {
-    [key: string]: {
-        name: string;
-        lives: number;
-        numberOfGames: number;
-        points: number;
-        goals: number;
-        goalsIn: number;
-        // goalDiff: number;
-    };
-}
 interface Props {
+    playersData: Players
 }
 
 const LastManStandingPlayerStatsList = (props: Props) => {
     const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
-    // const [settingsOpen, setSettingsOpen] = useState<LMSColOrderKeys[]>([]);
+    const [easterEgg, setEasterEgg] = useState<boolean>(false);
     const entityState = useSelector((state: RootState) => state.entities);
     const games = useSelector((state: RootState) => state.entities.games);
     const lmsPlayers = useSelector((state: RootState) => state.entities.lmsPlayers);
     const settingsState = useSelector((state: RootState) => state.settings);
-    // const statsColOrder = useSelector((state: RootState) => state.settings.tournamentSidebarColumnOrder) || ['name', 'numberOfGames', 'lives'];
-    const statsColOrder: LMSColOrderKeys[] = ['name', 'numberOfGames', 'goals', 'goalsIn', 'goalDiff', 'lives'];
+    const statsColOrder = useSelector((state: RootState) => state.settings.tournamentSidebarColumnOrder) || ['name', 'numberOfGames', 'lives'];
+    const statsEnabledColumns = useSelector((state: RootState) => state.settings.tournamentSidebarEnabledColumns) || ['name', 'numberOfGames', 'lives'];
+    const dispatch = useDispatch();
     const classes = lastManStandingStyles();
     const { t } = useTranslation();
 
@@ -52,108 +43,25 @@ const LastManStandingPlayerStatsList = (props: Props) => {
         goalDiff: t('LMSStatsCol_GoalDiff'),
     }
 
-    const handleSettingsButtonClick = () => {
+    const handleSettingsButtonClick = (e: React.MouseEvent) => {
+        if (e.ctrlKey && e.shiftKey && e.altKey) {
+            !easterEgg && toast.success('KEKW mode activated.');
+            setEasterEgg(!easterEgg);
+            return;
+        }
         setSettingsOpen(!settingsOpen);
     }
-    
+
+    const visibleOrderedColumns: LMSColOrderKeys[] = statsEnabledColumns.sort((a, b) => {
+        if (statsColOrder.indexOf(a) > statsColOrder.indexOf(b)) {
+            return 1;
+        }
+        return -1;
+    });
+
     const renderPlayersWithStats = () => {
-        const gamesArr = Object.values(games);
 
-        const { numberOfLives, pointsForWin, pointsForDraw } = entityState.tournament;
-
-        const players: Player = {};
-
-        if (!numberOfLives) return;
-
-        lmsPlayers.forEach(player => {
-            if (typeof player.name === 'string') {
-                players[player.name] = {
-                    name: player.name,
-                    lives: numberOfLives,
-                    numberOfGames: 0,
-                    points: 0,
-                    goals: 0,
-                    goalsIn: 0,
-                }
-            }
-            // DYP
-            else if (player.name[0] && player.name[1]) {
-                players[player.name[0]] = {
-                    name: player.name[0],
-                    lives: numberOfLives,
-                    numberOfGames: 0,
-                    points: 0,
-                    goals: 0,
-                    goalsIn: 0,
-                }
-                players[player.name[1]] = {
-                    name: player.name[1],
-                    lives: numberOfLives,
-                    numberOfGames: 0,
-                    points: 0,
-                    goals: 0,
-                    goalsIn: 0,
-                }
-            }
-        })
-        const playersData = gamesArr.reduce(function (acc, val, i) {
-            if (!val.score1 || !val.score2) {
-                return acc;
-            }
-
-            // SINGLE OR TEAM
-            if (typeof val.player1 === 'string' && typeof val.player2 === 'string') {
-
-                acc[val.player1].numberOfGames++;
-                acc[val.player2].numberOfGames++;
-
-                acc[val.player1].goals += val.score1;
-                acc[val.player2].goals += val.score2;
-
-                acc[val.player1].goalsIn += val.score2;
-                acc[val.player2].goalsIn += val.score1;
-
-                if (val.score1 > val.score2) {
-                    acc[val.player2].lives--;
-                }
-                if (val.score1 < val.score2) {
-                    acc[val.player1].lives--;
-                }
-
-            }
-
-            // DYP
-            else if (val.player1[0] && val.player1[1] && val.player2[0] && val.player2[1]) {
-
-                acc[val.player1[0]].numberOfGames++;
-                acc[val.player1[1]].numberOfGames++;
-                acc[val.player2[0]].numberOfGames++;
-                acc[val.player2[1]].numberOfGames++;
-
-                acc[val.player1[0]].goals += val.score1;
-                acc[val.player1[1]].goals += val.score1;
-                acc[val.player2[0]].goals += val.score2;
-                acc[val.player2[1]].goals += val.score2;
-
-                acc[val.player1[0]].goalsIn += val.score2;
-                acc[val.player1[1]].goalsIn += val.score2;
-                acc[val.player2[0]].goalsIn += val.score1;
-                acc[val.player2[1]].goalsIn += val.score1;
-
-                if (val.score1 > val.score2) {
-                    acc[val.player2[0]].lives--;
-                    acc[val.player2[1]].lives--;
-                }
-                if (val.score1 < val.score2) {
-                    acc[val.player1[0]].lives--;
-                    acc[val.player1[1]].lives--;
-                }
-            }
-
-            return acc;
-        }, players)
-
-        const playersArr = Object.values(playersData).sort((a, b) => {
+        const playersArr = Object.values(props.playersData).sort((a, b) => {
             if (a.lives < b.lives) {
                 return 1
             }
@@ -171,30 +79,50 @@ const LastManStandingPlayerStatsList = (props: Props) => {
                     goalsIn={player.goalsIn}
                     goalDiff={player.goals - player.goalsIn}
                     numberOfGames={player.numberOfGames}
-                    colOrderedKeys={/* statsColOrder */['name', 'numberOfGames', 'goals', 'goalsIn', 'goalDiff', 'lives']}
+                    points={player.points}
+                    colOrderedKeys={visibleOrderedColumns}
+                    easterEgg={easterEgg}
                 />
             )
         });
     }
 
+    const handleColumnChange = (columns: LMSColOrderKeys[]) => {
+        dispatch(updateSettings({ tournamentSidebarColumnOrder: [...columns] }))
+    }
 
     return (
         <>
-            <div className={classes.tournamentSidebarHeader}>
-                <IconButton
-                    onClick={handleSettingsButtonClick}
-                    aria-label="show more"
+            <div className={classes.tournamentSidebarHeaderContainer}>
+                <div
+                    className={clsx(classes.tournamentSidebarHeader, { [classes.tournamentSidebarHeaderClosed]: !settingsOpen })}
+                    style={{ maxHeight: settingsOpen ? '416px' : '56px' }}
                 >
-                    <SettingsIcon className={classes.icons} />
-                </IconButton>
+                    <div className={classes.tournamentSidebarHeaderTitle}>
+                        {settingsOpen && <div className={classes.tournamentSidebarHeaderTitleText}>{t('Configure Table')}</div>}
+                        <IconButton
+                            onClick={handleSettingsButtonClick}
+                        >
+                            {settingsOpen ?
+                                <CloseIcon className={classes.icons} /> :
+                                <SettingsIcon className={classes.icons} />
+                            }
+                        </IconButton>
+                    </div>
+                    <div style={!settingsOpen ? { visibility: 'hidden' } : {}}>
+                        <TournamentStatsSettingsList orderedColumns={statsColOrder} enabledColumns={statsEnabledColumns} onChange={handleColumnChange} />
+                    </div>
+                </div>
             </div>
             <CardContent className={classes.cardContent}>
                 <table className={classes.lmsStatsTable}>
                     <thead className={classes.lmsStatsThead}>
                         <td className={clsx(classes.lmsStatsTd, classes.lmsStatsTdPlacement)}>#</td>
-                        {statsColOrder.map((key: LMSColOrderKeys) => (
-                            <td className={classes.lmsStatsHeaderTd}>{statNames[key]}</td>
-                        ))}
+                        {visibleOrderedColumns.map((key: LMSColOrderKeys) => {
+                            return <td className={clsx(classes.lmsStatsHeaderTd, { [classes.lmsStatsTdPlayer]: key === 'name' })}>
+                                {statNames[key]}
+                            </td>
+                        })}
                     </thead>
                     <tbody>
                         {renderPlayersWithStats()}

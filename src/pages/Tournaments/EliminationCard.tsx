@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import { EliminationPlayers, StateEliminationGame, StateEliminationPlayer, StateScore } from '../../types/entities';
+import { StateEliminationGame, StateScore } from '../../types/entities';
 import tournamentStyles from './tournamentStyles';
-import EliminationSidebar from '../../components/Tournament/EliminationSidebar';
 import { updateEliminationGames } from '../../redux/tournamentEntities/actions';
-import { Nullable } from '../../types/main';
-import EnterScoreDialog from '../../components/Tournament/EnterScoreDialog';
+import EnterScoreDialog from '../../components/Tournament/EnterScore/EnterScoreDialog';
 import { splitGameKey } from '../../utils/stringUtils';
 import { getMultipleSetScores } from '../../utils/scoreUtils';
 

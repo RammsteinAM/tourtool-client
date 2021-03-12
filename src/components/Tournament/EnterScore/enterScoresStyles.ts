@@ -13,10 +13,7 @@ const styles = makeStyles((theme) => ({
         color: '#ffffff',
         backgroundColor: '#333333',
         paddingTop: '20px',
-        // animation: "gradient 3s ease infinite",
         '&:focus': {
-            // background: "linear-gradient(180deg, #333333, #777777, #777777, #333333)",
-            // backgroundSize: "400% 400%" 
             outline: 'none',
         },
         '&:focus $hint': {
