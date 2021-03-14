@@ -55,7 +55,7 @@ export interface StateTournament extends BaseEntity {
     goals?: boolean,
     numberOfGoals?: number,
     draw?: boolean,
-    winningSets?: number;
+    sets?: number;
     numberOfLives?: number;
     thirdPlace?: boolean,
     pointsForWin?: number,
@@ -81,3 +81,15 @@ export type EliminationGames = {
 export interface StateScore {
     [set: number]: number;
 }
+
+export interface LMSTableProps {
+    name?: string;
+    lives?: number;
+    numberOfGames?: number;
+    points?: number;
+    goals?: number;
+    goalsIn?: number;
+    goalDiff?: number;
+}
+
+export type LMSColOrderKeys = (keyof LMSTableProps);

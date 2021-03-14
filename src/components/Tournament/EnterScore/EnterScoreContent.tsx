@@ -24,23 +24,24 @@ interface Props {
     gameKey: string;
     visibleScores?: number;
     getNumberOfAdditionalGames?: (n: number) => void;
+    forwardedRef?: any;
 }
 
-const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, getNumberOfAdditionalGames }: Props) => {
+const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, getNumberOfAdditionalGames, forwardedRef }: Props) => {
     const classes = enterScoreDialogStyles();
     const [score1, setScore1] = useState<StateScore>({});
     const [score2, setScore2] = useState<StateScore>({});
     const entityState = useSelector((state: RootState) => state.entities);
-    const [numberOfGames, setNumberOfGames] = useState<number>(entityState.tournament.winningSets || 1);
+    const [numberOfGames, setNumberOfGames] = useState<number>(entityState.tournament.sets || 1);
     const { t } = useTranslation();
     const numberOfGoals = entityState.tournament.numberOfGoals || 7;
-    const winningSets = entityState.tournament.winningSets || 1;
+    const sets = entityState.tournament.sets || 1;
     let pressedKeys: string[] = [];
 
     useEffect(() => {
         const el = document.getElementById(`enter-score-content-${gameKey}`);
         el?.focus()
-        if (winningSets === 1) {
+        if (sets === 1) {
             el?.addEventListener('keydown', handleKeyDown);
         }
         return () => {
@@ -75,7 +76,7 @@ const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, 
         setScore2(scores2);
         setNumberOfGames(numberOfPlayedGames);
     }, [games[gameKey]]);
-    
+
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.ctrlKey) {
             return;
@@ -101,20 +102,20 @@ const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, 
         }
         if (pressedKeys.filter(key => key === 'Enter').length > 2) {
             pressedKeys = [];
-        }            
+        }
     }
-    
+
     const handleKeyDown2 = (e: React.KeyboardEvent) => {
         if (e.ctrlKey && e.key === 'Enter') {
             handleConfirm();
-        }  
+        }
     }
 
     const handleConfirm = () => {
-        if (winningSets > 1) {
-            const finalScores = getMultipleSetScores(score1, score2, winningSets);
-            if (finalScores.score1 < winningSets && finalScores.score2 < winningSets) {
-                toast.error(t('less-than-winning-sets-message', { winningSets }))
+        if (sets > 1) {
+            const finalScores = getMultipleSetScores(score1, score2, sets);
+            if (!entityState.tournament.draw && finalScores.score1 < sets && finalScores.score2 < sets) {
+                toast.error(t('less-than-winning-sets-message', { winningSets: sets }))
                 return;
             }
         }
@@ -128,19 +129,22 @@ const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, 
     }
 
     const getNewNumberOfGames = (scores1: StateScore, scores2: StateScore) => {
-        const { score1, score2, winners } = getMultipleSetScores(scores1, scores2, winningSets);
+        if (entityState.tournament.draw) {
+            return numberOfGames;
+        }
+        const { score1, score2, winners } = getMultipleSetScores(scores1, scores2, sets);
         let newNumberOfGames = numberOfGames;
-        if (score1 < winningSets && score2 < winningSets && score1 + score2 === numberOfGames) {
+        if (score1 < sets && score2 < sets && score1 + score2 === numberOfGames) {
             newNumberOfGames = numberOfGames + 1;
         }
-        else if ((score1 >= winningSets || score2 >= winningSets)) {
-            newNumberOfGames = winningSets;
-            const player1WinningIndex = getNthIndexOf(winners, 1, winningSets);
-            const player2WinningIndex = getNthIndexOf(winners, 2, winningSets);
-            if (score1 < winningSets) {
+        else if ((score1 >= sets || score2 >= sets)) {
+            newNumberOfGames = sets;
+            const player1WinningIndex = getNthIndexOf(winners, 1, sets);
+            const player2WinningIndex = getNthIndexOf(winners, 2, sets);
+            if (score1 < sets) {
                 newNumberOfGames += score1;
             }
-            if (score2 < winningSets) {
+            if (score2 < sets) {
                 newNumberOfGames += score2;
             }
             if (player1WinningIndex + 1 !== numberOfGames && player2WinningIndex + 1 !== numberOfGames) {
@@ -162,7 +166,7 @@ const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, 
     }
 
     const handleScoreSelectLeft = (score: number, setNumber: number): void => {
-        if (winningSets === 1) {
+        if (sets === 1) {
             setScore1({ 1: score });
             if (typeof score2[1] !== 'number' && score < numberOfGoals) {
                 setScore2({ 1: numberOfGoals });
@@ -176,14 +180,14 @@ const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, 
         }
         const newNumberOfGames = getNewNumberOfGames(newScore1, newScore2);
         const { score1: stateScore1, score2: stateScore2 } = getNewScores(newScore1, newScore2, newNumberOfGames);
-        getNumberOfAdditionalGames && getNumberOfAdditionalGames(newNumberOfGames - winningSets);
-        setNumberOfGames(newNumberOfGames);
+        getNumberOfAdditionalGames && getNumberOfAdditionalGames(newNumberOfGames - sets);
+        numberOfGames !== newNumberOfGames && setNumberOfGames(newNumberOfGames);
         setScore1(stateScore1);
         setScore2(stateScore2);
     }
 
     const handleScoreSelectRight = (score: number, setNumber: number): void => {
-        if (winningSets === 1) {
+        if (sets === 1) {
             setScore2({ 1: score });
             if (typeof score2[1] !== 'number' && score < numberOfGoals) {
                 setScore1({ 1: numberOfGoals });
@@ -197,8 +201,8 @@ const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, 
         }
         const newNumberOfGames = getNewNumberOfGames(newScore1, newScore2);
         const { score1: stateScore1, score2: stateScore2 } = getNewScores(newScore1, newScore2, newNumberOfGames);
-        getNumberOfAdditionalGames && getNumberOfAdditionalGames(newNumberOfGames - winningSets);
-        setNumberOfGames(newNumberOfGames);
+        getNumberOfAdditionalGames && getNumberOfAdditionalGames(newNumberOfGames - sets);
+        numberOfGames !== newNumberOfGames && setNumberOfGames(newNumberOfGames);
         setScore1(stateScore1);
         setScore2(stateScore2);
     }
@@ -213,12 +217,13 @@ const EnterScoreContent = ({ onClose, onConfirm, games, gameKey, visibleScores, 
 
     return (
         <div //className={classes.content}
-        className={clsx(classes.content, {
-            [classes.contentFewWinningSets]: winningSets > 1,
-        })}
-        onKeyDown={handleKeyDown2}
-        id={`enter-score-content-${gameKey}`} tabIndex={tabIndex || 0} >
-            {winningSets === 1 && <div className={classes.hint}>{t('enter-score-hint-text')}</div>}
+            className={clsx(classes.content, {
+                [classes.contentFewWinningSets]: sets > 1,
+            })}
+            onKeyDown={handleKeyDown2}
+            ref={forwardedRef}
+            id={`enter-score-content-${gameKey}`} tabIndex={tabIndex || 0} >
+            {sets === 1 && <div className={classes.hint}>{t('enter-score-hint-text')}</div>}
             {[...Array(numberOfGames).keys()].map(key => {
                 return (
                     <EnterScoreScoresConainer

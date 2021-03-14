@@ -25,7 +25,7 @@ const initialState: EntitiesReducerState | null = {
     goals: true,
     numberOfGoals: 7,
     draw: false,
-    winningSets: 1,
+    sets: 1,
     numberOfLives: 3,
   },
   participants: [],

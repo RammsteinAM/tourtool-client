@@ -22,7 +22,7 @@ interface ITournamentForm {
     goals: boolean,
     numberOfGoals: number,
     draw: boolean,
-    winningSets: number;
+    sets: number;
     numberOfLives?: number;
     pointsForWin?: number;
     pointsForDraw?: number;
@@ -48,7 +48,7 @@ const TournamentForm = (props: Props) => {
         goals: true,
         numberOfGoals: 7,
         draw: false,
-        winningSets: 1,
+        sets: 1,
         numberOfLives: 3,
         pointsForWin: 2,
         pointsForDraw: 1,
@@ -189,24 +189,24 @@ const TournamentForm = (props: Props) => {
                         label={t('Draw')}
                     />
                 </div>
-                <FormSubheader title={t('Winning Sets')} descriptionWidth={454} />
-                <div className={classes.formBlock}>
-                    <span className={classes.formLabel}>{t('Winning Sets')}</span>
-                    <Select
-                        id="winningSets"
-                        name="winningSets"
-                        value={formState.winningSets}
-                        onChange={handleFormStateChange}
-                        className={classes.formSelect}
-                        MenuProps={{ classes: { paper: classes.menuPaper } }}
-                    >
-                        {
-                            [...Array(10).keys()].map(key => (
-                                <MenuItem key={key} value={key + 1}>{t('Set', { count: key + 1 })}</MenuItem>
-                            ))
-                        }
-                    </Select>
-                </div>
+                <FormSubheader title={formState.draw ? t('Sets') : t('Winning Sets')} descriptionWidth={454} />
+                        <div className={classes.formBlock}>
+                            <span className={classes.formLabel}>{formState.draw ? t('Sets') : t('Winning Sets')}</span>
+                            <Select
+                                id="sets"
+                                name="sets"
+                                value={formState.sets}
+                                onChange={handleFormStateChange}
+                                className={classes.formSelect}
+                                MenuProps={{ classes: { paper: classes.menuPaper } }}
+                            >
+                                {
+                                    [...Array(10).keys()].map(key => (
+                                        <MenuItem key={key} value={key + 1}>{t('Set', { count: key + 1 })}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </div>
                 {(tournamentType === 'lms' || tournamentType === 'round-robin') &&
                     <>
                         <FormSubheader title={t('Points')} /* text={t('form-subheader-points-text')} descriptionWidth={454} */ />

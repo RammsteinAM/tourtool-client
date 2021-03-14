@@ -11,7 +11,7 @@ import { resetGames, updateGames } from '../../redux/tournamentEntities/actions'
 import { debounce, differenceBy, shuffle } from 'lodash';
 import { useResizeDetector } from 'react-resize-detector';
 import GameListRound from '../../components/Tournament/GameListRound';
-import LastManStandingPlayerStatsList from './LastManStandingPlayerStatsList';
+import LastManStandingPlayerStatsList from '../../components/Tournament/TournamentStats/LastManStandingPlayerStatsList';
 import lastManStandingStyles from './lastManStandingStyles';
 
 export interface Players {
@@ -64,19 +64,17 @@ const LastManStanding = (props: Props) => {
         score > 0 && setMaxScores(score);
     }
 
-    const getPlayersDataWithStats = () => {
+    const getPlayersDataWithStats = (): Players => {
         const gamesArr = Object.values(storeGames);
 
         const { numberOfLives, pointsForWin, pointsForDraw } = entityState.tournament;
 
-        const players: Players = {};
+        if (typeof numberOfLives !== 'number' || typeof pointsForWin !== 'number' || typeof pointsForDraw !== 'number') return {};
 
-        if (typeof numberOfLives !== 'number' || typeof pointsForWin !== 'number' || typeof pointsForDraw !== 'number') return players;
-        debugger
-        lmsPlayers.forEach(player => {
-            if (typeof player.name === 'string') {
-                players[player.name] = {
-                    name: player.name,
+        const players: Players = lmsPlayers.reduce((acc: Players, val) => {
+            if (typeof val.name === 'string') {
+                acc[val.name] = {
+                    name: val.name,
                     lives: numberOfLives,
                     numberOfGames: 0,
                     points: 0,
@@ -84,18 +82,17 @@ const LastManStanding = (props: Props) => {
                     goalsIn: 0,
                 }
             }
-            // DYP
-            else if (player.name[0] && player.name[1]) {
-                players[player.name[0]] = {
-                    name: player.name[0],
+            else if (val.name[0] && val.name[1]) {
+                acc[val.name[0]] = {
+                    name: val.name[0],
                     lives: numberOfLives,
                     numberOfGames: 0,
                     points: 0,
                     goals: 0,
                     goalsIn: 0,
                 }
-                players[player.name[1]] = {
-                    name: player.name[1],
+                acc[val.name[1]] = {
+                    name: val.name[1],
                     lives: numberOfLives,
                     numberOfGames: 0,
                     points: 0,
@@ -103,9 +100,11 @@ const LastManStanding = (props: Props) => {
                     goalsIn: 0,
                 }
             }
-        })
-        const playersData = gamesArr.reduce(function (acc, val, i) {
-            if (!val.score1 || !val.score2) {
+            return acc;
+        }, {});
+
+        const playersData = gamesArr.reduce((acc, val, i) => {
+            if (typeof val.score1 !== 'number' || typeof val.score2 !== 'number') {
                 return acc;
             }
 
@@ -176,7 +175,7 @@ const LastManStanding = (props: Props) => {
 
             return acc;
         }, players);
-
+        
         return playersData;
     };
 

@@ -19,7 +19,7 @@ import PlayerFormTextField from '../../components/Tournament/PlayerFormTextField
 import FormControl from '@material-ui/core/FormControl';
 import mainStyles from '../../styles/mainStyles';
 import tournamentStyles from './tournamentStyles';
-import DYPConfigForm from './DYPConfigForm';
+import DYPConfigForm from '../../components/Tournament/DYPConfigForm/DYPConfigForm';
 import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
 
 interface Duplicate {
@@ -198,6 +198,13 @@ const PlayerForm = (props: Props) => {
         newPlayers = newPlayers.filter((val, i, arr) => {
             return (!!val.name || i === arr.length - 1);
         });
+        const duplicate = getDuplicate(index, name);
+        if (duplicate) {
+            toast.warning(t('player-form-duplicate-name', { name: duplicate.player }));
+            fieldRefs[duplicate.index]?.current?.focus();
+            fieldRefs[duplicate.index]?.current?.select();
+            return;
+        }
         setParticipants([...newPlayers]);
         submitParticipantsToStore([...newPlayers]);
     }

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import Paper from '@material-ui/core/Paper';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { RootState } from '../../../redux/store';
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import FormSubheader from '../../components/FormComponents/FormSubheader';
-import { ReactComponent as DrawYourPartner } from '../../resources/icons/drawYourPartner.svg';
-import { StateEliminationPlayers } from '../../types/entities';
-import toast from '../../components/IndependentSnackbar';
-import { updateEliminationPlayers, updateLMSPlayers, updateTournament } from '../../redux/tournamentEntities/actions';
+import FormSubheader from '../../FormComponents/FormSubheader';
+import { ReactComponent as DrawYourPartner } from '../../../resources/icons/drawYourPartner.svg';
+import { StateEliminationPlayers } from '../../../types/entities';
+import toast from '../../IndependentSnackbar';
+import { updateEliminationPlayers, updateLMSPlayers, updateTournament } from '../../../redux/tournamentEntities/actions';
 import DYPConfigFormItem from './DYPConfigFormItem';
 import { difference } from 'lodash';
-import tournamentStyles from './tournamentStyles';
-import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
+import dypFormStyles from './dypFormStyles';
+import CreateTournamentDialog from '../CreateTournamentDialog';
 
 type Team = [string | undefined, string | undefined];
 type InitialTeam = [string, string];
@@ -30,7 +30,7 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
     const [initialPlayers, setInitialPlayers] = useState<string[]>([]);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const storeParticipants = useSelector((state: RootState) => state.entities.participants);
-    const classes = tournamentStyles();
+    const classes = dypFormStyles();
     const dispatch = useDispatch();
     const history = useHistory();
     const { t } = useTranslation();

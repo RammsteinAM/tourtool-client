@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { RootState } from '../../../redux/store';
 import { useTranslation } from "react-i18next";
 import CardContent from '@material-ui/core/CardContent';
 import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
 import CloseIcon from '@material-ui/icons/Close';
 import clsx from 'clsx';
+import LastManStandingPlayerStatsRow from './LastManStandingPlayerStatsRow';
+import { Players } from '../../../pages/Tournaments/LastManStanding';
+import toast from '../../IndependentSnackbar';
+import TournamentStatsSettingsList from '../TournamentStatsSettingsList';
+import { updateSettings } from '../../../redux/settings/actions';
 import lastManStandingStyles from './lastManStandingStyles';
-import LastManStandingPlayerStatsRow, { LMSColOrderKeys } from './LastManStandingPlayerStatsRow';
-import { Typography } from '@material-ui/core';
-import { Players } from './LastManStanding';
-import toast from '../../components/IndependentSnackbar';
-import TournamentStatsSettingsList from '../../components/Tournament/TournamentStatsSettingsList';
-import { updateSettings } from '../../redux/settings/actions';
+import { LMSColOrderKeys } from '../../../types/entities';
 
 interface Props {
     playersData: Players

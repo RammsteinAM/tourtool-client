@@ -31,12 +31,6 @@ const styles = makeStyles((theme) => ({
         borderRadius: 0,
         paddingBottom: 20,
     },
-    dypConfigPaper: {
-        maxWidth: '790px',
-        margin: '24px auto 0',
-        borderRadius: 0,
-        paddingBottom: 20,
-    },
     formTextField: {
         marginBottom: 12,
         width: 60,
@@ -166,85 +160,12 @@ const styles = makeStyles((theme) => ({
             borderColor: "#e0e0e0"
         }
     },
-    gameCard: {
-        width: "215px",
-        height: "86px",
-        backgroundColor: "#333333",
-        color: "#ffffff",
-        borderRadius: "2px",
-        overflow: "hidden",
-        boxShadow: "0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)",
-        padding: "15px 46px 15px 17px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        position: 'relative',
-        '&:hover': {
-            '& $gameCardEnterResult': {
-                opacity: 1,
-            }
-        }
-    },
-    gameCardScore: {
-        top: "0",
-        right: "0",
-        width: "46px",
-        bottom: "0",
-        display: "flex",
-        position: "absolute",
-        flexDirection: "column",
-        textAlign: "center",
-        alignItems: "center",
-        justifyContent: "space-around",
-        padding: "10px 0",
-        backgroundColor: "#333",
-    },
-    gameCardTable: {
-        backgroundColor: "#8ebd5e",
-    },
-    gameCardEnterResult: {
-        backgroundColor: "rgba(0,0,0,.6)",
-        cursor: 'pointer',
-        position: "absolute",
-        width: "100%",
-        height: "100%",
-        top: "0",
-        left: "0",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        opacity: 0,
-        transition: 'opacity 200ms',
-    },
-    gameCardEnterResultBtn: {
-        backgroundColor: "#e16f3d",
-        display: "inline",
-        padding: "6px"
-    },
     gameColumnWithThirdPlace: {
         position: 'relative',
     },
     gameCardThirdPlace: {
         position: 'absolute',
         top: '150px',
-    },
-    gameCardBye: {
-        width: "215px",
-        height: "86px",
-        backgroundColor: "#333333",
-        color: "#767d84",
-        borderRadius: "2px",
-        overflow: "hidden",
-        boxShadow: "0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)",
-        padding: "15px 17px 15px 17px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: 'center',
-    },
-    loser: {
-        color: "#767d84",
-        textDecoration: "line-through",
     },
     gameBetweenColumnSpaceItem: {
         width: "80px",
@@ -302,28 +223,6 @@ const styles = makeStyles((theme) => ({
         position: "absolute",
         bottom: "0",
         left: "34px",
-    },
-    dypConfigItemContainer: {
-        display: 'flex',
-        padding: '20px 20px 0',
-        alignItems: 'center',
-    },
-    dypConfigItemIcon: {
-        margin: 10,
-        fontSize: 24,
-        color: '#bdbdbd',
-    },
-    dypConfigSelect: {
-        height: '20px',
-        fontSize: '13px',
-    },
-    dypConfigSelectMenuPaper: {
-        maxHeight: '280px',
-    },
-    dypConfigSelectMenuList: {
-        '& li': {
-            fontSize: '13px',
-        }
     },
 }));
 

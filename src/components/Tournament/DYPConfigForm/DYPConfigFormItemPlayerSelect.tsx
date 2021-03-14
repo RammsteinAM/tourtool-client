@@ -3,9 +3,9 @@ import { useTranslation } from "react-i18next";
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import clsx from 'clsx';
-import mainStyles from '../../styles/mainStyles';
+import mainStyles from '../../../styles/mainStyles';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import tournamentStyles from './tournamentStyles';
+import dypFormStyles from './dypFormStyles';
 
 interface Props {
     selectedPlayer: string | undefined,
@@ -17,7 +17,7 @@ interface Props {
 
 const DYPConfigFormItemPlayerSelect = ({ selectedPlayer, assignedPlayerNames, removedPlayerNames, onChange, index }: Props) => {
     const mainClasses = mainStyles();
-    const classes = tournamentStyles();
+    const classes = dypFormStyles();
     const { t } = useTranslation();
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {

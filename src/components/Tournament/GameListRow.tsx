@@ -26,7 +26,9 @@ const GameListRow = ({ gameKey, tabIndex, maxScores = 10 }: Props) => {
     const gamesState = useSelector((state: RootState) => state.entities.games);
     const settingsState = useSelector((state: RootState) => state.settings);
     const scoresRef = useRef<any>();
-    const winningSets = entityState.tournament.winningSets || 1;
+    const enterScoreContentRef = useRef<any>(null);
+    const scoreToggleButtonRef = useRef<any>(null);
+    // const winningSets = entityState.tournament.sets || 1;
     const firstRoundGameNumber = Object.keys(games).filter(gameKey => splitGameKey(gameKey).round === 1).length;
     const dispatch = useDispatch();
     const columns = Math.log(Object.keys(games).length + 1) / Math.log(2);
@@ -34,22 +36,26 @@ const GameListRow = ({ gameKey, tabIndex, maxScores = 10 }: Props) => {
     const { t } = useTranslation();
 
     const toggleScoresOpen = () => {
-        const el = document.getElementById(`enter-score-content-${gameKey}`);
         if (scoresOpen) {
             setScoresOpen(false);
-            el?.blur();
+            enterScoreContentRef.current?.blur();
         }
         else {
             setScoresOpen(true);
-            el?.focus();
+            enterScoreContentRef.current?.focus();
         }
         setStateChanged(true);
     }
 
     const closeScores = () => {
-        const el = document.getElementById(`enter-score-content-${gameKey}`);
         setScoresOpen(false);
-        el?.blur();
+        const nextPossibleKeyOfTheRound = `${splitGameKey(gameKey).round}-${splitGameKey(gameKey).gameNumber + 1}`;
+        const nextRoundFirstKey = `${splitGameKey(gameKey).round + 1}-1`;
+        const nextPossibleRoundToggleButton = document.getElementById(`toggle-score-button-${nextPossibleKeyOfTheRound}`);
+        const nextRoundToggleButton = document.getElementById(`toggle-score-button-${nextRoundFirstKey}`);
+        debugger
+        enterScoreContentRef.current?.blur();
+        nextPossibleRoundToggleButton ? nextPossibleRoundToggleButton?.focus() : nextRoundToggleButton?.focus();
         setStateChanged(true);
     }
 
@@ -71,7 +77,7 @@ const GameListRow = ({ gameKey, tabIndex, maxScores = 10 }: Props) => {
         <div className={classes.gameRowContainer}>
             <div className={classes.gameRow}>
                 <div className={classes.gameRowP1}>{gamesState[gameKey]?.player1}</div>
-                <button className={classes.scoreContainer} onClick={toggleScoresOpen} type='button' tabIndex={tabIndex}>
+                <button className={classes.scoreContainer} onClick={toggleScoresOpen} type='button' tabIndex={tabIndex} id={`toggle-score-button-${gameKey}`}>
                     <GameListEnterScoreButton
                         scoresOpen={scoresOpen}
                         score1={gamesState[gameKey]?.score1}
@@ -94,6 +100,7 @@ const GameListRow = ({ gameKey, tabIndex, maxScores = 10 }: Props) => {
             >
                 <div ref={scoresRef} className={classes.enterScoreContentContainer}>
                     <EnterScoreContent
+                        forwardedRef={enterScoreContentRef}
                         onClose={closeScores}
                         onConfirm={handleScoreConfirm}
                         gameKey={gameKey}

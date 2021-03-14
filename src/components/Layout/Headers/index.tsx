@@ -83,7 +83,7 @@ const Header = (props: Props) => {
                         <HeaderGeneric
                             title={t('Create Elimination Bracket')}
                             backButton
-                            shuffleParticipantsButton
+                            shuffleEliminationPlayersButton
                             nextButton
                             nextButtonForm='elimination-form'
                             thirdPlaceCheckbox

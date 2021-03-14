@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { RootState } from '../../../redux/store';
 import { useTranslation } from "react-i18next";
-import { StateEliminationGame, StateScore } from '../../types/entities';
-import tournamentStyles from './tournamentStyles';
-import { updateEliminationGames } from '../../redux/tournamentEntities/actions';
-import EnterScoreDialog from '../../components/Tournament/EnterScore/EnterScoreDialog';
-import { splitGameKey } from '../../utils/stringUtils';
-import { getMultipleSetScores } from '../../utils/scoreUtils';
+import { StateEliminationGame, StateScore } from '../../../types/entities';
+import { updateEliminationGames } from '../../../redux/tournamentEntities/actions';
+import EnterScoreDialog from '../EnterScore/EnterScoreDialog';
+import { splitGameKey } from '../../../utils/stringUtils';
+import { getMultipleSetScores } from '../../../utils/scoreUtils';
+import eliminationSidebarStyles from './eliminationSidebarStyles';
 
 interface Props {
     player1?: string | [string, string];
@@ -23,7 +23,7 @@ const EliminationCard = (props: Props) => {
     const [scoreDialogOpen, setScoreDialogOpen] = useState<boolean>(false);
     const { player1: player1Name, player2: player2Name } = props.gameKey && game ? game : props;
     const dispatch = useDispatch();
-    const classes = tournamentStyles();
+    const classes = eliminationSidebarStyles();
     const { t } = useTranslation();
     const isBye = props.active ? !!game?.hasByePlayer : (!player1Name || !player2Name)
 

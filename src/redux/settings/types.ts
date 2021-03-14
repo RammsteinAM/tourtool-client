@@ -1,6 +1,5 @@
 import { Action } from "redux";
-import { LMSColOrderKeys } from "../../pages/Tournaments/LastManStandingPlayerStatsRow";
-import { StateTournament } from "../../types/entities";
+import { LMSColOrderKeys, StateTournament } from "../../types/entities";
 import { PayloadedAction } from "../helpers";
 
 const UPDATE_SETTINGS = "UPDATE_SETTINGS";

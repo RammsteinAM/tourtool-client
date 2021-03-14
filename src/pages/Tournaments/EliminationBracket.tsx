@@ -3,18 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
 import { EliminationGames, StateEliminationPlayers } from '../../types/entities';
-import EliminationSidebar from '../../components/Tournament/EliminationSidebar';
+import EliminationSidebar from '../../components/Tournament/Elimination/EliminationSidebar';
 import { resetEliminationGames, resetGames, updateEliminationGames } from '../../redux/tournamentEntities/actions';
 import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
-import tournamentStyles from './tournamentStyles';
 import { useHistory } from 'react-router-dom';
-import EliminationCard from './EliminationCard';
+import EliminationColumn from '../../components/Tournament/Elimination/EliminationColumn';
+import tournamentStyles from './tournamentStyles';
+import EliminationBracketCards from '../../components/Tournament/Elimination/EliminationBracketCards';
 
-interface Props {
-
-}
-
-const EliminationBracket = (props: Props) => {
+const EliminationBracket = () => {
     const [players, setPlayers] = useState<StateEliminationPlayers>([]);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const entityState = useSelector((state: RootState) => state.entities);
@@ -22,7 +19,7 @@ const EliminationBracket = (props: Props) => {
     const numberOfPlayers = entityState.eliminationPlayers.length;
     const firstRoundGameNumber: number = 2 ** Math.ceil((Math.log(numberOfPlayers) / Math.log(2)) - 1);
     const byePlayerNumber: number = 2 ** Math.ceil(Math.log(numberOfPlayers) / Math.log(2)) - numberOfPlayers;
-    const columns = Math.ceil((Math.log(numberOfPlayers) / Math.log(2)));
+    const numberOfColumns = Math.ceil((Math.log(numberOfPlayers) / Math.log(2)));
     const classes = tournamentStyles();
     const history = useHistory();
     const { t } = useTranslation();
@@ -67,10 +64,10 @@ const EliminationBracket = (props: Props) => {
 
     const submitGamesToStore = () => {
         const storeGames: EliminationGames = {};
-        for (let col = 1; col <= columns; col++) {
+        for (let col = 1; col <= numberOfColumns; col++) {
             const prevCol = col - 1;
             for (let i = 0, j = 1; i < players.length / (2 ** prevCol); i = i + 2, j++) {
-                const gameKey: string = col === columns ? 'final' : `${col}-${j}`;
+                const gameKey: string = col === numberOfColumns ? 'final' : `${col}-${j}`;
                 storeGames[gameKey] = { player1: '', player2: '', index: gameKey }
                 if (col === 1) {
                     storeGames[gameKey].player1 = players[i].name;
@@ -136,93 +133,6 @@ const EliminationBracket = (props: Props) => {
         handleDialogOpen();
     }
 
-    const renderTree = () => {
-        const result = [];
-        for (let colNumber = 1; colNumber <= columns; colNumber++) {
-            const finalNumberDivider: number = 2 ** (columns - colNumber);
-            result.push(
-                <div key={`gameColumn_${colNumber}`}>
-                    <div className={classes.gameColumn} key={`column${colNumber}`}>
-                        <div>
-                            <div className={classes.gameColumnHeader}>
-                                <span>{finalNumberDivider >= 4 && '1/' + finalNumberDivider} </span>
-                                <span>{finalNumberDivider === 2 ? t('Semifinal') : t('Final', { count: finalNumberDivider })} </span>
-                            </div>
-                            <div className={classes.gameColumnContent}>
-                                {renderCards(colNumber)}
-                            </div>
-                        </div>
-                        {
-                            columns - colNumber >= 1 &&
-                            <div className={classes.gameBetweenColumnsSpace}>
-                                {renderBetweenColumnSpaces(colNumber)}
-                            </div>
-                        }
-                    </div>
-                </div>
-            )
-        }
-        return result;
-    }
-
-    const renderCards = (columnNumber: number) => {
-        const result = [];
-        const numberOfGames = firstRoundGameNumber / (2 ** (columnNumber - 1));
-        for (let i = numberOfGames; i >= 1; i--) {
-            //if (!players[columnNumber]) continue;
-            const p1 = columnNumber === 1 ? players[(numberOfGames - i) * 2] : null
-            const p2 = columnNumber === 1 ? players[(numberOfGames - i) * 2 + 1] : null
-            if (i === 1 && columnNumber === columns && entityState.tournament.thirdPlace) {
-                result.push(
-                    <div className={classes.gameColumnWithThirdPlace} key={`gameCard_${columnNumber}_${i}`}>
-                        <EliminationCard
-                            key={`gameCard_${columnNumber}_${i}`}
-
-                        />
-                        <div className={classes.gameCardThirdPlace}>
-                            <div className={classes.gameColumnHeader}>
-                                <span>{t('Third Place')}</span>
-                            </div>
-                            <EliminationCard
-                                key={`gameCard_${columnNumber}_${i}`}
-                            />
-                        </div>
-                    </div>
-                )
-                continue;
-            }
-            result.push(
-                <EliminationCard
-                    key={`gameCard_${columnNumber}_${i}`}
-                    player1={p1?.name}
-                    player2={p2?.name}
-                />
-            )
-        }
-        return result;
-    }
-
-    const renderBetweenColumnSpaces = (columnNumber: number) => {
-        const result = [];
-        for (let i = firstRoundGameNumber / (2 ** (columnNumber - 1)) / 2; i >= 1; i--) {
-            result.push(
-                <div
-                    key={`gameCardLines_${columnNumber}_${i}`}
-                    style={{ height: `calc(4 * (25% - ${95 * firstRoundGameNumber / 8}px)/${firstRoundGameNumber / ((2 ** (columnNumber - 1)) * 2)})` }}
-                    className={classes.gameBetweenColumnSpaceItem}
-                >
-                    <div className={classes.gameConnectiongLines_Top}></div>
-                    <div className={classes.gameConnectiongLines_TopCorner}></div>
-                    <div className={classes.gameConnectiongLines_MiddleV}></div>
-                    <div className={classes.gameConnectiongLines_MiddleH}></div>
-                    <div className={classes.gameConnectiongLines_BottomCorner}></div>
-                    <div className={classes.gameConnectiongLines_Bottom}></div>
-                </div>
-            )
-        }
-        return result;
-    }
-
     return (
         <>
             <form className={classes.form} onSubmit={handleSubmit} id='elimination-form'>
@@ -231,7 +141,25 @@ const EliminationBracket = (props: Props) => {
                     onChange={handleSidebarChange}
                 />
                 <div className={classes.eliminationBracketCardsContainer}>
-                    {renderTree()}
+                    {[...Array(numberOfColumns).keys()].map(key => {
+                        const colNumber = key + 1;
+                        const roundNumberDenominator: number = 2 ** (numberOfColumns - colNumber);
+                        const numberOfGames = firstRoundGameNumber / (2 ** (colNumber - 1));
+                        return (
+                            <EliminationColumn
+                                numberOfColumns={numberOfColumns}
+                                firstRoundGameNumber={firstRoundGameNumber}
+                                colNumber={colNumber}
+                            >
+                                <EliminationBracketCards
+                                    players={players}
+                                    columnNumber={colNumber}
+                                    numberOfGames={numberOfGames}
+                                />
+                            </EliminationColumn>
+                        )
+                    }
+                    )}
                 </div>
             </form>
             <CreateTournamentDialog

@@ -1,20 +1,9 @@
 import React from 'react';
 import clsx from 'clsx';
-import { ReactComponent as DeadPlayerSkull } from '../../resources/icons/lms.svg';
-import KEKW from '../../resources/icons/KEKW.png';
+import { ReactComponent as DeadPlayerSkull } from '../../../resources/icons/lms.svg';
+import KEKW from '../../../resources/icons/KEKW.png';
 import lastManStandingStyles from './lastManStandingStyles';
-
-interface LMSTableProps {
-    name?: string;
-    lives?: number;
-    numberOfGames?: number;
-    points?: number;
-    goals?: number;
-    goalsIn?: number;
-    goalDiff?: number;
-}
-
-export type LMSColOrderKeys = (keyof LMSTableProps);
+import { LMSColOrderKeys, LMSTableProps } from '../../../types/entities';
 
 interface Props extends LMSTableProps {
     placement: number;

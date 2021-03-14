@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from "react-i18next";
 import AddIcon from '@material-ui/icons/Add';
-import tournamentStyles from './tournamentStyles';
+import dypFormStyles from './dypFormStyles';
 import DYPConfigFormItemPlayerSelect from './DYPConfigFormItemPlayerSelect';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 }
 
 const DYPConfigFormItem = ({ selectedPlayer1, selectedPlayer2, assignedPlayerNames, removedPlayerNames, onChange, index }: Props) => {
-    const classes = tournamentStyles();
+    const classes = dypFormStyles();
     const { t } = useTranslation();
 
     return (

@@ -1,9 +1,9 @@
 import { StateScore } from "../types/entities";
 
-export const getMultipleSetScores = (scores1: StateScore, scores2: StateScore, winningSets: number): { score1: number, score2: number, winners: number[] } => {
+export const getMultipleSetScores = (scores1: StateScore, scores2: StateScore, sets: number): { score1: number, score2: number, winners: number[] } => {
   let score1 = scores1[1], score2 = scores2[1];
   const winners: number[] = [];
-  if (winningSets > 1) {
+  if (sets > 1) {
     score1 = 0;
     score2 = 0;
     for (let i = 1; i <= Object.keys(scores1).length; i++) {

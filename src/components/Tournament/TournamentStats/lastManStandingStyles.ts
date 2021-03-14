@@ -1,21 +1,21 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const styles = makeStyles((theme) => ({
-    tournamentGameContainer: {
-        width: '100%',
-        marginTop: theme.spacing(1),
-        textAlign: 'center'
-    },
-    tournamentGameContainerHeader: {
-        width: "100%",
-        height: "56px",
-        backgroundColor: "#333333",
-        color: "#c5c8cb",
-        borderRadius: "2px 2px 0 0",
-        padding: "0 24px",
-        display: 'flex',
-        justifyContent: 'flex-end',
-    },
+    // tournamentGameContainer: {
+    //     width: '100%',
+    //     marginTop: theme.spacing(1),
+    //     textAlign: 'center'
+    // },
+    // tournamentGameContainerHeader: {
+    //     width: "100%",
+    //     height: "56px",
+    //     backgroundColor: "#333333",
+    //     color: "#c5c8cb",
+    //     borderRadius: "2px 2px 0 0",
+    //     padding: "0 24px",
+    //     display: 'flex',
+    //     justifyContent: 'flex-end',
+    // },
     tournamentSidebarHeaderContainer: {
         width: "100%",
         height: "56px",
@@ -66,61 +66,61 @@ const styles = makeStyles((theme) => ({
             marginTop: 14,
         }
     },
-    tournamentGameRoot: {
-        display: 'flex',
-        justifyContent: 'space-between',
-    },
-    cardRoot: {
-        boxShadow: "0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)",
-        display: "flex",
-        flexDirection: "column",
-        borderRadius: "0",
-    },
-    tournamentGameSidebar: {
-        position: "fixed",
-        display: "flex",
-        width: "350px",
-        right: "12px",
-        top: "79px",
-        height: "calc(100% - 90px)",
-        alignContent: "space-between",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        '& $cardRootSide:not(:last-child)': {
-            marginBottom: '12px',
-        }
-    },
-    cardRootSideTop: {
-        width: "100%",
-        height: "100%",
-        boxShadow: "0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)",
-        display: "flex",
-        marginBottom: '12px',
-        flexDirection: "column",
-        borderRadius: "0",
-        overflow: 'visible',
-    },
-    cardRootSideBottom: {
-        width: "100%",
-        boxShadow: "0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)",
-        display: "flex",
-        flexDirection: "column",
-        borderRadius: "0",
-        overflow: 'visible',
-    },
+    // tournamentGameRoot: {
+    //     display: 'flex',
+    //     justifyContent: 'space-between',
+    // },
+    // cardRoot: {
+    //     boxShadow: "0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)",
+    //     display: "flex",
+    //     flexDirection: "column",
+    //     borderRadius: "0",
+    // },
+    // tournamentGameSidebar: {
+    //     position: "fixed",
+    //     display: "flex",
+    //     width: "350px",
+    //     right: "12px",
+    //     top: "79px",
+    //     height: "calc(100% - 90px)",
+    //     alignContent: "space-between",
+    //     flexDirection: "column",
+    //     justifyContent: "space-between",
+    //     '& $cardRootSide:not(:last-child)': {
+    //         marginBottom: '12px',
+    //     }
+    // },
+    // cardRootSideTop: {
+    //     width: "100%",
+    //     height: "100%",
+    //     boxShadow: "0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)",
+    //     display: "flex",
+    //     marginBottom: '12px',
+    //     flexDirection: "column",
+    //     borderRadius: "0",
+    //     overflow: 'visible',
+    // },
+    // cardRootSideBottom: {
+    //     width: "100%",
+    //     boxShadow: "0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)",
+    //     display: "flex",
+    //     flexDirection: "column",
+    //     borderRadius: "0",
+    //     overflow: 'visible',
+    // },
     cardContent: {
         padding: 0,
         flexGrow: 1,
     },
-    cardActions: {
-        height: '48px',
-        justifyContent: 'space-between',
-    },
-    dialogButton: {
-        color: 'rgba(0,0,0,.54)',
-        paddingLeft: '16px',
-        paddingRight: '16px',
-    },
+    // cardActions: {
+    //     height: '48px',
+    //     justifyContent: 'space-between',
+    // },
+    // dialogButton: {
+    //     color: 'rgba(0,0,0,.54)',
+    //     paddingLeft: '16px',
+    //     paddingRight: '16px',
+    // },
     icons: {
         color: '#c5c8cb',
     },

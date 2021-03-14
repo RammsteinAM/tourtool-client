@@ -2,13 +2,13 @@ import React from 'react'
 import { useTranslation } from "react-i18next";
 import { Draggable } from "react-beautiful-dnd";
 import DragHandleIcon from '@material-ui/icons/DragHandle';
-import { LMSColOrderKeys } from '../../pages/Tournaments/LastManStandingPlayerStatsRow';
 import IconButton from '@material-ui/core/IconButton';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import tournamentStatsSettingsListStyles from './tournamentStatsSettingsListStyles';
 import { updateSettings } from '../../redux/settings/actions';
+import { LMSColOrderKeys } from '../../types/entities';
+import tournamentStatsSettingsListStyles from './tournamentStatsSettingsListStyles';
 
 interface Props {
     keyName: LMSColOrderKeys,

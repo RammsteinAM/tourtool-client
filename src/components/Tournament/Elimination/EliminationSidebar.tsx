@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from "react-i18next";
-import { StateEliminationPlayers } from '../../types/entities';
+import { StateEliminationPlayers } from '../../../types/entities';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import EliminationSidebarItem from './EliminationSidebarItem';
 import eliminationSidebarStyles from './eliminationSidebarStyles';
