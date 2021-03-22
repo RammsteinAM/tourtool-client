@@ -26,7 +26,8 @@ const CreateTournamentDialog = ({ open, onClose, onSubmit }: Props): ReactElemen
     }
 
     const handleSubmit = (e: React.FormEvent) => {
-        onSubmit(e, tournamentName);
+        const name = tournamentName || new Date().toLocaleDateString();
+        onSubmit(e, name);
     }
 
     return (

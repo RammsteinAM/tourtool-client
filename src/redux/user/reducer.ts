@@ -37,13 +37,14 @@ const initialState: UserReducerState | null = {
   }
 };
 
-const reducer = (state = initialState, action: UserActionParams) => {
+const reducer = (state: UserReducerState = initialState, action: UserActionParams): UserReducerState => {
   switch (action.type) {
     case USER_UPDATE_REQUEST: {
       return {
         ...state,
         update: {
-          status: ActionStatus.Request
+          status: ActionStatus.Request,
+          data: { ...initialState.update.data }
         }
       };
     }
@@ -52,7 +53,8 @@ const reducer = (state = initialState, action: UserActionParams) => {
         ...state,
         update: {
           status: ActionStatus.Success,
-          ...action.payload
+          data: { ...action.payload?.data },
+          error: '',
         }
       };
     }
@@ -60,8 +62,9 @@ const reducer = (state = initialState, action: UserActionParams) => {
       return {
         ...state,
         update: {
+          data: { ...state.update.data },
           status: ActionStatus.Failure,
-          ...action.payload
+          error: action.payload?.error
         }
       };
     }

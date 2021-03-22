@@ -34,7 +34,8 @@ const styles = makeStyles((theme) => ({
         justifyContent: 'flex-start',
         flexDirection: 'column',
         position: 'absolute',
-        overflow: 'hidden',
+        overflow: 'hidden',        
+        borderRadius: "2px 2px 0 0",
         transition: 'max-height 0.2s ease-out',
     },
     tournamentSidebarHeaderClosed: {
@@ -66,63 +67,15 @@ const styles = makeStyles((theme) => ({
             marginTop: 14,
         }
     },
-    // tournamentGameRoot: {
-    //     display: 'flex',
-    //     justifyContent: 'space-between',
-    // },
-    // cardRoot: {
-    //     boxShadow: "0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)",
-    //     display: "flex",
-    //     flexDirection: "column",
-    //     borderRadius: "0",
-    // },
-    // tournamentGameSidebar: {
-    //     position: "fixed",
-    //     display: "flex",
-    //     width: "350px",
-    //     right: "12px",
-    //     top: "79px",
-    //     height: "calc(100% - 90px)",
-    //     alignContent: "space-between",
-    //     flexDirection: "column",
-    //     justifyContent: "space-between",
-    //     '& $cardRootSide:not(:last-child)': {
-    //         marginBottom: '12px',
-    //     }
-    // },
-    // cardRootSideTop: {
-    //     width: "100%",
-    //     height: "100%",
-    //     boxShadow: "0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)",
-    //     display: "flex",
-    //     marginBottom: '12px',
-    //     flexDirection: "column",
-    //     borderRadius: "0",
-    //     overflow: 'visible',
-    // },
-    // cardRootSideBottom: {
-    //     width: "100%",
-    //     boxShadow: "0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)",
-    //     display: "flex",
-    //     flexDirection: "column",
-    //     borderRadius: "0",
-    //     overflow: 'visible',
-    // },
     cardContent: {
         padding: 0,
         flexGrow: 1,
     },
-    // cardActions: {
-    //     height: '48px',
-    //     justifyContent: 'space-between',
-    // },
-    // dialogButton: {
-    //     color: 'rgba(0,0,0,.54)',
-    //     paddingLeft: '16px',
-    //     paddingRight: '16px',
-    // },
     icons: {
         color: '#c5c8cb',
+    },
+    statnsTableContainer: {
+        overflowX: 'auto',
     },
     lmsStatsTable: {
         width: "100%",
@@ -151,7 +104,8 @@ const styles = makeStyles((theme) => ({
     lmsStatsHeaderTd: {
         fontWeight: 800,
         width: '33px',
-        paddingLeft: '7px'
+        paddingLeft: '7px',
+        whiteSpace: 'nowrap',
     },
     lmsStatsTdPlacement: {
         width: '10px',

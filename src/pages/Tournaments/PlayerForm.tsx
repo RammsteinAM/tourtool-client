@@ -12,9 +12,9 @@ import { ReactComponent as Teams } from '../../resources/icons/teams.svg';
 import { ReactComponent as Single } from '../../resources/icons/single.svg';
 import { ReactComponent as DrawYourPartner } from '../../resources/icons/drawYourPartner.svg';
 import { ReactComponent as MonsterDYP } from '../../resources/icons/monsterDYP.svg';
-import { PlayerCategory, StateParticipants } from '../../types/entities';
+import { FetchedPlayers, PlayerCategory, StateParticipants, StateParticipantsWithId } from '../../types/entities';
 import toast from '../../components/IndependentSnackbar';
-import { updateParticipants, updateEliminationPlayers, updateTournament, updateLMSPlayers } from '../../redux/tournamentEntities/actions';
+import { updateParticipants, updateEliminationPlayers, updateTournament, updateLMSPlayers, entityActions } from '../../redux/tournamentEntities/actions';
 import PlayerFormTextField from '../../components/Tournament/PlayerFormTextField';
 import FormControl from '@material-ui/core/FormControl';
 import mainStyles from '../../styles/mainStyles';
@@ -35,6 +35,7 @@ interface Props {
 
 const PlayerForm = (props: Props) => {
     const [participants, setParticipants] = useState<StateParticipants>([{ ...initialParticipants }]);
+    const [fetchedPlayers, setFetchedPlayers] = useState<FetchedPlayers>();
     const [checkboxSetPlayers, setCheckboxSetPlayers] = useState<boolean>(false);
     const [fieldRefs, setFieldRefs] = useState<React.RefObject<HTMLInputElement>[]>([]);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -61,15 +62,18 @@ const PlayerForm = (props: Props) => {
     }, [participants.length]);
 
     useEffect(() => {
-        const storeParticipants = entityState.participants;
-        setParticipants([...storeParticipants, { ...initialParticipants }])
-    }, [entityState.participants]);
+        dispatch(entityActions.getPlayers());
+    }, []);
+
+    useEffect(() => {
+        entityState.fetchedPlayers?.data && setFetchedPlayers(entityState.fetchedPlayers.data);
+    }, [entityState.fetchedPlayers]);
 
     useEffect(() => {
         const storeParticipants = entityState.participants;
-        if (storeParticipants.length === participants.length - 1) {
-            setParticipants([...storeParticipants, { ...initialParticipants }])
-        }
+        //if (storeParticipants.length === participants.length - 1) {
+        setParticipants([...storeParticipants, { ...initialParticipants }]);
+        //}
     }, [entityState.participants]);
 
     const handleCheckboxChange = () => {
@@ -105,7 +109,24 @@ const PlayerForm = (props: Props) => {
             toast.warning(t('player-form-few-players', { number: minPlayers }));
             return;
         }
-        submitParticipantsToStore([...participants]);
+        // const participantsWithIds = participants.map(p => {
+        //     const id = entityState.fetchedPlayers.data.find(fp => fp.name === p.name)?.id
+        //     if (id) {
+        //         return { ...p, id };
+        //     }
+        // })
+        const participantsWithIds = participants.reduce((acc: StateParticipantsWithId, val) => {
+            const id = entityState.fetchedPlayers.data.find(fp => fp.name === val.name)?.id
+            if (id) {
+                acc.push({ ...val, id });
+            }
+            return acc;
+        }, [])
+        const participantNames = participants.map(p => p.name);
+        // const participantsWithIds = entityState.fetchedPlayers.data.filter(p => {
+        //     return participantNames.indexOf(p.name) >= 0;
+        // })
+        submitParticipantsToStore([...participantsWithIds]);
         if (playerType === 'dyp') {
             if ((participants.length - 1) % 2 === 1) {
                 toast.warning(t('player-form-odd-players-error'));
@@ -115,11 +136,11 @@ const PlayerForm = (props: Props) => {
             return;
         }
         if (tournamentType === 'elimination') {
-            dispatch(updateEliminationPlayers(participants.filter(x => !!x.name)));
+            dispatch(updateEliminationPlayers(participantsWithIds));
             history.push('/tournament/elimination-bracket');
             return;
         }
-        dispatch(updateLMSPlayers(participants.filter(x => !!x.name)));
+        dispatch(updateLMSPlayers(participantsWithIds.filter(x => !!x.name)));
         handleDialogOpen();
     }
 
@@ -205,6 +226,11 @@ const PlayerForm = (props: Props) => {
             fieldRefs[duplicate.index]?.current?.select();
             return;
         }
+        const dbPlayerNames = fetchedPlayers?.map(p => p.name)
+        const addedPlayers = newPlayers.filter(p => {
+            return p.name && dbPlayerNames && dbPlayerNames.indexOf(p.name) < 0;
+        }).map(p => p.name);
+        addedPlayers.length > 0 && dispatch(entityActions.createPlayers(addedPlayers));
         setParticipants([...newPlayers]);
         submitParticipantsToStore([...newPlayers]);
     }
@@ -214,8 +240,8 @@ const PlayerForm = (props: Props) => {
             .filter(player => !!player.name)
             .map((player, i) => {
                 return checkboxSetPlayers ?
-                    { name: player.name, category: player.category } :
-                    { name: player.name, category: null };
+                    { id: player.id, name: player.name, category: player.category } :
+                    { id: player.id, name: player.name, category: null };
             })
 
         dispatch(updateParticipants(storeParticipants));
@@ -304,6 +330,7 @@ const PlayerForm = (props: Props) => {
                                 inputRef={fieldRefs}
                                 player={player}
                                 showCategories={dyp && checkboxSetPlayers}
+                                fetchedPlayers={fetchedPlayers || []}
                                 onChange={handlePlayerChange}
                                 onBlur={handleBlur}
                                 onCategoryChange={handleCategoryChange}

@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from "react-i18next";
-import { StateEliminationPlayer, StateEliminationPlayers } from '../../../types/entities';
+import { StateEliminationPlayer, StateEliminationPlayers, StateParticipant } from '../../../types/entities';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import eliminationSidebarStyles from './eliminationSidebarStyles';
+import { RootState } from '../../../redux/store';
+import { useSelector } from 'react-redux';
+import { getNormalizedParticipants } from '../../../utils/arrayUtils';
 
 interface Props {
     player: StateEliminationPlayer,
@@ -11,9 +14,13 @@ interface Props {
 }
 
 const EliminationSidebarItem = (props: Props) => {
+    const storeParticipants = useSelector((state: RootState) => state.entities.participants);
     const classes = eliminationSidebarStyles();
     const { t } = useTranslation();
-    const playerName = typeof props.player.name === 'object' ? props.player.name.join('/') : props.player.name
+    
+    const normalizedParticipants = getNormalizedParticipants(storeParticipants);
+    const playerId: string = typeof props.player.id === 'object' ? props.player.id.join('/') : props.player.id?.toString();
+    const playerName = typeof props.player.id === 'object' ? `${normalizedParticipants[props.player.id[0]]?.name} / ${normalizedParticipants[props.player.id[1]]?.name} ` : normalizedParticipants[props.player.id]?.name
 
     const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
         background: isDragging ? "#ffffff44" : "initial",
@@ -24,7 +31,7 @@ const EliminationSidebarItem = (props: Props) => {
     });
 
     return (
-        <Draggable key={playerName + props.index} draggableId={playerName + props.index} index={props.index}>
+        <Draggable key={playerId + props.index} draggableId={playerId + props.index} index={props.index}>
             {(provided, snapshot) => (
                 <div
                     className={classes.eliminationSidebarItem}
@@ -39,7 +46,7 @@ const EliminationSidebarItem = (props: Props) => {
                     <div className={classes.eliminationSidebarItemNumber}>{props.index + 1}</div>
                     {props.player && props.player.bye ?
                         <div className={classes.eliminationSidebarItemPlayerBye}>{t('<Bye>')}</div> :
-                        <div className={classes.eliminationSidebarItemPlayer}>{props.player?.name}</div>
+                        <div className={classes.eliminationSidebarItemPlayer}>{playerName}</div>
                     }
                     <div className={classes.eliminationSidebarItemIcon}>
                         <DragHandleIcon />

@@ -28,15 +28,6 @@ export {
     RESEND_VERIFICATION_EMAIL_FAILURE,
 }
 
-// export interface UserState extends AppState {
-//     user: UserCreationReqData
-// }
-
-// export interface RegisterReducerState extends AppState {
-//     registrationData: UserLoginReqData;
-//     resendVerificationEmail: AppState;
-// }
-
 export interface RegisterReducerAdditionalData {
     resendVerificationEmail: DatalessState;
     verifyEmail: AppState<UserRegisterResData>;

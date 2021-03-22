@@ -13,6 +13,7 @@ interface Props {
 const Home = (props: Props) => {
     const classes = homeStyles();
     const authState = useSelector((state: RootState) => state.auth);
+    const entityState = useSelector((state: RootState) => state.entities);
     const loggedIn = authState.status === ActionStatus.Success;
     const history = useHistory();
     const { t } = useTranslation();
@@ -23,7 +24,7 @@ const Home = (props: Props) => {
 
     return (
         <div className={classes.root}>
-            <Button
+            {<Button
                 type="button"
                 variant="contained"
                 color="secondary"
@@ -31,7 +32,7 @@ const Home = (props: Props) => {
                 onClick={handleCreateTournament}
             >
                 {loggedIn ? t('Create New Tournament') : t('Login to Create a Tournament')}
-            </Button>
+            </Button>}
         </div>
     )
 }

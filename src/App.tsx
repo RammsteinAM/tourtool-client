@@ -19,6 +19,39 @@ import EliminationBracket from './pages/Tournaments/EliminationBracket';
 import DeleteAccountResult from './pages/DeleteAccount/DeleteAccountResult';
 import Elimination from './pages/Tournaments/Elimination';
 import LastManStanding from './pages/Tournaments/LastManStanding';
+import axios from 'axios';
+import Cookies from 'universal-cookie';
+import { userServices } from './services/user';
+import toast from './components/IndependentSnackbar';
+import i18n from "./utils/i18n";
+import { HttpError } from './utils/error';
+// axios.interceptors.response.use(
+//   function(successRes) {
+//     ... modify response; 
+//     return successRes;
+//   }, 
+//   function(error) {
+//     ... return Promise.reject(error);
+//   }
+// );
+
+axios.interceptors.response.use(undefined, function axiosRetryInterceptor(err) {
+  if (err.response.status === 403 || err.response.data.error === 'InvalidTokenError') {
+    const refreshToken = localStorage.getItem('refreshToken');
+    refreshToken && userServices.loginCheck({ refreshToken }).then(res => {
+      const cookies = new Cookies();
+      if (res?.data?.data?.accessToken) {
+        cookies.set('x-auth-token', res?.data?.data!.accessToken, { path: '/' });
+      }
+    })
+  }
+  else {
+    const resData = err?.response?.data;
+    toast.error(i18n.t(`ERROR_${resData?.error}`));
+    
+    throw new HttpError(err?.response?.status, resData?.error, resData?.message);
+  }
+});
 
 function App() {
 

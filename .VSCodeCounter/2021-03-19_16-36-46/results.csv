@@ -1,0 +1,147 @@
+"filename", "language", "JSON", "TypeScript", "TypeScript React", "XML", "CSS", "HTML", "comment", "blank", "total"
+"c:\Users\Avet\Sources\tourtool-client\package-lock.json", "JSON", 16245, 0, 0, 0, 0, 0, 0, 1, 16246
+"c:\Users\Avet\Sources\tourtool-client\package.json", "JSON", 73, 0, 0, 0, 0, 0, 0, 1, 74
+"c:\Users\Avet\Sources\tourtool-client\public\index.html", "HTML", 0, 0, 0, 0, 0, 21, 23, 1, 45
+"c:\Users\Avet\Sources\tourtool-client\public\manifest.json", "JSON", 25, 0, 0, 0, 0, 0, 0, 1, 26
+"c:\Users\Avet\Sources\tourtool-client\src\App.test.tsx", "TypeScript React", 0, 0, 8, 0, 0, 0, 0, 2, 10
+"c:\Users\Avet\Sources\tourtool-client\src\App.tsx", "TypeScript React", 0, 0, 93, 0, 0, 0, 16, 7, 116
+"c:\Users\Avet\Sources\tourtool-client\src\components\Buttons\FacebookLogin\FacebookButton.tsx", "TypeScript React", 0, 0, 24, 0, 0, 0, 0, 4, 28
+"c:\Users\Avet\Sources\tourtool-client\src\components\Buttons\FacebookLogin\facebookButtonStyles.ts", "TypeScript", 0, 20, 0, 0, 0, 0, 0, 2, 22
+"c:\Users\Avet\Sources\tourtool-client\src\components\Buttons\FacebookLogin\index.d.ts", "TypeScript", 0, 52, 0, 0, 0, 0, 0, 7, 59
+"c:\Users\Avet\Sources\tourtool-client\src\components\Buttons\GoogleLogin\GoogleButton.tsx", "TypeScript React", 0, 0, 25, 0, 0, 0, 0, 3, 28
+"c:\Users\Avet\Sources\tourtool-client\src\components\Buttons\GoogleLogin\GoogleLogo.tsx", "TypeScript React", 0, 0, 18, 0, 0, 0, 0, 5, 23
+"c:\Users\Avet\Sources\tourtool-client\src\components\Buttons\GoogleLogin\googleButtonStyles.ts", "TypeScript", 0, 20, 0, 0, 0, 0, 0, 2, 22
+"c:\Users\Avet\Sources\tourtool-client\src\components\Dialogs\Login\index.tsx", "TypeScript React", 0, 0, 128, 0, 0, 0, 1, 11, 140
+"c:\Users\Avet\Sources\tourtool-client\src\components\Dialogs\Login\loginDialogStyles.ts", "TypeScript", 0, 37, 0, 0, 0, 0, 5, 3, 45
+"c:\Users\Avet\Sources\tourtool-client\src\components\FormComponents\FormSubheader.tsx", "TypeScript React", 0, 0, 52, 0, 0, 0, 0, 7, 59
+"c:\Users\Avet\Sources\tourtool-client\src\components\FormComponents\styles.ts", "TypeScript", 0, 125, 0, 0, 0, 0, 1, 5, 131
+"c:\Users\Avet\Sources\tourtool-client\src\components\IndependentSnackbar\SnackbarDisplay.tsx", "TypeScript React", 0, 0, 2, 0, 0, 0, 13, 5, 20
+"c:\Users\Avet\Sources\tourtool-client\src\components\IndependentSnackbar\index.tsx", "TypeScript React", 0, 0, 29, 0, 0, 0, 1, 5, 35
+"c:\Users\Avet\Sources\tourtool-client\src\components\LanguageSelect\index.tsx", "TypeScript React", 0, 0, 43, 0, 0, 0, 1, 8, 52
+"c:\Users\Avet\Sources\tourtool-client\src\components\LanguageSelect\languageSelectStyles.ts", "TypeScript", 0, 13, 0, 0, 0, 0, 0, 2, 15
+"c:\Users\Avet\Sources\tourtool-client\src\components\Layout\Headers\HeaderGeneric.tsx", "TypeScript React", 0, 0, 178, 0, 0, 0, 0, 17, 195
+"c:\Users\Avet\Sources\tourtool-client\src\components\Layout\Headers\HeaderHome.tsx", "TypeScript React", 0, 0, 60, 0, 0, 0, 0, 7, 67
+"c:\Users\Avet\Sources\tourtool-client\src\components\Layout\Headers\headerStyles.ts", "TypeScript", 0, 114, 0, 0, 0, 0, 0, 4, 118
+"c:\Users\Avet\Sources\tourtool-client\src\components\Layout\Headers\index.tsx", "TypeScript React", 0, 0, 126, 0, 0, 0, 0, 6, 132
+"c:\Users\Avet\Sources\tourtool-client\src\components\Layout\Main.tsx", "TypeScript React", 0, 0, 28, 0, 0, 0, 0, 5, 33
+"c:\Users\Avet\Sources\tourtool-client\src\components\Layout\index.tsx", "TypeScript React", 0, 0, 208, 0, 0, 0, 0, 20, 228
+"c:\Users\Avet\Sources\tourtool-client\src\components\Layout\layoutStyles.ts", "TypeScript", 0, 105, 0, 0, 0, 0, 4, 5, 114
+"c:\Users\Avet\Sources\tourtool-client\src\components\Profile\DeleteAccountDialog.tsx", "TypeScript React", 0, 0, 52, 0, 0, 0, 0, 7, 59
+"c:\Users\Avet\Sources\tourtool-client\src\components\Profile\DeleteAccountSuccessDialog.tsx", "TypeScript React", 0, 0, 48, 0, 0, 0, 0, 5, 53
+"c:\Users\Avet\Sources\tourtool-client\src\components\Profile\Profile.tsx", "TypeScript React", 0, 0, 240, 0, 0, 0, 1, 14, 255
+"c:\Users\Avet\Sources\tourtool-client\src\components\Profile\profileStyles.ts", "TypeScript", 0, 71, 0, 0, 0, 0, 0, 3, 74
+"c:\Users\Avet\Sources\tourtool-client\src\components\Routes\PrivateRoute.tsx", "TypeScript React", 0, 0, 31, 0, 0, 0, 0, 5, 36
+"c:\Users\Avet\Sources\tourtool-client\src\components\Routes\PublicRoute.tsx", "TypeScript React", 0, 0, 24, 0, 0, 0, 0, 3, 27
+"c:\Users\Avet\Sources\tourtool-client\src\components\Settings\Settings.tsx", "TypeScript React", 0, 0, 12, 0, 0, 0, 0, 3, 15
+"c:\Users\Avet\Sources\tourtool-client\src\components\Slider\index.tsx", "TypeScript React", 0, 0, 29, 0, 0, 0, 0, 1, 30
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\CreateTournamentDialog.tsx", "TypeScript React", 0, 0, 67, 0, 0, 0, 0, 6, 73
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\DYPConfigForm\DYPConfigForm.tsx", "TypeScript React", 0, 0, 170, 0, 0, 0, 45, 21, 236
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\DYPConfigForm\DYPConfigFormItem.tsx", "TypeScript React", 0, 0, 41, 0, 0, 0, 0, 5, 46
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\DYPConfigForm\DYPConfigFormItemPlayerSelect.tsx", "TypeScript React", 0, 0, 52, 0, 0, 0, 0, 6, 58
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\DYPConfigForm\dypFormStyles.ts", "TypeScript", 0, 48, 0, 0, 0, 0, 0, 2, 50
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\EliminationBracketCards.tsx", "TypeScript React", 0, 0, 54, 0, 0, 0, 2, 7, 63
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\EliminationCard.tsx", "TypeScript React", 0, 0, 176, 0, 0, 0, 4, 21, 201
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\EliminationCards.tsx", "TypeScript React", 0, 0, 83, 0, 0, 0, 14, 6, 103
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\EliminationColumn.tsx", "TypeScript React", 0, 0, 56, 0, 0, 0, 0, 6, 62
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\EliminationSidebar.tsx", "TypeScript React", 0, 0, 60, 0, 0, 0, 0, 11, 71
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\EliminationSidebarItem.tsx", "TypeScript React", 0, 0, 54, 0, 0, 0, 0, 7, 61
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\eliminationSidebarStyles.ts", "TypeScript", 0, 124, 0, 0, 0, 0, 0, 2, 126
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\eliminationStyles.ts", "TypeScript", 0, 99, 0, 0, 0, 0, 0, 2, 101
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\EnterScore\EnterScoreContent.tsx", "TypeScript React", 0, 0, 229, 0, 0, 0, 2, 17, 248
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\EnterScore\EnterScoreDialog.tsx", "TypeScript React", 0, 0, 36, 0, 0, 0, 0, 5, 41
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\EnterScore\EnterScoreItem.tsx", "TypeScript React", 0, 0, 24, 0, 0, 0, 0, 5, 29
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\EnterScore\EnterScoreScoresConainer.tsx", "TypeScript React", 0, 0, 48, 0, 0, 0, 0, 7, 55
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\EnterScore\EnterScoreSelector.tsx", "TypeScript React", 0, 0, 205, 0, 0, 0, 1, 20, 226
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\EnterScore\enterScoresStyles.ts", "TypeScript", 0, 134, 0, 0, 0, 0, 0, 2, 136
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\GameListEnterScoreButton.tsx", "TypeScript React", 0, 0, 27, 0, 0, 0, 0, 5, 32
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\GameListRound.tsx", "TypeScript React", 0, 0, 30, 0, 0, 0, 0, 5, 35
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\GameListRow.tsx", "TypeScript React", 0, 0, 106, 0, 0, 0, 1, 11, 118
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\ImportParticipantsDialog.tsx", "TypeScript React", 0, 0, 117, 0, 0, 0, 1, 16, 134
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\PlayerFormTextField.tsx", "TypeScript React", 0, 0, 118, 0, 0, 0, 0, 8, 126
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\TournamentStatsSettingsList.tsx", "TypeScript React", 0, 0, 58, 0, 0, 0, 1, 9, 68
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\TournamentStatsSettingsListItem.tsx", "TypeScript React", 0, 0, 78, 0, 0, 0, 0, 8, 86
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\TournamentStats\LastManStandingPlayerStatsList.tsx", "TypeScript React", 0, 0, 136, 0, 0, 0, 0, 16, 152
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\TournamentStats\LastManStandingPlayerStatsRow.tsx", "TypeScript React", 0, 0, 40, 0, 0, 0, 0, 5, 45
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\TournamentStats\lastManStandingStyles.ts", "TypeScript", 0, 98, 0, 0, 0, 0, 20, 2, 120
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\createTournamentDialogStyles.ts", "TypeScript", 0, 24, 0, 0, 0, 0, 0, 2, 26
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\gameListRowStyles.ts", "TypeScript", 0, 145, 0, 0, 0, 0, 3, 5, 153
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\importParticipantsDialogStyles.ts", "TypeScript", 0, 41, 0, 0, 0, 0, 0, 2, 43
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\playerFormTextFieldStyles.ts", "TypeScript", 0, 63, 0, 0, 0, 0, 0, 4, 67
+"c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\tournamentStatsSettingsListStyles.ts", "TypeScript", 0, 49, 0, 0, 0, 0, 0, 3, 52
+"c:\Users\Avet\Sources\tourtool-client\src\config.ts", "TypeScript", 0, 1, 0, 0, 0, 0, 0, 0, 1
+"c:\Users\Avet\Sources\tourtool-client\src\index.css", "CSS", 0, 0, 0, 0, 112, 0, 0, 16, 128
+"c:\Users\Avet\Sources\tourtool-client\src\index.tsx", "TypeScript React", 0, 0, 22, 0, 0, 0, 3, 4, 29
+"c:\Users\Avet\Sources\tourtool-client\src\pages\DeleteAccount\DeleteAccountResult.tsx", "TypeScript React", 0, 0, 54, 0, 0, 0, 0, 6, 60
+"c:\Users\Avet\Sources\tourtool-client\src\pages\DeleteAccount\deleteAccountStyles.ts", "TypeScript", 0, 42, 0, 0, 0, 0, 1, 3, 46
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Home\homeStyles.ts", "TypeScript", 0, 53, 0, 0, 0, 0, 1, 3, 57
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Home\index.tsx", "TypeScript React", 0, 0, 35, 0, 0, 0, 0, 6, 41
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Login\Login.tsx", "TypeScript React", 0, 0, 179, 0, 0, 0, 4, 13, 196
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Login\loginStyles.ts", "TypeScript", 0, 32, 0, 0, 0, 0, 1, 3, 36
+"c:\Users\Avet\Sources\tourtool-client\src\pages\PasswordReset\PasswordResetForm.tsx", "TypeScript React", 0, 0, 182, 0, 0, 0, 0, 10, 192
+"c:\Users\Avet\Sources\tourtool-client\src\pages\PasswordReset\RequestPasswordReset.tsx", "TypeScript React", 0, 0, 107, 0, 0, 0, 3, 7, 117
+"c:\Users\Avet\Sources\tourtool-client\src\pages\PasswordReset\RequestPasswordResetSuccess.tsx", "TypeScript React", 0, 0, 46, 0, 0, 0, 0, 5, 51
+"c:\Users\Avet\Sources\tourtool-client\src\pages\PasswordReset\passwordResetStyles.ts", "TypeScript", 0, 63, 0, 0, 0, 0, 0, 4, 67
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Register\EmailVerificationResult.tsx", "TypeScript React", 0, 0, 111, 0, 0, 0, 0, 12, 123
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Register\NotVerified.tsx", "TypeScript React", 0, 0, 79, 0, 0, 0, 1, 9, 89
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Register\Register.tsx", "TypeScript React", 0, 0, 224, 0, 0, 0, 1, 10, 235
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Register\RegisterSuccess.tsx", "TypeScript React", 0, 0, 82, 0, 0, 0, 1, 10, 93
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Register\registerStyles.ts", "TypeScript", 0, 42, 0, 0, 0, 0, 1, 3, 46
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\Elimination.tsx", "TypeScript React", 0, 0, 47, 0, 0, 0, 0, 6, 53
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\EliminationBracket.tsx", "TypeScript React", 0, 0, 191, 0, 0, 0, 8, 19, 218
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\LastManStanding.tsx", "TypeScript React", 0, 0, 286, 0, 0, 0, 4, 40, 330
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\PlayerForm.tsx", "TypeScript React", 0, 0, 305, 0, 0, 0, 20, 28, 353
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\PlayerTypeSelect.tsx", "TypeScript React", 0, 0, 90, 0, 0, 0, 0, 8, 98
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\TournamentForm.tsx", "TypeScript React", 0, 0, 246, 0, 0, 0, 2, 12, 260
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\TournamentTypeSelect.tsx", "TypeScript React", 0, 0, 88, 0, 0, 0, 0, 9, 97
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\lastManStandingStyles.ts", "TypeScript", 0, 158, 0, 0, 0, 0, 5, 2, 165
+"c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\tournamentStyles.ts", "TypeScript", 0, 227, 0, 0, 0, 0, 0, 2, 229
+"c:\Users\Avet\Sources\tourtool-client\src\react-app-env.d.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 1, 1, 2
+"c:\Users\Avet\Sources\tourtool-client\src\redux\auth\actions.ts", "TypeScript", 0, 158, 0, 0, 0, 0, 10, 26, 194
+"c:\Users\Avet\Sources\tourtool-client\src\redux\auth\reducer.ts", "TypeScript", 0, 148, 0, 0, 0, 0, 2, 6, 156
+"c:\Users\Avet\Sources\tourtool-client\src\redux\auth\types.ts", "TypeScript", 0, 65, 0, 0, 0, 0, 0, 7, 72
+"c:\Users\Avet\Sources\tourtool-client\src\redux\helpers.ts", "TypeScript", 0, 25, 0, 0, 0, 0, 9, 6, 40
+"c:\Users\Avet\Sources\tourtool-client\src\redux\register\actions.ts", "TypeScript", 0, 83, 0, 0, 0, 0, 0, 16, 99
+"c:\Users\Avet\Sources\tourtool-client\src\redux\register\reducer.ts", "TypeScript", 0, 120, 0, 0, 0, 0, 7, 7, 134
+"c:\Users\Avet\Sources\tourtool-client\src\redux\register\types.ts", "TypeScript", 0, 49, 0, 0, 0, 0, 0, 7, 56
+"c:\Users\Avet\Sources\tourtool-client\src\redux\settings\actions.ts", "TypeScript", 0, 7, 0, 0, 0, 0, 0, 3, 10
+"c:\Users\Avet\Sources\tourtool-client\src\redux\settings\reducer.ts", "TypeScript", 0, 25, 0, 0, 0, 0, 0, 3, 28
+"c:\Users\Avet\Sources\tourtool-client\src\redux\settings\types.ts", "TypeScript", 0, 22, 0, 0, 0, 0, 0, 4, 26
+"c:\Users\Avet\Sources\tourtool-client\src\redux\store.ts", "TypeScript", 0, 23, 0, 0, 0, 0, 0, 4, 27
+"c:\Users\Avet\Sources\tourtool-client\src\redux\tournamentEntities\actions.ts", "TypeScript", 0, 136, 0, 0, 0, 0, 0, 27, 163
+"c:\Users\Avet\Sources\tourtool-client\src\redux\tournamentEntities\reducer.ts", "TypeScript", 0, 187, 0, 0, 0, 0, 3, 3, 193
+"c:\Users\Avet\Sources\tourtool-client\src\redux\tournamentEntities\types.ts", "TypeScript", 0, 99, 0, 0, 0, 0, 0, 4, 103
+"c:\Users\Avet\Sources\tourtool-client\src\redux\user\actions.ts", "TypeScript", 0, 99, 0, 0, 0, 0, 0, 16, 115
+"c:\Users\Avet\Sources\tourtool-client\src\redux\user\reducer.ts", "TypeScript", 0, 143, 0, 0, 0, 0, 0, 4, 147
+"c:\Users\Avet\Sources\tourtool-client\src\redux\user\types.ts", "TypeScript", 0, 67, 0, 0, 0, 0, 0, 4, 71
+"c:\Users\Avet\Sources\tourtool-client\src\reportWebVitals.ts", "TypeScript", 0, 13, 0, 0, 0, 0, 0, 3, 16
+"c:\Users\Avet\Sources\tourtool-client\src\resources\icons\drawYourPartner.svg", "XML", 0, 0, 0, 4, 0, 0, 0, 2, 6
+"c:\Users\Avet\Sources\tourtool-client\src\resources\icons\elimination.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 1
+"c:\Users\Avet\Sources\tourtool-client\src\resources\icons\lms.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 1
+"c:\Users\Avet\Sources\tourtool-client\src\resources\icons\monsterDYP.svg", "XML", 0, 0, 0, 8, 0, 0, 0, 1, 9
+"c:\Users\Avet\Sources\tourtool-client\src\resources\icons\roundRobin.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 1
+"c:\Users\Avet\Sources\tourtool-client\src\resources\icons\single.svg", "XML", 0, 0, 0, 13, 0, 0, 1, 2, 16
+"c:\Users\Avet\Sources\tourtool-client\src\resources\icons\teams.svg", "XML", 0, 0, 0, 13, 0, 0, 1, 2, 16
+"c:\Users\Avet\Sources\tourtool-client\src\services\player.ts", "TypeScript", 0, 29, 0, 0, 0, 0, 1, 7, 37
+"c:\Users\Avet\Sources\tourtool-client\src\services\tournament.ts", "TypeScript", 0, 20, 0, 0, 0, 0, 0, 6, 26
+"c:\Users\Avet\Sources\tourtool-client\src\services\user.ts", "TypeScript", 0, 84, 0, 0, 0, 0, 1, 16, 101
+"c:\Users\Avet\Sources\tourtool-client\src\setupTests.ts", "TypeScript", 0, 1, 0, 0, 0, 0, 4, 1, 6
+"c:\Users\Avet\Sources\tourtool-client\src\styles\mainStyles.ts", "TypeScript", 0, 65, 0, 0, 0, 0, 1, 3, 69
+"c:\Users\Avet\Sources\tourtool-client\src\styles\theme.ts", "TypeScript", 0, 19, 0, 0, 0, 0, 5, 3, 27
+"c:\Users\Avet\Sources\tourtool-client\src\types\entities.ts", "TypeScript", 0, 109, 0, 0, 0, 0, 2, 22, 133
+"c:\Users\Avet\Sources\tourtool-client\src\types\error.ts", "TypeScript", 0, 17, 0, 0, 0, 0, 3, 1, 21
+"c:\Users\Avet\Sources\tourtool-client\src\types\main.ts", "TypeScript", 0, 17, 0, 0, 0, 0, 0, 3, 20
+"c:\Users\Avet\Sources\tourtool-client\src\types\redux.ts", "TypeScript", 0, 15, 0, 0, 0, 0, 1, 7, 23
+"c:\Users\Avet\Sources\tourtool-client\src\types\user.ts", "TypeScript", 0, 46, 0, 0, 0, 0, 9, 16, 71
+"c:\Users\Avet\Sources\tourtool-client\src\utils\arrayUtils.ts", "TypeScript", 0, 61, 0, 0, 0, 0, 0, 7, 68
+"c:\Users\Avet\Sources\tourtool-client\src\utils\asyncWrapper.ts", "TypeScript", 0, 15, 0, 0, 0, 0, 3, 2, 20
+"c:\Users\Avet\Sources\tourtool-client\src\utils\authUtils.ts", "TypeScript", 0, 10, 0, 0, 0, 0, 0, 2, 12
+"c:\Users\Avet\Sources\tourtool-client\src\utils\constants.ts", "TypeScript", 0, 7, 0, 0, 0, 0, 0, 1, 8
+"c:\Users\Avet\Sources\tourtool-client\src\utils\error.ts", "TypeScript", 0, 9, 0, 0, 0, 0, 0, 0, 9
+"c:\Users\Avet\Sources\tourtool-client\src\utils\i18n.ts", "TypeScript", 0, 29, 0, 0, 0, 0, 0, 4, 33
+"c:\Users\Avet\Sources\tourtool-client\src\utils\localization.ts", "TypeScript", 0, 582, 0, 0, 0, 0, 0, 1, 583
+"c:\Users\Avet\Sources\tourtool-client\src\utils\numberUtils.ts", "TypeScript", 0, 3, 0, 0, 0, 0, 0, 0, 3
+"c:\Users\Avet\Sources\tourtool-client\src\utils\scoreUtils.ts", "TypeScript", 0, 22, 0, 0, 0, 0, 0, 1, 23
+"c:\Users\Avet\Sources\tourtool-client\src\utils\stringUtils.ts", "TypeScript", 0, 16, 0, 0, 0, 0, 0, 3, 19
+"c:\Users\Avet\Sources\tourtool-client\src\utils\styleUtils.ts", "TypeScript", 0, 12, 0, 0, 0, 0, 0, 0, 12
+"c:\Users\Avet\Sources\tourtool-client\tsconfig.json", "JSON", 27, 0, 0, 0, 0, 0, 0, 1, 28
+"Total", "-", 16370, 4657, 5897, 41, 112, 21, 280, 961, 28339

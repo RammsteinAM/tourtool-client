@@ -19,21 +19,21 @@ const loginCheck = asyncWrapper<AxiosResponse>(async (data: UserLoginCheckReqDat
     return response;
 })
 
-const register = asyncWrapper<AxiosResponse>(async (data: UserRegisterReqData): Promise<AxiosResponse> => {
+const register = /* asyncWrapper<AxiosResponse>( */async (data: UserRegisterReqData): Promise<AxiosResponse> => {
     const { email, password, displayName } = data;
     const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/register`, { email, password, displayName });
     return response;
-})
+}/* ) */
 
 const emailCheck = async (email: string): Promise<AxiosResponse> => {
     const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/email-check`, { email });
     return response;
 }
 
-const verifyUser = asyncWrapper<AxiosResponse>(async (token: string): Promise<AxiosResponse> => {
+const verifyUser = /* asyncWrapper<AxiosResponse>( */async (token: string): Promise<AxiosResponse> => {
     const response: AxiosResponse<AxiosRequestConfig> = await axios.get(`${endpoint}/auth/verify/${token}`);
     return response;
-})
+}/* ) */
 
 const resendVerificationEmail = asyncWrapper<AxiosResponse>(async (data: UserLoginReqData): Promise<AxiosResponse> => {
     const { email, password } = data;
@@ -63,11 +63,11 @@ const resetPassword = asyncWrapper<AxiosResponse>(async (data: UserPasswordReset
     return response;
 })
 
-const update = asyncWrapper<AxiosResponse>(async (data: UserUpdateReqData): Promise<AxiosResponse> => {
+const update = /* asyncWrapper<AxiosResponse>( */async (data: UserUpdateReqData): Promise<AxiosResponse> => {
     const { id, displayName, currentPassword, password } = data;
     const response: AxiosResponse<AxiosRequestConfig> = await axios.put(`${endpoint}/auth`, { displayName, currentPassword, password }, { withCredentials: true });
     return response;
-})
+}/* ) */
 
 const deleteAccountEmailRequest = asyncWrapper<AxiosResponse>(async (): Promise<AxiosResponse> => {
     const response: AxiosResponse<AxiosRequestConfig> = await axios.get(`${endpoint}/auth/delete-account-request`, { withCredentials: true });

@@ -26,9 +26,13 @@ const TournamentStatsSettingsListItem = (props: Props) => {
         lives: t('Lives Left'),
         numberOfGames: t('Match Count'),
         points: t('Points'),
+        averagePoints: t('Average Points'),
         goals: t('Goals'),
         goalsIn: t('Goals In'),
-        goalDiff: t('Goal Difference'),
+        goalDiff: t('Goal Difference'),        
+        matchesWon: t('Matches Won'),
+        matchesLost: t('Matches Lost'),
+        matchesDraw: t('Matches Draw'),
     }
 
     const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({

@@ -1,7 +1,7 @@
 import { Nullable } from "./main";
 
 interface BaseEntity {
-    id?: string;
+    id?: number;
 }
 
 export type PlayerCategory = 'A' | 'B' | null;
@@ -16,8 +16,10 @@ export interface EntityStateData<E> {
 }
 
 export interface StateGame extends BaseEntity {
-    player1: string | [string, string],
-    player2: string | [string, string],
+    player1?: string | [string, string],
+    player2?: string | [string, string],
+    player1Id: number | [number, number],
+    player2Id: number | [number, number],
     score1?: number,
     score2?: number,
     scores1?: number[],
@@ -27,6 +29,7 @@ export interface StateGame extends BaseEntity {
 export interface StateEliminationGame extends StateGame {
     index: string,
     hasByePlayer?: boolean,
+    isPredetermined?: boolean,
 }
 
 export interface StateLMSGame extends StateGame {
@@ -38,14 +41,27 @@ export interface StateParticipant extends BaseEntity {
     category?: PlayerCategory,
 }
 
-export interface StateEliminationPlayer extends BaseEntity {
-    name: string | [string, string],
+export interface StateParticipantWithId {
+    id: number;
+    name: string,
+    category?: PlayerCategory,
+}
+
+export interface FetchedPlayer extends BaseEntity {
+    name: string,
+    weight?: number,
+}
+
+export interface StateEliminationPlayer {
+    id: number | [number, number],
+    // name?: string | [string, string],
     category?: PlayerCategory,
     bye?: boolean,
 }
 
-export interface StateLMSPlayer extends BaseEntity {
-    name: string | [string, string],
+export interface StateLMSPlayer {    
+    id: number | [number, number],
+    // name?: string | [string, string],
     category?: PlayerCategory,
 }
 
@@ -63,6 +79,8 @@ export interface StateTournament extends BaseEntity {
 }
 
 export type StateParticipants = StateParticipant[];
+export type StateParticipantsWithId = StateParticipantWithId[];
+export type FetchedPlayers = FetchedPlayer[];
 export type StateEliminationPlayers = StateEliminationPlayer[];
 export type StateLMSPlayers = StateLMSPlayer[];
 export type StateGames = StateEliminationGame[];
@@ -87,9 +105,29 @@ export interface LMSTableProps {
     lives?: number;
     numberOfGames?: number;
     points?: number;
+    averagePoints?: number;
     goals?: number;
     goalsIn?: number;
     goalDiff?: number;
+    matchesWon?: number;
+    matchesLost?: number;
+    matchesDraw?: number;
 }
 
 export type LMSColOrderKeys = (keyof LMSTableProps);
+
+export interface Player {
+    id: number;
+    name: string;
+}
+
+export type Players = Player[];
+
+export interface TournamentCreateData {
+    userId: number;
+    name?: string;
+    winningSets?: number;
+    goalsToWin?: number;
+    players?: Players;
+    games?: Games;
+}

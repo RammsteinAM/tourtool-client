@@ -92,7 +92,7 @@ const Register = (props: Props) => {
                 {t("Register for", { appName })}
             </Typography>
             <Formik
-                initialValues={{ email: '', password: '', displayName: '' }}
+                initialValues={{ email: '', password: '', confirmPassword: '', displayName: '' }}
                 validate={values => {
                     const errors: IError = {};
                     if (!values.email) {
@@ -108,6 +108,8 @@ const Register = (props: Props) => {
                         !/(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}/.test(values.password)
                     ) {
                         errors.password = t('password-validation-error');
+                    } else if (values.password !== values.confirmPassword) {
+                        errors.password = t('Passwords do not match');
                     }
                     return errors;
                 }}
@@ -188,6 +190,24 @@ const Register = (props: Props) => {
                         <div className={mainClasses.formErrorContainer}>
                             {errors.password && touched.password &&
                                 <ErrorMessage name="password" component="div" className={mainClasses.formError} />
+                            }
+                        </div>
+                        <TextField
+                            error={!!errors.password && touched.password}
+                            required
+                            fullWidth
+                            name="confirmPassword"
+                            label={t('Confirm Password')}
+                            type="password"
+                            id="confirmPassword"
+                            autoComplete="current-password"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className={classes.textField}
+                        />
+                        <div className={mainClasses.formErrorContainer}>
+                            {errors.password && touched.password &&
+                                <ErrorMessage name="confirmPassword" component="div" className={mainClasses.formError} />
                             }
                         </div>
                         <br />

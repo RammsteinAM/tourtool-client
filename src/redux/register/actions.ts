@@ -24,8 +24,6 @@ import {
 import { userServices } from "../../services/user";
 import { AxiosError, AxiosResponse } from "axios";
 import { Dispatch, DispatchWithoutAction } from "react";
-import toast from "../../components/IndependentSnackbar";
-import i18n from "../../utils/i18n";
 
 export const registerRequest = payloadedActionCreator<RegisterRequestActionParams>(REGISTER_REQUEST);
 
@@ -68,7 +66,8 @@ const verifyEmail = (token: string) => {
         userServices.verifyUser(token)
             .then(
                 (user: AxiosResponse) => {
-                    dispatch(verifyEmailSuccess(user.data));
+                    debugger
+                    dispatch(verifyEmailSuccess(user.data.data));
                 },
                 (error: AxiosError) => {
                     dispatch(verifyEmailFailure({ error: error.name, message: error.message }));

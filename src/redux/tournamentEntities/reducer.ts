@@ -1,6 +1,4 @@
-import { EntityById, EntityStateData, StateEliminationPlayer, StateEliminationPlayers } from "../../types/entities";
 import { ActionStatus } from "../../types/main";
-import { arrayGroupBy } from "../helpers";
 import {
   UserActionParams,
   UPDATE_TOURNAMENT,
@@ -11,6 +9,15 @@ import {
   UPDATE_GAMES,
   RESET_GAMES,
   RESET_ELIMINATION_GAMES,
+  GET_PLAYERS_REQUEST,
+  GET_PLAYERS_SUCCESS,
+  GET_PLAYERS_FAILURE,
+  CREATE_PLAYER_REQUEST,
+  CREATE_PLAYER_SUCCESS,
+  CREATE_PLAYER_FAILURE,
+  CREATE_PLAYERS_REQUEST,
+  CREATE_PLAYERS_SUCCESS,
+  CREATE_PLAYERS_FAILURE,
   UPDATE_PLAYERS_REQUEST,
   UPDATE_PLAYERS_SUCCESS,
   UPDATE_PLAYERS_FAILURE,
@@ -29,6 +36,15 @@ const initialState: EntitiesReducerState | null = {
     numberOfLives: 3,
   },
   participants: [],
+  addPlayers: {
+    status: ActionStatus.Initial,
+    error: '',
+  },
+  fetchedPlayers: {
+    status: ActionStatus.Initial,
+    data: [],
+    error: '',
+  },
   eliminationPlayers: [],
   lmsPlayers: [],
   games: {},
@@ -88,6 +104,67 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
         eliminationGames: { ...initialState.eliminationGames },
       };
     }
+    case GET_PLAYERS_REQUEST: {
+      return {
+        ...state,
+        fetchedPlayers: {
+          status: ActionStatus.Request,
+          data: [...state.fetchedPlayers.data],
+          error: ''
+        }
+      };
+    }
+    case GET_PLAYERS_SUCCESS: {
+      return {
+        ...state,
+        fetchedPlayers: {
+          status: ActionStatus.Success,
+          data: [...action.payload],
+          error: ''
+        }
+      };
+    }
+    case GET_PLAYERS_FAILURE: {
+      return {
+        ...state,
+        fetchedPlayers: {
+          status: ActionStatus.Failure,
+          data: [...state.fetchedPlayers.data],
+          error: action.payload?.error,
+        }
+      };
+    }
+    case CREATE_PLAYERS_REQUEST: {
+      return {
+        ...state,
+        addPlayers: {
+          status: ActionStatus.Request,
+          error: ''
+        }
+      };
+    }
+    case CREATE_PLAYERS_SUCCESS: {
+      return {
+        ...state,
+        addPlayers: {
+          status: ActionStatus.Success,
+          error: ''
+        },
+        fetchedPlayers: {
+          ...state.fetchedPlayers,
+          data: [...action.payload]
+        }
+      };
+    }
+    case CREATE_PLAYERS_FAILURE: {
+      return {
+        ...state,
+        addPlayers: {
+          status: ActionStatus.Failure,
+          error: action.payload?.error,
+        }
+      };
+    }
     case UPDATE_PLAYERS_REQUEST: {
       return {
         ...state,
@@ -109,7 +186,7 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
       };
     }
     default:
-      return state;
+      return { ...state };
   }
 };
 

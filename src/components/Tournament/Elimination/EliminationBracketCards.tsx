@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from "react-i18next";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { StateEliminationPlayers } from '../../../types/entities';
+import { StateEliminationPlayers, StateParticipant } from '../../../types/entities';
 import EliminationCard from './EliminationCard';
 import tournamentStyles from './eliminationStyles';
 
@@ -10,9 +10,10 @@ interface Props {
     players: StateEliminationPlayers;
     columnNumber: number;
     numberOfGames: number;
+    normalizedPlayers: { [id: number]: StateParticipant }
 }
 
-const EliminationBracketCards = ({ players, columnNumber, numberOfGames }: Props) => {
+const EliminationBracketCards = ({ players, columnNumber, numberOfGames, normalizedPlayers }: Props) => {
     const entityState = useSelector((state: RootState) => state.entities);
     const numberOfPlayers = entityState.eliminationPlayers.length;
     const numberOfColumns = Math.ceil((Math.log(numberOfPlayers) / Math.log(2)));
@@ -44,8 +45,11 @@ const EliminationBracketCards = ({ players, columnNumber, numberOfGames }: Props
             return (
                 <EliminationCard
                     key={`gameCard_${columnNumber}_${key}`}
-                    player1={p1?.name}
-                    player2={p2?.name}
+                    // player1={p1?.name}
+                    // player2={p2?.name}
+                    player1Id={p1?.id}
+                    player2Id={p2?.id}
+                    normalizedPlayers={normalizedPlayers}
                 />
             )
         }

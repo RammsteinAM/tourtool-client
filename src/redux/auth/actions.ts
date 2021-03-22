@@ -72,17 +72,19 @@ const login = (data: UserLoginReqData) => {
         userServices.login(data)
             .then(
                 (res: AxiosResponse<ResponseData<UserLoginResData>>) => {
-                    const cookies = new Cookies();
-                    if (cookies.get('x-auth-token')) {
-                        cookies.remove('x-auth-token');
+                    debugger
+                    if (res && res.data) {
+                        const cookies = new Cookies();
+                        if (cookies.get('x-auth-token')) {
+                            cookies.remove('x-auth-token');
+                        }
+                        cookies.set('x-auth-token', res.data.data?.accessToken, { path: '/' });
+                        localStorage.setItem('refreshToken', res.data.data?.refreshToken!);
+                        dispatch(loginSuccess(res?.data));
                     }
-                    cookies.set('x-auth-token', res.data.data!.accessToken, { path: '/' });
-                    localStorage.setItem('refreshToken', res.data.data!.refreshToken!);
-                    dispatch(loginSuccess(res.data));
-
-                    //history.push(from);
                 },
                 (error: AxiosError) => {
+                    debugger
                     dispatch(loginFailure({ error: error.name, message: error.message }));
                 }
             );
@@ -93,8 +95,7 @@ const loginCheck = () => {
     const refreshToken = localStorage.getItem('refreshToken')
     return (dispatch: Dispatch<AuthActionParams>) => {
         dispatch(loginRequest(null));
-
-        userServices.loginCheck({ refreshToken })
+        refreshToken && userServices.loginCheck({ refreshToken })
             .then(
                 (res: AxiosResponse<ResponseData<UserLoginCheckResData>>) => {
                     const cookies = new Cookies();

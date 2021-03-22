@@ -1,0 +1,215 @@
+Date : 2021-03-19 16:36:46
+Directory : c:\Users\Avet\Sources\tourtool-client
+Total : 145 files,  27098 codes, 280 comments, 961 blanks, all 28339 lines
+
+Languages
++------------------+------------+------------+------------+------------+------------+
+| language         | files      | code       | comment    | blank      | total      |
++------------------+------------+------------+------------+------------+------------+
+| JSON             |          4 |     16,370 |          0 |          4 |     16,374 |
+| TypeScript React |         64 |      5,897 |        151 |        597 |      6,645 |
+| TypeScript       |         68 |      4,657 |        104 |        336 |      5,097 |
+| CSS              |          1 |        112 |          0 |         16 |        128 |
+| XML              |          7 |         41 |          2 |          7 |         50 |
+| HTML             |          1 |         21 |         23 |          1 |         45 |
++------------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                               | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                  |        145 |     27,098 |        280 |        961 |     28,339 |
+| public                                                                                                             |          2 |         46 |         23 |          2 |         71 |
+| src                                                                                                                |        140 |     10,707 |        257 |        956 |     11,920 |
+| src\components                                                                                                     |         63 |      4,804 |        121 |        433 |      5,358 |
+| src\components\Buttons                                                                                             |          6 |        159 |          0 |         23 |        182 |
+| src\components\Buttons\FacebookLogin                                                                               |          3 |         96 |          0 |         13 |        109 |
+| src\components\Buttons\GoogleLogin                                                                                 |          3 |         63 |          0 |         10 |         73 |
+| src\components\Dialogs                                                                                             |          2 |        165 |          6 |         14 |        185 |
+| src\components\Dialogs\Login                                                                                       |          2 |        165 |          6 |         14 |        185 |
+| src\components\FormComponents                                                                                      |          2 |        177 |          1 |         12 |        190 |
+| src\components\IndependentSnackbar                                                                                 |          2 |         31 |         14 |         10 |         55 |
+| src\components\LanguageSelect                                                                                      |          2 |         56 |          1 |         10 |         67 |
+| src\components\Layout                                                                                              |          7 |        819 |          4 |         64 |        887 |
+| src\components\Layout\Headers                                                                                      |          4 |        478 |          0 |         34 |        512 |
+| src\components\Profile                                                                                             |          4 |        411 |          1 |         29 |        441 |
+| src\components\Routes                                                                                              |          2 |         55 |          0 |          8 |         63 |
+| src\components\Settings                                                                                            |          1 |         12 |          0 |          3 |         15 |
+| src\components\Slider                                                                                              |          1 |         29 |          0 |          1 |         30 |
+| src\components\Tournament                                                                                          |         34 |      2,890 |         94 |        259 |      3,243 |
+| src\components\Tournament\DYPConfigForm                                                                            |          4 |        311 |         45 |         34 |        390 |
+| src\components\Tournament\Elimination                                                                              |          8 |        706 |         20 |         62 |        788 |
+| src\components\Tournament\EnterScore                                                                               |          6 |        676 |          3 |         56 |        735 |
+| src\components\Tournament\TournamentStats                                                                          |          3 |        274 |         20 |         23 |        317 |
+| src\pages                                                                                                          |         24 |      2,969 |         53 |        230 |      3,252 |
+| src\pages\DeleteAccount                                                                                            |          2 |         96 |          1 |          9 |        106 |
+| src\pages\Home                                                                                                     |          2 |         88 |          1 |          9 |         98 |
+| src\pages\Login                                                                                                    |          2 |        211 |          5 |         16 |        232 |
+| src\pages\PasswordReset                                                                                            |          4 |        398 |          3 |         26 |        427 |
+| src\pages\Register                                                                                                 |          5 |        538 |          4 |         44 |        586 |
+| src\pages\Tournaments                                                                                              |          9 |      1,638 |         39 |        126 |      1,803 |
+| src\redux                                                                                                          |         17 |      1,456 |         31 |        147 |      1,634 |
+| src\redux\auth                                                                                                     |          3 |        371 |         12 |         39 |        422 |
+| src\redux\register                                                                                                 |          3 |        252 |          7 |         30 |        289 |
+| src\redux\settings                                                                                                 |          3 |         54 |          0 |         10 |         64 |
+| src\redux\tournamentEntities                                                                                       |          3 |        422 |          3 |         34 |        459 |
+| src\redux\user                                                                                                     |          3 |        309 |          0 |         24 |        333 |
+| src\resources                                                                                                      |          7 |         41 |          2 |          7 |         50 |
+| src\resources\icons                                                                                                |          7 |         41 |          2 |          7 |         50 |
+| src\services                                                                                                       |          3 |        133 |          2 |         29 |        164 |
+| src\styles                                                                                                         |          2 |         84 |          6 |          6 |         96 |
+| src\types                                                                                                          |          5 |        204 |         15 |         49 |        268 |
+| src\utils                                                                                                          |         11 |        766 |          3 |         21 |        790 |
++--------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| filename                                                                                                           | language         | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| c:\Users\Avet\Sources\tourtool-client\package-lock.json                                                            | JSON             |     16,245 |          0 |          1 |     16,246 |
+| c:\Users\Avet\Sources\tourtool-client\package.json                                                                 | JSON             |         73 |          0 |          1 |         74 |
+| c:\Users\Avet\Sources\tourtool-client\public\index.html                                                            | HTML             |         21 |         23 |          1 |         45 |
+| c:\Users\Avet\Sources\tourtool-client\public\manifest.json                                                         | JSON             |         25 |          0 |          1 |         26 |
+| c:\Users\Avet\Sources\tourtool-client\src\App.test.tsx                                                             | TypeScript React |          8 |          0 |          2 |         10 |
+| c:\Users\Avet\Sources\tourtool-client\src\App.tsx                                                                  | TypeScript React |         93 |         16 |          7 |        116 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Buttons\FacebookLogin\FacebookButton.tsx                      | TypeScript React |         24 |          0 |          4 |         28 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Buttons\FacebookLogin\facebookButtonStyles.ts                 | TypeScript       |         20 |          0 |          2 |         22 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Buttons\FacebookLogin\index.d.ts                              | TypeScript       |         52 |          0 |          7 |         59 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Buttons\GoogleLogin\GoogleButton.tsx                          | TypeScript React |         25 |          0 |          3 |         28 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Buttons\GoogleLogin\GoogleLogo.tsx                            | TypeScript React |         18 |          0 |          5 |         23 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Buttons\GoogleLogin\googleButtonStyles.ts                     | TypeScript       |         20 |          0 |          2 |         22 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Dialogs\Login\index.tsx                                       | TypeScript React |        128 |          1 |         11 |        140 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Dialogs\Login\loginDialogStyles.ts                            | TypeScript       |         37 |          5 |          3 |         45 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\FormComponents\FormSubheader.tsx                              | TypeScript React |         52 |          0 |          7 |         59 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\FormComponents\styles.ts                                      | TypeScript       |        125 |          1 |          5 |        131 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\IndependentSnackbar\SnackbarDisplay.tsx                       | TypeScript React |          2 |         13 |          5 |         20 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\IndependentSnackbar\index.tsx                                 | TypeScript React |         29 |          1 |          5 |         35 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\LanguageSelect\index.tsx                                      | TypeScript React |         43 |          1 |          8 |         52 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\LanguageSelect\languageSelectStyles.ts                        | TypeScript       |         13 |          0 |          2 |         15 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Layout\Headers\HeaderGeneric.tsx                              | TypeScript React |        178 |          0 |         17 |        195 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Layout\Headers\HeaderHome.tsx                                 | TypeScript React |         60 |          0 |          7 |         67 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Layout\Headers\headerStyles.ts                                | TypeScript       |        114 |          0 |          4 |        118 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Layout\Headers\index.tsx                                      | TypeScript React |        126 |          0 |          6 |        132 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Layout\Main.tsx                                               | TypeScript React |         28 |          0 |          5 |         33 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Layout\index.tsx                                              | TypeScript React |        208 |          0 |         20 |        228 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Layout\layoutStyles.ts                                        | TypeScript       |        105 |          4 |          5 |        114 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Profile\DeleteAccountDialog.tsx                               | TypeScript React |         52 |          0 |          7 |         59 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Profile\DeleteAccountSuccessDialog.tsx                        | TypeScript React |         48 |          0 |          5 |         53 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Profile\Profile.tsx                                           | TypeScript React |        240 |          1 |         14 |        255 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Profile\profileStyles.ts                                      | TypeScript       |         71 |          0 |          3 |         74 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Routes\PrivateRoute.tsx                                       | TypeScript React |         31 |          0 |          5 |         36 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Routes\PublicRoute.tsx                                        | TypeScript React |         24 |          0 |          3 |         27 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Settings\Settings.tsx                                         | TypeScript React |         12 |          0 |          3 |         15 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Slider\index.tsx                                              | TypeScript React |         29 |          0 |          1 |         30 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\CreateTournamentDialog.tsx                         | TypeScript React |         67 |          0 |          6 |         73 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\DYPConfigForm\DYPConfigForm.tsx                    | TypeScript React |        170 |         45 |         21 |        236 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\DYPConfigForm\DYPConfigFormItem.tsx                | TypeScript React |         41 |          0 |          5 |         46 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\DYPConfigForm\DYPConfigFormItemPlayerSelect.tsx    | TypeScript React |         52 |          0 |          6 |         58 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\DYPConfigForm\dypFormStyles.ts                     | TypeScript       |         48 |          0 |          2 |         50 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\EliminationBracketCards.tsx            | TypeScript React |         54 |          2 |          7 |         63 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\EliminationCard.tsx                    | TypeScript React |        176 |          4 |         21 |        201 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\EliminationCards.tsx                   | TypeScript React |         83 |         14 |          6 |        103 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\EliminationColumn.tsx                  | TypeScript React |         56 |          0 |          6 |         62 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\EliminationSidebar.tsx                 | TypeScript React |         60 |          0 |         11 |         71 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\EliminationSidebarItem.tsx             | TypeScript React |         54 |          0 |          7 |         61 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\eliminationSidebarStyles.ts            | TypeScript       |        124 |          0 |          2 |        126 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\Elimination\eliminationStyles.ts                   | TypeScript       |         99 |          0 |          2 |        101 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\EnterScore\EnterScoreContent.tsx                   | TypeScript React |        229 |          2 |         17 |        248 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\EnterScore\EnterScoreDialog.tsx                    | TypeScript React |         36 |          0 |          5 |         41 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\EnterScore\EnterScoreItem.tsx                      | TypeScript React |         24 |          0 |          5 |         29 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\EnterScore\EnterScoreScoresConainer.tsx            | TypeScript React |         48 |          0 |          7 |         55 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\EnterScore\EnterScoreSelector.tsx                  | TypeScript React |        205 |          1 |         20 |        226 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\EnterScore\enterScoresStyles.ts                    | TypeScript       |        134 |          0 |          2 |        136 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\GameListEnterScoreButton.tsx                       | TypeScript React |         27 |          0 |          5 |         32 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\GameListRound.tsx                                  | TypeScript React |         30 |          0 |          5 |         35 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\GameListRow.tsx                                    | TypeScript React |        106 |          1 |         11 |        118 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\ImportParticipantsDialog.tsx                       | TypeScript React |        117 |          1 |         16 |        134 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\PlayerFormTextField.tsx                            | TypeScript React |        118 |          0 |          8 |        126 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\TournamentStatsSettingsList.tsx                    | TypeScript React |         58 |          1 |          9 |         68 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\TournamentStatsSettingsListItem.tsx                | TypeScript React |         78 |          0 |          8 |         86 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\TournamentStats\LastManStandingPlayerStatsList.tsx | TypeScript React |        136 |          0 |         16 |        152 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\TournamentStats\LastManStandingPlayerStatsRow.tsx  | TypeScript React |         40 |          0 |          5 |         45 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\TournamentStats\lastManStandingStyles.ts           | TypeScript       |         98 |         20 |          2 |        120 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\createTournamentDialogStyles.ts                    | TypeScript       |         24 |          0 |          2 |         26 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\gameListRowStyles.ts                               | TypeScript       |        145 |          3 |          5 |        153 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\importParticipantsDialogStyles.ts                  | TypeScript       |         41 |          0 |          2 |         43 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\playerFormTextFieldStyles.ts                       | TypeScript       |         63 |          0 |          4 |         67 |
+| c:\Users\Avet\Sources\tourtool-client\src\components\Tournament\tournamentStatsSettingsListStyles.ts               | TypeScript       |         49 |          0 |          3 |         52 |
+| c:\Users\Avet\Sources\tourtool-client\src\config.ts                                                                | TypeScript       |          1 |          0 |          0 |          1 |
+| c:\Users\Avet\Sources\tourtool-client\src\index.css                                                                | CSS              |        112 |          0 |         16 |        128 |
+| c:\Users\Avet\Sources\tourtool-client\src\index.tsx                                                                | TypeScript React |         22 |          3 |          4 |         29 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\DeleteAccount\DeleteAccountResult.tsx                              | TypeScript React |         54 |          0 |          6 |         60 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\DeleteAccount\deleteAccountStyles.ts                               | TypeScript       |         42 |          1 |          3 |         46 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Home\homeStyles.ts                                                 | TypeScript       |         53 |          1 |          3 |         57 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Home\index.tsx                                                     | TypeScript React |         35 |          0 |          6 |         41 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Login\Login.tsx                                                    | TypeScript React |        179 |          4 |         13 |        196 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Login\loginStyles.ts                                               | TypeScript       |         32 |          1 |          3 |         36 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\PasswordReset\PasswordResetForm.tsx                                | TypeScript React |        182 |          0 |         10 |        192 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\PasswordReset\RequestPasswordReset.tsx                             | TypeScript React |        107 |          3 |          7 |        117 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\PasswordReset\RequestPasswordResetSuccess.tsx                      | TypeScript React |         46 |          0 |          5 |         51 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\PasswordReset\passwordResetStyles.ts                               | TypeScript       |         63 |          0 |          4 |         67 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Register\EmailVerificationResult.tsx                               | TypeScript React |        111 |          0 |         12 |        123 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Register\NotVerified.tsx                                           | TypeScript React |         79 |          1 |          9 |         89 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Register\Register.tsx                                              | TypeScript React |        224 |          1 |         10 |        235 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Register\RegisterSuccess.tsx                                       | TypeScript React |         82 |          1 |         10 |         93 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Register\registerStyles.ts                                         | TypeScript       |         42 |          1 |          3 |         46 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\Elimination.tsx                                        | TypeScript React |         47 |          0 |          6 |         53 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\EliminationBracket.tsx                                 | TypeScript React |        191 |          8 |         19 |        218 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\LastManStanding.tsx                                    | TypeScript React |        286 |          4 |         40 |        330 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\PlayerForm.tsx                                         | TypeScript React |        305 |         20 |         28 |        353 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\PlayerTypeSelect.tsx                                   | TypeScript React |         90 |          0 |          8 |         98 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\TournamentForm.tsx                                     | TypeScript React |        246 |          2 |         12 |        260 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\TournamentTypeSelect.tsx                               | TypeScript React |         88 |          0 |          9 |         97 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\lastManStandingStyles.ts                               | TypeScript       |        158 |          5 |          2 |        165 |
+| c:\Users\Avet\Sources\tourtool-client\src\pages\Tournaments\tournamentStyles.ts                                    | TypeScript       |        227 |          0 |          2 |        229 |
+| c:\Users\Avet\Sources\tourtool-client\src\react-app-env.d.ts                                                       | TypeScript       |          0 |          1 |          1 |          2 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\auth\actions.ts                                                    | TypeScript       |        158 |         10 |         26 |        194 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\auth\reducer.ts                                                    | TypeScript       |        148 |          2 |          6 |        156 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\auth\types.ts                                                      | TypeScript       |         65 |          0 |          7 |         72 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\helpers.ts                                                         | TypeScript       |         25 |          9 |          6 |         40 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\register\actions.ts                                                | TypeScript       |         83 |          0 |         16 |         99 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\register\reducer.ts                                                | TypeScript       |        120 |          7 |          7 |        134 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\register\types.ts                                                  | TypeScript       |         49 |          0 |          7 |         56 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\settings\actions.ts                                                | TypeScript       |          7 |          0 |          3 |         10 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\settings\reducer.ts                                                | TypeScript       |         25 |          0 |          3 |         28 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\settings\types.ts                                                  | TypeScript       |         22 |          0 |          4 |         26 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\store.ts                                                           | TypeScript       |         23 |          0 |          4 |         27 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\tournamentEntities\actions.ts                                      | TypeScript       |        136 |          0 |         27 |        163 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\tournamentEntities\reducer.ts                                      | TypeScript       |        187 |          3 |          3 |        193 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\tournamentEntities\types.ts                                        | TypeScript       |         99 |          0 |          4 |        103 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\user\actions.ts                                                    | TypeScript       |         99 |          0 |         16 |        115 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\user\reducer.ts                                                    | TypeScript       |        143 |          0 |          4 |        147 |
+| c:\Users\Avet\Sources\tourtool-client\src\redux\user\types.ts                                                      | TypeScript       |         67 |          0 |          4 |         71 |
+| c:\Users\Avet\Sources\tourtool-client\src\reportWebVitals.ts                                                       | TypeScript       |         13 |          0 |          3 |         16 |
+| c:\Users\Avet\Sources\tourtool-client\src\resources\icons\drawYourPartner.svg                                      | XML              |          4 |          0 |          2 |          6 |
+| c:\Users\Avet\Sources\tourtool-client\src\resources\icons\elimination.svg                                          | XML              |          1 |          0 |          0 |          1 |
+| c:\Users\Avet\Sources\tourtool-client\src\resources\icons\lms.svg                                                  | XML              |          1 |          0 |          0 |          1 |
+| c:\Users\Avet\Sources\tourtool-client\src\resources\icons\monsterDYP.svg                                           | XML              |          8 |          0 |          1 |          9 |
+| c:\Users\Avet\Sources\tourtool-client\src\resources\icons\roundRobin.svg                                           | XML              |          1 |          0 |          0 |          1 |
+| c:\Users\Avet\Sources\tourtool-client\src\resources\icons\single.svg                                               | XML              |         13 |          1 |          2 |         16 |
+| c:\Users\Avet\Sources\tourtool-client\src\resources\icons\teams.svg                                                | XML              |         13 |          1 |          2 |         16 |
+| c:\Users\Avet\Sources\tourtool-client\src\services\player.ts                                                       | TypeScript       |         29 |          1 |          7 |         37 |
+| c:\Users\Avet\Sources\tourtool-client\src\services\tournament.ts                                                   | TypeScript       |         20 |          0 |          6 |         26 |
+| c:\Users\Avet\Sources\tourtool-client\src\services\user.ts                                                         | TypeScript       |         84 |          1 |         16 |        101 |
+| c:\Users\Avet\Sources\tourtool-client\src\setupTests.ts                                                            | TypeScript       |          1 |          4 |          1 |          6 |
+| c:\Users\Avet\Sources\tourtool-client\src\styles\mainStyles.ts                                                     | TypeScript       |         65 |          1 |          3 |         69 |
+| c:\Users\Avet\Sources\tourtool-client\src\styles\theme.ts                                                          | TypeScript       |         19 |          5 |          3 |         27 |
+| c:\Users\Avet\Sources\tourtool-client\src\types\entities.ts                                                        | TypeScript       |        109 |          2 |         22 |        133 |
+| c:\Users\Avet\Sources\tourtool-client\src\types\error.ts                                                           | TypeScript       |         17 |          3 |          1 |         21 |
+| c:\Users\Avet\Sources\tourtool-client\src\types\main.ts                                                            | TypeScript       |         17 |          0 |          3 |         20 |
+| c:\Users\Avet\Sources\tourtool-client\src\types\redux.ts                                                           | TypeScript       |         15 |          1 |          7 |         23 |
+| c:\Users\Avet\Sources\tourtool-client\src\types\user.ts                                                            | TypeScript       |         46 |          9 |         16 |         71 |
+| c:\Users\Avet\Sources\tourtool-client\src\utils\arrayUtils.ts                                                      | TypeScript       |         61 |          0 |          7 |         68 |
+| c:\Users\Avet\Sources\tourtool-client\src\utils\asyncWrapper.ts                                                    | TypeScript       |         15 |          3 |          2 |         20 |
+| c:\Users\Avet\Sources\tourtool-client\src\utils\authUtils.ts                                                       | TypeScript       |         10 |          0 |          2 |         12 |
+| c:\Users\Avet\Sources\tourtool-client\src\utils\constants.ts                                                       | TypeScript       |          7 |          0 |          1 |          8 |
+| c:\Users\Avet\Sources\tourtool-client\src\utils\error.ts                                                           | TypeScript       |          9 |          0 |          0 |          9 |
+| c:\Users\Avet\Sources\tourtool-client\src\utils\i18n.ts                                                            | TypeScript       |         29 |          0 |          4 |         33 |
+| c:\Users\Avet\Sources\tourtool-client\src\utils\localization.ts                                                    | TypeScript       |        582 |          0 |          1 |        583 |
+| c:\Users\Avet\Sources\tourtool-client\src\utils\numberUtils.ts                                                     | TypeScript       |          3 |          0 |          0 |          3 |
+| c:\Users\Avet\Sources\tourtool-client\src\utils\scoreUtils.ts                                                      | TypeScript       |         22 |          0 |          1 |         23 |
+| c:\Users\Avet\Sources\tourtool-client\src\utils\stringUtils.ts                                                     | TypeScript       |         16 |          0 |          3 |         19 |
+| c:\Users\Avet\Sources\tourtool-client\src\utils\styleUtils.ts                                                      | TypeScript       |         12 |          0 |          0 |         12 |
+| c:\Users\Avet\Sources\tourtool-client\tsconfig.json                                                                | JSON             |         27 |          0 |          1 |         28 |
+| Total                                                                                                              |                  |     27,098 |        280 |        961 |     28,339 |
++--------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+

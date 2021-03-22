@@ -75,13 +75,14 @@ const reducer = (state: RegisterReducerState = initialState, action: RegisterAct
       };
     }
     case VERIFY_EMAIL_SUCCESS: {
+      debugger
       return {
         ...state,
         verifyEmail: {
           //...action.payload,
           status: ActionStatus.Success,
           error: '',
-          ...action.payload
+          data: { ...action.payload }
 
           //data: { displayName: action.payload!.data!.displayName, email: action.payload!.data!.email },
           //data: { ...action.payload },

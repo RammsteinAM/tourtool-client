@@ -3,17 +3,19 @@ import { useTranslation } from "react-i18next";
 import AddIcon from '@material-ui/icons/Add';
 import dypFormStyles from './dypFormStyles';
 import DYPConfigFormItemPlayerSelect from './DYPConfigFormItemPlayerSelect';
+import { FetchedPlayers, StateParticipant } from '../../../types/entities';
 
 interface Props {
-    selectedPlayer1: string | undefined,
-    selectedPlayer2: string | undefined,
-    onChange: (newPlayerName: string | undefined, index: [number, number], oldPlayerName: string | undefined) => void,
-    assignedPlayerNames: (string | undefined)[],
-    removedPlayerNames: (string | undefined)[],
+    selectedPlayer1: number | undefined,
+    selectedPlayer2: number | undefined,
+    onChange: (newPlayerId: number | undefined, index: [number, number], oldPlayerId: number | undefined) => void,
+    playersData: { [id: number]: StateParticipant };
+    assignedPlayerIds: (number | undefined)[],
+    removedPlayerIds: (number | undefined)[],
     index: number,
 }
 
-const DYPConfigFormItem = ({ selectedPlayer1, selectedPlayer2, assignedPlayerNames, removedPlayerNames, onChange, index }: Props) => {
+const DYPConfigFormItem = ({ selectedPlayer1, selectedPlayer2, playersData, assignedPlayerIds, removedPlayerIds, onChange, index }: Props) => {
     const classes = dypFormStyles();
     const { t } = useTranslation();
 
@@ -22,16 +24,18 @@ const DYPConfigFormItem = ({ selectedPlayer1, selectedPlayer2, assignedPlayerNam
             <DYPConfigFormItemPlayerSelect
                 selectedPlayer={selectedPlayer1}
                 onChange={onChange}
-                assignedPlayerNames={assignedPlayerNames}
-                removedPlayerNames={removedPlayerNames}
+                assignedPlayerIds={assignedPlayerIds}
+                removedPlayerIds={removedPlayerIds}
+                playersData={playersData}
                 index={[index, 0]}
             />
             <AddIcon className={classes.dypConfigItemIcon} />
             <DYPConfigFormItemPlayerSelect
                 selectedPlayer={selectedPlayer2}
                 onChange={onChange}
-                assignedPlayerNames={assignedPlayerNames}
-                removedPlayerNames={removedPlayerNames}                
+                assignedPlayerIds={assignedPlayerIds}
+                removedPlayerIds={removedPlayerIds}                
+                playersData={playersData}                
                 index={[index, 1]}
             />
         </div>

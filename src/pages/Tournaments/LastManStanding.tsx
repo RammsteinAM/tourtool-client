@@ -12,16 +12,19 @@ import { debounce, differenceBy, shuffle } from 'lodash';
 import { useResizeDetector } from 'react-resize-detector';
 import GameListRound from '../../components/Tournament/GameListRound';
 import LastManStandingPlayerStatsList from '../../components/Tournament/TournamentStats/LastManStandingPlayerStatsList';
+import { getNormalizedParticipants } from '../../utils/arrayUtils';
 import lastManStandingStyles from './lastManStandingStyles';
 
 export interface Players {
     [key: string]: {
-        name: string;
+        id: number;
         lives: number;
         numberOfGames: number;
         points: number;
         goals: number;
         goalsIn: number;
+        matchesWon: number;
+        matchesLost: number;
     };
 }
 interface Props {
@@ -40,6 +43,8 @@ const LastManStanding = (props: Props) => {
     const classes = lastManStandingStyles();
     const { t } = useTranslation();
 
+    const normalizedParticipants = getNormalizedParticipants(entityState.participants);
+    
     useEffect(() => {
         submitInitialGamesToStore();
     }, [])
@@ -72,32 +77,38 @@ const LastManStanding = (props: Props) => {
         if (typeof numberOfLives !== 'number' || typeof pointsForWin !== 'number' || typeof pointsForDraw !== 'number') return {};
 
         const players: Players = lmsPlayers.reduce((acc: Players, val) => {
-            if (typeof val.name === 'string') {
-                acc[val.name] = {
-                    name: val.name,
+            if (typeof val.id === 'number') {
+                acc[val.id] = {
+                    id: val.id,
                     lives: numberOfLives,
                     numberOfGames: 0,
                     points: 0,
                     goals: 0,
                     goalsIn: 0,
+                    matchesWon: 0,
+                    matchesLost: 0,
                 }
             }
-            else if (val.name[0] && val.name[1]) {
-                acc[val.name[0]] = {
-                    name: val.name[0],
+            else if (val.id[0] && val.id[1]) {
+                acc[val.id[0]] = {
+                    id: val.id[0],
                     lives: numberOfLives,
                     numberOfGames: 0,
                     points: 0,
                     goals: 0,
                     goalsIn: 0,
+                    matchesWon: 0,
+                    matchesLost: 0,
                 }
-                acc[val.name[1]] = {
-                    name: val.name[1],
+                acc[val.id[1]] = {
+                    id: val.id[1],
                     lives: numberOfLives,
                     numberOfGames: 0,
                     points: 0,
                     goals: 0,
                     goalsIn: 0,
+                    matchesWon: 0,
+                    matchesLost: 0,
                 }
             }
             return acc;
@@ -109,73 +120,89 @@ const LastManStanding = (props: Props) => {
             }
 
             // SINGLE, TEAM
-            if (typeof val.player1 === 'string' && typeof val.player2 === 'string') {
+            if (typeof val.player1Id === 'number' && typeof val.player2Id === 'number') {
 
-                acc[val.player1].numberOfGames++;
-                acc[val.player2].numberOfGames++;
+                acc[val.player1Id].numberOfGames++;
+                acc[val.player2Id].numberOfGames++;
 
-                acc[val.player1].goals += val.score1;
-                acc[val.player2].goals += val.score2;
+                acc[val.player1Id].goals += val.score1;
+                acc[val.player2Id].goals += val.score2;
 
-                acc[val.player1].goalsIn += val.score2;
-                acc[val.player2].goalsIn += val.score1;
+                acc[val.player1Id].goalsIn += val.score2;
+                acc[val.player2Id].goalsIn += val.score1;
 
                 if (val.score1 > val.score2) {
-                    acc[val.player1].points += pointsForWin;
-                    acc[val.player2].lives--;
+                    acc[val.player1Id].points += pointsForWin;
+                    acc[val.player1Id].matchesWon += 1;
+                    acc[val.player2Id].matchesLost += 1;
+                    acc[val.player2Id].lives--;
                 }
-                if (val.score1 < val.score2) {                    
-                    acc[val.player1].points += pointsForWin;
-                    acc[val.player1].lives--;
+                if (val.score1 < val.score2) {
+                    acc[val.player1Id].points += pointsForWin;
+                    acc[val.player1Id].matchesLost += 1;
+                    acc[val.player2Id].matchesWon += 1;
+                    acc[val.player1Id].lives--;
                 }
                 if (val.score1 === val.score2) {
-                    acc[val.player1].points += pointsForDraw;
-                    acc[val.player2].points += pointsForDraw;
+                    acc[val.player1Id].points += pointsForDraw;
+                    acc[val.player2Id].points += pointsForDraw;
                 }
-
             }
 
             // DYP
-            else if (val.player1[0] && val.player1[1] && val.player2[0] && val.player2[1]) {
+            else if (
+                typeof val.player1Id === 'object' &&
+                typeof val.player2Id === 'object' &&
+                val.player1Id[0] && val.player1Id[1] &&
+                val.player2Id[0] && val.player2Id[1]
+            ) {
 
-                acc[val.player1[0]].numberOfGames++;
-                acc[val.player1[1]].numberOfGames++;
-                acc[val.player2[0]].numberOfGames++;
-                acc[val.player2[1]].numberOfGames++;
+                acc[val.player1Id[0]].numberOfGames++;
+                acc[val.player1Id[1]].numberOfGames++;
+                acc[val.player2Id[0]].numberOfGames++;
+                acc[val.player2Id[1]].numberOfGames++;
 
-                acc[val.player1[0]].goals += val.score1;
-                acc[val.player1[1]].goals += val.score1;
-                acc[val.player2[0]].goals += val.score2;
-                acc[val.player2[1]].goals += val.score2;
+                acc[val.player1Id[0]].goals += val.score1;
+                acc[val.player1Id[1]].goals += val.score1;
+                acc[val.player2Id[0]].goals += val.score2;
+                acc[val.player2Id[1]].goals += val.score2;
 
-                acc[val.player1[0]].goalsIn += val.score2;
-                acc[val.player1[1]].goalsIn += val.score2;
-                acc[val.player2[0]].goalsIn += val.score1;
-                acc[val.player2[1]].goalsIn += val.score1;
+                acc[val.player1Id[0]].goalsIn += val.score2;
+                acc[val.player1Id[1]].goalsIn += val.score2;
+                acc[val.player2Id[0]].goalsIn += val.score1;
+                acc[val.player2Id[1]].goalsIn += val.score1;
 
-                if (val.score1 > val.score2) {                    
-                    acc[val.player1[0]].points += pointsForWin;
-                    acc[val.player1[1]].points += pointsForWin;
-                    acc[val.player2[0]].lives--;
-                    acc[val.player2[1]].lives--;
+                if (val.score1 > val.score2) {
+                    acc[val.player1Id[0]].points += pointsForWin;
+                    acc[val.player1Id[1]].points += pointsForWin;
+                    acc[val.player1Id[0]].matchesWon += 1;
+                    acc[val.player1Id[1]].matchesWon += 1;
+                    acc[val.player2Id[0]].matchesLost += 1;
+                    acc[val.player2Id[1]].matchesLost += 1;
+                    acc[val.player2Id[0]].lives--;
+                    acc[val.player2Id[1]].lives--;
                 }
                 if (val.score1 < val.score2) {
-                    acc[val.player2[0]].points += pointsForWin;
-                    acc[val.player2[0]].points += pointsForWin;
-                    acc[val.player1[0]].lives--;
-                    acc[val.player1[1]].lives--;
+                    acc[val.player2Id[0]].points += pointsForWin;
+                    acc[val.player2Id[0]].points += pointsForWin;
+                    acc[val.player1Id[0]].matchesLost += 1;
+                    acc[val.player1Id[1]].matchesLost += 1;
+                    acc[val.player2Id[0]].matchesWon += 1;
+                    acc[val.player2Id[1]].matchesWon += 1;
+                    acc[val.player1Id[0]].lives--;
+                    acc[val.player1Id[1]].lives--;
                 }
                 if (val.score1 === val.score2) {
-                    acc[val.player1[0]].points += pointsForDraw;
-                    acc[val.player1[1]].points += pointsForDraw;
-                    acc[val.player2[0]].points += pointsForDraw;
-                    acc[val.player2[1]].points += pointsForDraw;
+                    acc[val.player1Id[0]].points += pointsForDraw;
+                    acc[val.player1Id[1]].points += pointsForDraw;
+                    acc[val.player2Id[0]].points += pointsForDraw;
+                    acc[val.player2Id[1]].points += pointsForDraw;
                 }
             }
 
             return acc;
         }, players);
-        
+
         return playersData;
     };
 
@@ -213,7 +240,7 @@ const LastManStanding = (props: Props) => {
         const storeGames: Games = {};
         let i = 0, j = 1;
         while (players[i] && players[i + 1]) {
-            storeGames[`1-${j}`] = { player1: players[i].name, player2: players[i + 1].name }
+            storeGames[`1-${j}`] = { /* player1: players[i].name, player2: players[i + 1].name, */ player1Id: players[i].id || 0, player2Id: players[i + 1].id || 0 }
             i += 2
             j++
         }
@@ -231,8 +258,8 @@ const LastManStanding = (props: Props) => {
         const numberOfGames = Math.floor(players.length / 2);
 
         for (let i = 1; i <= numberOfGames; i++) {
-            lastRoundPlayers.push({ name: games[`${currentRound}-${i}`].player1 });
-            lastRoundPlayers.push({ name: games[`${currentRound}-${i}`].player2 });
+            lastRoundPlayers.push({ id: games[`${currentRound}-${i}`].player1Id });
+            lastRoundPlayers.push({ id: games[`${currentRound}-${i}`].player2Id });
         }
 
         const waitingPlayer = differenceBy(players, lastRoundPlayers, 'name');
@@ -247,7 +274,12 @@ const LastManStanding = (props: Props) => {
         const storeGames: Games = {};
         let i = 0, j = 1;
         while (players[i] && players[i + 1]) {
-            storeGames[`${nextRound}-${j}`] = { player1: nextRoundPlayers[i].name, player2: nextRoundPlayers[i + 1].name }
+            storeGames[`${nextRound}-${j}`] = {
+                // player1: nextRoundPlayers[i].name,
+                // player2: nextRoundPlayers[i + 1].name,
+                player1Id: nextRoundPlayers[i].id || 0,
+                player2Id: nextRoundPlayers[i + 1].id || 0,
+            }
             i += 2
             j++
         }
@@ -267,7 +299,7 @@ const LastManStanding = (props: Props) => {
                 <CardContent className={classes.cardContent}                >
                     {[...Array(rounds).keys()].map((i) => {
                         return (
-                            <GameListRound key={`gameListRound_${i}`} roundNubmer={i + 1} maxScores={maxScores} />
+                            <GameListRound key={`gameListRound_${i}`} roundNubmer={i + 1} maxScores={maxScores} normalizedPlayers={normalizedParticipants} />
                         )
                     })}
                 </CardContent>

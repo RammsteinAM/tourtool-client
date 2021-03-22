@@ -5,23 +5,26 @@ import Select from '@material-ui/core/Select';
 import clsx from 'clsx';
 import mainStyles from '../../../styles/mainStyles';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import { StateParticipant } from '../../../types/entities';
 import dypFormStyles from './dypFormStyles';
 
 interface Props {
-    selectedPlayer: string | undefined,
-    onChange: (newPlayerName: string | undefined, index: [number, number], oldPlayerName: string | undefined) => void,
-    assignedPlayerNames: (string | undefined)[],
-    removedPlayerNames: (string | undefined)[],
+    selectedPlayer: number | undefined,
+    onChange: (newPlayerId: number | undefined, index: [number, number], oldPlayerId: number | undefined) => void,
+    assignedPlayerIds: (number | undefined)[],
+    removedPlayerIds: (number | undefined)[],
+    playersData: { [id: number]: StateParticipant };
     index: [number, number],
 }
 
-const DYPConfigFormItemPlayerSelect = ({ selectedPlayer, assignedPlayerNames, removedPlayerNames, onChange, index }: Props) => {
+const DYPConfigFormItemPlayerSelect = ({ selectedPlayer, assignedPlayerIds, playersData, removedPlayerIds, onChange, index }: Props) => {
     const mainClasses = mainStyles();
     const classes = dypFormStyles();
     const { t } = useTranslation();
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        onChange(event.target.value as string, index, selectedPlayer);
+        debugger
+        onChange(event.target.value as number, index, selectedPlayer);
     };
 
     return (
@@ -35,17 +38,17 @@ const DYPConfigFormItemPlayerSelect = ({ selectedPlayer, assignedPlayerNames, re
             {selectedPlayer &&
                 <MenuItem>{t('Remove Player')}</MenuItem>
             }
-            {removedPlayerNames.length > 0 &&
+            {removedPlayerIds.length > 0 &&
                 <ListSubheader style={{pointerEvents: 'none'}}>{t('Removed')}</ListSubheader>
             }
-            {removedPlayerNames.length > 0 && removedPlayerNames.map((player, index: number) => {
-                return player ? <MenuItem key={index} value={player}>{player}</MenuItem> : null;
+            {removedPlayerIds.length > 0 && removedPlayerIds.map((id, index: number) => {
+                return id ? <MenuItem key={index} value={id}>{playersData[id]?.name}</MenuItem> : null;
             })}
-            {assignedPlayerNames.length > 0 &&
+            {assignedPlayerIds.length > 0 &&
                 <ListSubheader style={{pointerEvents: 'none'}}>{t('Assigned')}</ListSubheader>
             }
-            {assignedPlayerNames.length > 0 && assignedPlayerNames.map((player, index: number) => {
-                return player ? <MenuItem key={index} value={player}>{player}</MenuItem> : null;
+            {assignedPlayerIds.length > 0 && assignedPlayerIds.map((id, index: number) => {
+                return id ? <MenuItem key={index} value={id}>{playersData[id]?.name}</MenuItem> : null;
             })}
         </Select>
     )

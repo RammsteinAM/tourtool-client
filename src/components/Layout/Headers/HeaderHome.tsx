@@ -8,6 +8,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import Button from '@material-ui/core/Button';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { ActionStatus } from '../../../types/main';
 import headerStyles from './headerStyles';
 
 interface Props {
@@ -17,6 +21,8 @@ const Header = (props: Props) => {
     const classes = headerStyles();
     const history = useHistory();
     const [path, setPath] = useState('');
+    const authState = useSelector((state: RootState) => state.auth);
+    const loggedIn = authState.status === ActionStatus.Success;
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -44,6 +50,15 @@ const Header = (props: Props) => {
                     }
                 />
             </FormControl>
+            {loggedIn && <Button
+                type="button"
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={() => { history.push('/tournament/new') }}
+            >
+                {t('Create New Tournament')}
+            </Button>}
         </Toolbar>
     )
 }

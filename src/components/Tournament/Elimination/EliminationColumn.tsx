@@ -40,8 +40,8 @@ const EliminationColumn = ({ children, numberOfColumns, firstRoundGameNumber, co
             <div className={classes.gameColumn}>
                 <div>
                     <div className={classes.gameColumnHeader}>
-                        <span>{roundNumberDenominator >= 4 && '1/' + roundNumberDenominator} </span>
-                        <span>{roundNumberDenominator === 2 ? t('Semifinal') : t('Final', { count: roundNumberDenominator })} </span>
+                        {roundNumberDenominator >= 4 && <span>{'1/' + roundNumberDenominator} </span>}
+                        <span>{roundNumberDenominator === 2 ? t('Semifinal') : t('Final')} </span>
                     </div>
                     <div className={classes.gameColumnContent}>
                         {children}

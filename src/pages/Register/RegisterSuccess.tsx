@@ -84,7 +84,7 @@ const RegisterSuccess = (props: Props) => {
                 </div>
             }
             {registerState.resendVerificationEmail.status === ActionStatus.Failure &&
-                <div className={mainClasses.errorMessage}>{registerState.resendVerificationEmail.error}</div>
+                <div className={mainClasses.errorMessage}>{t(`ERROR_${registerState.resendVerificationEmail.error}`)}</div>
             }
         </>
     );

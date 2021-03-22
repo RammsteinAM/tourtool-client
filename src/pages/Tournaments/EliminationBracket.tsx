@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { useTranslation } from "react-i18next";
 import { EliminationGames, StateEliminationPlayers } from '../../types/entities';
 import EliminationSidebar from '../../components/Tournament/Elimination/EliminationSidebar';
-import { resetEliminationGames, resetGames, updateEliminationGames } from '../../redux/tournamentEntities/actions';
+import { resetEliminationGames, resetGames, updateEliminationGames, updateTournament } from '../../redux/tournamentEntities/actions';
 import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
 import { useHistory } from 'react-router-dom';
 import EliminationColumn from '../../components/Tournament/Elimination/EliminationColumn';
-import tournamentStyles from './tournamentStyles';
 import EliminationBracketCards from '../../components/Tournament/Elimination/EliminationBracketCards';
+import tournamentStyles from './tournamentStyles';
+import { splitGameKey } from '../../utils/stringUtils';
+import { getNormalizedParticipants } from '../../utils/arrayUtils';
 
 const EliminationBracket = () => {
     const [players, setPlayers] = useState<StateEliminationPlayers>([]);
@@ -22,7 +23,8 @@ const EliminationBracket = () => {
     const numberOfColumns = Math.ceil((Math.log(numberOfPlayers) / Math.log(2)));
     const classes = tournamentStyles();
     const history = useHistory();
-    const { t } = useTranslation();
+
+    const normalizedParticipants = getNormalizedParticipants(entityState.participants);
 
     useEffect(() => {
         const newPlayers: StateEliminationPlayers = [];
@@ -47,18 +49,19 @@ const EliminationBracket = () => {
     const handleStartTournament = (e: React.FormEvent, name: string) => {
         e.preventDefault();
         submitGamesToStore();
+        dispatch(updateTournament({ name }));
         history.push('/elimination');
     };
 
     const getByeIndexes = (n: number) => {
-        if (Math.log(32) / Math.log(2) % 1 !== 0) return null;
+        // if (Math.log(32) / Math.log(2) % 1 !== 0) return null;
         return [
             2, n,
             n / 2, n / 2 + 2,
             n / 4, 3 * n / 4, n / 4 + 2, 3 * n / 4 + 2,
             n / 8, 5 * n / 8, 3 * n / 8, 7 * n / 8, n / 8 + 2, 5 * n / 8 + 2, 3 * n / 8 + 2, 7 * n / 8 + 2,
             n / 16, 9 * n / 16, 5 * n / 16, 13 * n / 16, 3 * n / 16, 11 * n / 16, 7 * n / 16, 15 * n / 16, n / 16 + 2, 9 * n / 16 + 2, 5 * n / 16 + 2, 13 * n / 16 + 2, 3 * n / 16 + 2, 11 * n / 16 + 2, 7 * n / 16 + 2,
-            n / 32, 17 * n / 32, 9 * n / 32, 25 * n / 32, 5 * n / 32
+            n / 32, 17 * n / 32, 9 * n / 32, 25 * n / 32, 5 * n / 32, 21 * n / 32, 13 * n / 32, 29 * n / 32
         ]
     }
 
@@ -67,38 +70,77 @@ const EliminationBracket = () => {
         for (let col = 1; col <= numberOfColumns; col++) {
             const prevCol = col - 1;
             for (let i = 0, j = 1; i < players.length / (2 ** prevCol); i = i + 2, j++) {
-                const gameKey: string = col === numberOfColumns ? 'final' : `${col}-${j}`;
-                storeGames[gameKey] = { player1: '', player2: '', index: gameKey }
+                const gameKey: string = /* col === numberOfColumns ? 'final' :  */`${col}-${j}`;
+                storeGames[gameKey] = { player1: '', player2: '', player1Id: 0, player2Id: 0, index: gameKey }
                 if (col === 1) {
-                    storeGames[gameKey].player1 = players[i].name;
-                    storeGames[gameKey].player2 = players[i + 1].name;
+                    // storeGames[gameKey].player1 = players[i].name;
+                    // storeGames[gameKey].player2 = players[i + 1].name;
+                    const { id: player1Id } = players[i];
+                    const { id: player2Id } = players[i + 1];
+                    storeGames[gameKey].player1Id = player1Id || 0;
+                    storeGames[gameKey].player2Id = player2Id || 0;
+                    storeGames[gameKey].isPredetermined = true;
                     if (players[i].bye || players[i + 1].bye) {
                         storeGames[gameKey].hasByePlayer = true;
                     }
                     continue;
                 }
 
-                // parent X player Y
-                const { p1p1, p1p2, parent1HasByePlayer } = { p1p1: storeGames[`${prevCol}-${j * 2 - 1}`].player1, p1p2: storeGames[`${prevCol}-${j * 2 - 1}`].player2, parent1HasByePlayer: storeGames[`${prevCol}-${j * 2 - 1}`].hasByePlayer };
-                const { p2p1, p2p2, parent2HasByePlayer } = { p2p1: storeGames[`${prevCol}-${j * 2}`].player1, p2p2: storeGames[`${prevCol}-${j * 2}`].player2, parent2HasByePlayer: storeGames[`${prevCol}-${j * 2}`].hasByePlayer };
-                const parent1HasNoPlayer = !p1p1 && !p1p2;
-                const parent1HasOnePlayer = (p1p1 && !p1p2) || (p1p2 && !p1p1);
-                const parent2HasNoPlayer = !p2p1 && !p2p2;
-                const parent2HasOnePlayer = (p2p1 && !p2p2) || (p2p2 && !p2p1);
+                const parent1GameKey = `${col - 1}-${j * 2 - 1}`;
+                const parent2GameKey = `${col - 1}-${j * 2}`;
+                const p1Game = storeGames[parent1GameKey]; // first parent game
+                const p2Game = storeGames[parent2GameKey]; // second parent game
+                const {
+                    p1p1,
+                    p1p2, // 1st parent's 2nd player
+                    p2p1,
+                    p2p2,
+                    parent1HasByePlayer,
+                    parent1HasNoPlayer,
+                    parent1HasOnePlayer,
+                    parent1isPredetermined,
+                    parent2HasByePlayer,
+                    parent2HasNoPlayer,
+                    parent2HasOnePlayer,
+                    parent2isPredetermined,
+                    // numberOfParentPlayers
+                } = {
+                    p1p1: p1Game?.player1Id,
+                    p1p2: p1Game?.player2Id,
+                    parent1HasByePlayer: p1Game?.hasByePlayer,
+                    parent1isPredetermined: p1Game?.isPredetermined,
+                    parent1HasOnePlayer: (p1Game?.player1Id && !p1Game?.player2Id) || (p1Game?.player2Id && !p1Game?.player1Id),
+                    parent1HasNoPlayer: !p1Game?.player1Id && !p1Game?.player2Id,
+                    p2p1: p2Game?.player1Id,
+                    p2p2: p2Game?.player2Id,
+                    parent2HasByePlayer: p2Game?.hasByePlayer,
+                    parent2isPredetermined: p2Game?.isPredetermined,
+                    parent2HasOnePlayer: (p2Game?.player1Id && !p2Game?.player2Id) || (p2Game?.player2Id && !p2Game?.player1Id),
+                    parent2HasNoPlayer: !p2Game?.player1Id && !p2Game?.player2Id,
+                    // numberOfParentPlayers: Number(!!p1Game?.player1Id) + Number(!!p1Game?.player2Id) + Number(!!p2Game?.player1Id) + Number(!!p2Game?.player2Id),
+                };
+
+
+                if (parent1isPredetermined && parent2isPredetermined) {
+                    storeGames[gameKey].isPredetermined = true;
+                }
                 if ((parent2HasNoPlayer || parent1HasNoPlayer) && ((parent1HasByePlayer && parent2HasOnePlayer) || (parent2HasByePlayer && parent1HasOnePlayer))) {
                     storeGames[gameKey].hasByePlayer = true;
                 }
                 if (!parent1HasByePlayer && !parent2HasByePlayer) {
                     continue;
                 }
-                if (parent1HasOnePlayer) {
-                    storeGames[gameKey].player1 = p1p1 || p1p2;
+                if (parent1HasOnePlayer && parent1HasByePlayer) {
+                    storeGames[gameKey].player1Id = p1p1 || p1p2;
                 }
-                if (parent2HasOnePlayer) {
-                    storeGames[gameKey].player2 = p2p1 || p2p2;
+                if (parent2HasOnePlayer && parent2HasByePlayer) {
+                    storeGames[gameKey].player2Id = p2p1 || p2p2;
                 }
             }
 
+        }
+        if (entityState.tournament.thirdPlace) {
+            storeGames['thirdPlace'] = { player1: '', player2: '', player1Id: 0, player2Id: 0, index: 'thirdPlace' }
         }
         // players.forEach(player => {
         //     storeGame
@@ -114,11 +156,11 @@ const EliminationBracket = () => {
         for (let i = 0; i < byePlayerNumber; i++) {
             if (byePlayers <= 0) break;
             if (byeI![i]) {
-                players[byeI![i] - 1] = { name: "", category: null, bye: true }
+                players[byeI![i] - 1] = { id: 0, category: null, bye: true }
             }
             else {
                 const q = players.findIndex((x, i) => i % 2 !== 0 && !x?.bye && !players[i + 1]?.bye)
-                players[q] = { name: "", category: null, bye: true }
+                players[q] = { id: 0, category: null, bye: true }
             }
             byePlayers--;
         }
@@ -155,6 +197,7 @@ const EliminationBracket = () => {
                                     players={players}
                                     columnNumber={colNumber}
                                     numberOfGames={numberOfGames}
+                                    normalizedPlayers={normalizedParticipants}
                                 />
                             </EliminationColumn>
                         )

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import FormSubheader from '../../FormComponents/FormSubheader';
 import { ReactComponent as DrawYourPartner } from '../../../resources/icons/drawYourPartner.svg';
-import { StateEliminationPlayers } from '../../../types/entities';
+import { StateEliminationPlayers, StateParticipant, StateParticipants } from '../../../types/entities';
 import toast from '../../IndependentSnackbar';
 import { updateEliminationPlayers, updateLMSPlayers, updateTournament } from '../../../redux/tournamentEntities/actions';
 import DYPConfigFormItem from './DYPConfigFormItem';
@@ -14,8 +14,8 @@ import { difference } from 'lodash';
 import dypFormStyles from './dypFormStyles';
 import CreateTournamentDialog from '../CreateTournamentDialog';
 
-type Team = [string | undefined, string | undefined];
-type InitialTeam = [string, string];
+type Team = [number | undefined, number | undefined];
+type InitialTeam = [number, number];
 type Teams = Team[];
 type InitialTeams = InitialTeam[];
 
@@ -27,13 +27,22 @@ interface Props {
 
 const DYPConfigForm = ({ tournamentType }: Props) => {
     const [teams, setTeams] = useState<Teams>([]);
-    const [initialPlayers, setInitialPlayers] = useState<string[]>([]);
+    const [initialPlayers, setInitialPlayers] = useState<number[]>([]);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+    // const fetchedPlayers = useSelector((state: RootState) => state.entities.fetchedPlayers.data);
     const storeParticipants = useSelector((state: RootState) => state.entities.participants);
     const classes = dypFormStyles();
     const dispatch = useDispatch();
     const history = useHistory();
     const { t } = useTranslation();
+
+    const normalizedStoreParticipants: { [id: number]: StateParticipant } = storeParticipants.reduce((acc: any, val: StateParticipant) => {
+        if (!val.id) {
+            return acc;
+        }
+        acc[val.id] = val;
+        return acc;
+    }, {})
 
     // useEffect(() => {
     //     const storePlayers = entityState.players;
@@ -55,37 +64,38 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
     }, [])
 
     const getInitialTeams = (): InitialTeams => {
-        const playersA: StateEliminationPlayers = storeParticipants.filter(player => player.category === 'A');
-        const playersB: StateEliminationPlayers = storeParticipants.filter(player => player.category === 'B');
-        const playersNeutral: StateEliminationPlayers = storeParticipants.filter(player => player.category !== 'A' && player.category !== 'B');
+        const playersA: StateParticipants = storeParticipants.filter(player => player.category === 'A');
+        const playersB: StateParticipants = storeParticipants.filter(player => player.category === 'B');
+        const playersNeutral: StateParticipants = storeParticipants.filter(player => player.category !== 'A' && player.category !== 'B');
         const teams: InitialTeams = [];
+        debugger
         for (let i = 0; i < storeParticipants.length / 2; i++) {
             let teamPlayer1, teamPlayer2;
             if (playersA[0]) {
-                teamPlayer1 = playersA[0].name;
+                teamPlayer1 = playersA[0].id;
                 playersA.shift();
             }
             else if (playersNeutral[0]) {
-                teamPlayer1 = playersNeutral[0].name;
+                teamPlayer1 = playersNeutral[0].id;
                 playersNeutral.shift();
             }
             else {
-                teamPlayer1 = playersB[0].name;
+                teamPlayer1 = playersB[0].id;
                 playersB.shift();
             }
             if (playersB[0]) {
-                teamPlayer2 = playersB[0].name;
+                teamPlayer2 = playersB[0].id;
                 playersB.shift();
             }
             else if (playersNeutral[0]) {
-                teamPlayer2 = playersNeutral[0].name;
+                teamPlayer2 = playersNeutral[0].id;
                 playersNeutral.shift();
             }
             else {
-                teamPlayer2 = playersA[0].name;
+                teamPlayer2 = playersA[0].id;
                 playersA.shift();
             }
-            teams.push([teamPlayer1 as string, teamPlayer2 as string])
+            teams.push([teamPlayer1 as number, teamPlayer2 as number])
         }
         return teams;
     };
@@ -93,17 +103,35 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
     const handleSubmit = (e: React.FormEvent): void => {
         e.preventDefault();
         if (difference(initialPlayers, teams.flat()).length > 0) {
-            toast.warning(t('You need 2 players per team.'));
+            toast.warning(t('You need 2 players per team'));
             return;
         }
-        const newStorePlayers = teams.map(team => ({ name: team.join(' / ') }));
-
+        debugger
+        // const newStorePlayers = teams.map(team => ({ name: team.join(' / ') }));
+        // const newStorePlayers: StateEliminationPlayers = teams.map(team => {
+        //     const id1 = team[0], id2 = team[1];
+        //     if (typeof id1 === 'number' && typeof id2 === 'number') {
+        //         return { id: [id1, id2] }
+        //     }
+        //     return { id: [0,0]};
+        // });
+        const newStorePlayers: StateEliminationPlayers = teams.reduce((acc: StateEliminationPlayers, val: Team) => {
+            //const id1 = team[0], id2 = team[1];
+            if (typeof val[0] === 'number' && typeof val[1] === 'number') {
+                acc.push({ id: [val[0], val[1]] });
+            }
+            return acc;
+        }, []);
+        // const participantsWithIds: StateParticipants = participants.map(p => {
+        //     const id = entityState.fetchedPlayers.data.find(fp => fp.name === p.name)?.id
+        //     return { ...p, id };
+        // })
         if (tournamentType === 'elimination') {
             dispatch(updateEliminationPlayers(newStorePlayers));
             history.push('/tournament/elimination-bracket');
             return;
         }
-        
+
         dispatch(updateLMSPlayers(newStorePlayers));
         handleDialogOpen();
     }
@@ -118,7 +146,7 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
     //         })
     // }
 
-    const getIndexToSwapWith = (playerName: string | undefined): [number, number] | null => {
+    const getIndexToSwapWith = (playerName: number | undefined): [number, number] | null => {
         for (let i = 0; i < teams.length; i++) {
             if (teams[i][0] === playerName) {
                 return [i, 0]
@@ -130,25 +158,25 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
         return null;
     }
 
-    const insterIntoEmptySpot = (playerName: string): [number, number] | null => {
-        for (let i = 0; i < teams.length; i++) {
-            if (teams[i][0] === playerName) {
-                return [i, 0]
-            }
-            if (teams[i][1] === playerName) {
-                return [i, 1]
-            }
-        }
-        return null;
-    }
+    // const insterIntoEmptySpot = (playerName: string): [number, number] | null => {
+    //     for (let i = 0; i < teams.length; i++) {
+    //         if (teams[i][0] === playerName) {
+    //             return [i, 0]
+    //         }
+    //         if (teams[i][1] === playerName) {
+    //             return [i, 1]
+    //         }
+    //     }
+    //     return null;
+    // }
 
-    const handlePlayerChange = (newPlayerName: string | undefined, index: [number, number], oldPlayerName: string | undefined) => {
+    const handlePlayerChange = (newPlayerId: number | undefined, index: [number, number], oldPlayerId: number | undefined) => {
         const newTeams = [...teams];
-        const oldIndex = newPlayerName && getIndexToSwapWith(newPlayerName)
+        const oldIndex = newPlayerId && getIndexToSwapWith(newPlayerId)
         if (oldIndex) {
-            newTeams[oldIndex[0]][oldIndex[1]] = oldPlayerName;
+            newTeams[oldIndex[0]][oldIndex[1]] = oldPlayerId;
         }
-        newTeams[index[0]][index[1]] = newPlayerName;
+        newTeams[index[0]][index[1]] = newPlayerId;
         setTeams([...newTeams])
     }
 
@@ -187,8 +215,9 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
                                 selectedPlayer1={team[0]}
                                 selectedPlayer2={team[1]}
                                 onChange={handlePlayerChange}
-                                assignedPlayerNames={teams.flat()}
-                                removedPlayerNames={difference(initialPlayers, teams.flat())}
+                                playersData={normalizedStoreParticipants}
+                                assignedPlayerIds={teams.flat()}
+                                removedPlayerIds={difference(initialPlayers, teams.flat())}
                             />
                         )
                     })}

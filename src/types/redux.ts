@@ -19,5 +19,5 @@ export interface DatalessState {
 }
 
 export default interface AppState<T> extends DatalessState {
-    data?: T;
+    data: T;
 }

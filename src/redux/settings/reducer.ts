@@ -8,7 +8,7 @@ const initialState: SettingsReducerState | null = {
   eliminationScale: 1,
   fullScreen: false,
   tournamentSidebar: true,
-  tournamentSidebarColumnOrder: ['name', 'numberOfGames', 'goals', 'goalsIn', 'goalDiff', 'points', 'lives'],
+  tournamentSidebarColumnOrder: ['name', 'numberOfGames', 'goals', 'goalsIn', 'goalDiff', 'points', 'averagePoints', 'matchesWon', 'matchesLost', 'matchesDraw', 'lives'],
   tournamentSidebarEnabledColumns: ['name', 'numberOfGames', 'lives'],
 };
 

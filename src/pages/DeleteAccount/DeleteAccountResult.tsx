@@ -25,7 +25,6 @@ const DeleteAccountResult = () => {
 
     useEffect(() => {
         if (userState.delete.status === ActionStatus.Initial) {
-
             dispatch(userActions.deleteUser(token));
         }
     }, [userState.delete.status]);

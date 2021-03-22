@@ -27,6 +27,11 @@ const LastManStandingPlayerStatsRow = (props: Props) => {
                         {!props.easterEgg ? <DeadPlayerSkull width={21} height={21} /> : <img width={21} height={21} src={KEKW} title='Dead KEKW' />}
                     </td>
                 }
+                if (key === 'averagePoints') {
+                    return <td className={classes.lmsStatsTd}>
+                        {props[key]?.toFixed(2)}
+                    </td>
+                }
                 return (props[key] || typeof props[key] === 'number') &&
                     <td className={clsx(classes.lmsStatsTd, { [classes.lmsStatsTdPlayer]: key === 'name' })}>
                         {props[key]}

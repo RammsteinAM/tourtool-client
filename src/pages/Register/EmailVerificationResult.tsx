@@ -100,7 +100,7 @@ const EmailVerificationResult = (props: Props) => {
                 }
                 {registerState.verifyEmail.status === ActionStatus.Failure &&
                     <>
-                        <div className={mainClasses.errorMessage}>{registerState.verifyEmail.error}</div>
+                        <div className={mainClasses.errorMessage}>{t(`ERROR_${registerState.verifyEmail.error}`)}</div>
                         <div>
                             <Button
                                 type="button"

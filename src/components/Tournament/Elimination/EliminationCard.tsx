@@ -2,31 +2,52 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useTranslation } from "react-i18next";
-import { StateEliminationGame, StateScore } from '../../../types/entities';
+import { FetchedPlayer, StateEliminationGame, StateScore } from '../../../types/entities';
 import { updateEliminationGames } from '../../../redux/tournamentEntities/actions';
 import EnterScoreDialog from '../EnterScore/EnterScoreDialog';
-import { splitGameKey } from '../../../utils/stringUtils';
+import { getNextGameKey, splitGameKey } from '../../../utils/stringUtils';
 import { getMultipleSetScores } from '../../../utils/scoreUtils';
 import eliminationSidebarStyles from './eliminationSidebarStyles';
+import { Nullable } from '../../../types/main';
 
 interface Props {
-    player1?: string | [string, string];
-    player2?: string | [string, string];
+    // player1?: string | [string, string];
+    // player2?: string | [string, string];
+    player1Id?: number | [number, number];
+    player2Id?: number | [number, number];
+    normalizedPlayers?: { [id: number]: FetchedPlayer }
     active?: boolean;
     gameKey?: string;
 }
 
 const EliminationCard = (props: Props) => {
-    const gamesState = useSelector((state: RootState) => state.entities.eliminationGames);
-    const tournamentState = useSelector((state: RootState) => state.entities.tournament);
     const [game, setGame] = useState<StateEliminationGame>();
     const [scoreDialogOpen, setScoreDialogOpen] = useState<boolean>(false);
-    const { player1: player1Name, player2: player2Name } = props.gameKey && game ? game : props;
+    const gamesState = useSelector((state: RootState) => state.entities.eliminationGames);
+    const tournamentState = useSelector((state: RootState) => state.entities.tournament);
+    const fetchedPlayers = useSelector((state: RootState) => state.entities.fetchedPlayers.data);
     const dispatch = useDispatch();
     const classes = eliminationSidebarStyles();
     const { t } = useTranslation();
-    const isBye = props.active ? !!game?.hasByePlayer : (!player1Name || !player2Name)
 
+    const { player1Id, player2Id } = props.gameKey && game ? game : props;
+    const player1Name: string = props.normalizedPlayers && player1Id ?
+        (typeof player1Id === 'number' ?
+            props.normalizedPlayers[player1Id].name :
+            `${props.normalizedPlayers[player1Id[0]].name} / ${props.normalizedPlayers[player1Id[1]].name}`) :
+        '';
+    const player2Name: string = props.normalizedPlayers && player2Id ?
+        (typeof player2Id === 'number' ?
+            props.normalizedPlayers[player2Id].name :
+            `${props.normalizedPlayers[player2Id[0]].name} / ${props.normalizedPlayers[player2Id[1]].name}`) :
+        '';
+
+
+
+    // const player1: FetchedPlayer = props.normalizedPlayers && typeof player1Id === 'number' ? props.normalizedPlayers[player1Id].name : ;
+    // const player2: FetchedPlayer = fetchedPlayers.find(p => p.id === player2Id) || { name: '' };
+    const isBye = props.active ? !!game?.hasByePlayer : (!player1Name || !player2Name);
+    debugger
     useEffect(() => {
         props.gameKey && setGame(gamesState[props.gameKey]);
     }, [props.gameKey && gamesState[props.gameKey]])
@@ -40,32 +61,84 @@ const EliminationCard = (props: Props) => {
     }
 
     const handleScoreInput = (scores1: StateScore, scores2: StateScore) => {
-        if (!props.gameKey || !player1Name || !player2Name) return;
-        const finalRoundNumber = Object.keys(gamesState).map(key => splitGameKey(key).round).sort(function (a, b) { return b - a })[0] + 1;
-        const { score1, score2 } = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length)
+        if (!props.gameKey || !player1Id || !player2Id) return;
+        const finalRoundNumber = Object.keys(gamesState).map(key => splitGameKey(key).round).sort(function (a, b) { return b - a })[0];
+        const { score1, score2 } = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length);
+
+        dispatch(updateEliminationGames(
+            {
+                [props.gameKey]: {
+                    ...gamesState[props.gameKey],
+                    score1,
+                    score2,
+                    scores1: Object.values(scores1),
+                    scores2: Object.values(scores2)
+                }
+            }
+        ));
+        const winnerId = score1 > score2 ? player1Id : player2Id;
+        const loserId = score1 > score2 ? player2Id : player1Id;
+
         const round = splitGameKey(props.gameKey).round;
         const gameNumber = splitGameKey(props.gameKey).gameNumber;
-        const isGameOdd = gameNumber % 2 === 1;
-        const winner = score1 > score2 ? player1Name : player2Name;
-        const nextGameKey = `${round + 1}-${isGameOdd ? (gameNumber + 1) / 2 : gameNumber / 2}`;
-
-        dispatch(updateEliminationGames({ [props.gameKey]: { ...gamesState[props.gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) } }));
-        if (round < finalRoundNumber - 1) {
-            isGameOdd ?
-                dispatch(updateEliminationGames({ [props.gameKey]: { ...gamesState[props.gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) }, [nextGameKey]: { ...gamesState[nextGameKey], player1: winner } })) :
-                dispatch(updateEliminationGames({ [props.gameKey]: { ...gamesState[props.gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) }, [nextGameKey]: { ...gamesState[nextGameKey], player2: winner } }));
+        if (isNaN(round)) {
+            handleScoreDialogClose()
+            return;
         }
-        if (round === finalRoundNumber - 1) {
-            isGameOdd ?
-                dispatch(updateEliminationGames({ [props.gameKey]: { ...gamesState[props.gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) }, ['final']: { ...gamesState['final'], player1: winner } })) :
-                dispatch(updateEliminationGames({ [props.gameKey]: { ...gamesState[props.gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) }, ['final']: { ...gamesState['final'], player2: winner } }));
-            if (tournamentState.thirdPlace) {
-                const loser = score1 > score2 ? player2Name : player1Name;
-                isGameOdd ?
-                    dispatch(updateEliminationGames({ ['thirdPlace']: { ...gamesState['thirdPlace'], player1: loser } })) :
-                    dispatch(updateEliminationGames({ ['thirdPlace']: { ...gamesState['thirdPlace'], player2: loser } }));
+        const isGameOdd = gameNumber % 2 === 1;
+
+        const nextGameKey = getNextGameKey(props.gameKey, finalRoundNumber);
+
+        const getParentsData = (gameKey: string) => {
+            const round = splitGameKey(gameKey).round;
+            const gameNumber = splitGameKey(gameKey).gameNumber;
+            const parent1GameKey = `${round - 1}-${gameNumber * 2 - 1}`;
+            const parent2GameKey = `${round - 1}-${gameNumber * 2}`;
+            const data = {
+                p1p1: gamesState[parent1GameKey]?.player1Id,
+                p1p2: gamesState[parent1GameKey]?.player2Id,
+                parent1HasByePlayer: gamesState[parent1GameKey]?.hasByePlayer,
+                parent1isPredetermined: gamesState[parent1GameKey]?.isPredetermined,
+                parent1HasNoPlayer: !gamesState[parent1GameKey]?.player1Id && !gamesState[parent1GameKey]?.player2Id,
+                p2p1: gamesState[parent2GameKey]?.player1Id,
+                p2p2: gamesState[parent2GameKey]?.player2Id,
+                parent2HasByePlayer: gamesState[parent2GameKey]?.hasByePlayer,
+                parent2isPredetermined: gamesState[parent2GameKey]?.isPredetermined,
+                parent2HasNoPlayer: !gamesState[parent2GameKey]?.player1Id && !gamesState[parent2GameKey]?.player2Id,
+                numberOfParentPlayers: Number(!!gamesState[parent1GameKey]?.player1Id) + Number(!!gamesState[parent1GameKey]?.player2Id) + Number(!!gamesState[parent2GameKey]?.player1Id) + Number(!!gamesState[parent2GameKey]?.player2Id),
+            };
+            return data;
+        }
+
+        function updateNextGames(nextGameKey: Nullable<string>, isGameOdd: boolean) {
+            if (!nextGameKey) {
+                return;
+            }
+            const nextGameParentData = getParentsData(nextGameKey);
+            const nextOfNextGameKey = getNextGameKey(nextGameKey, finalRoundNumber);
+            const gameNumber = splitGameKey(nextGameKey).gameNumber;
+            const isNextGameOdd = !isNaN(gameNumber) ? gameNumber % 2 === 1 : true;
+            const hasByePlayer = (nextGameParentData.parent1isPredetermined && nextGameParentData.parent1HasNoPlayer) || (nextGameParentData.parent2isPredetermined && nextGameParentData.parent2HasNoPlayer);
+
+            if (isGameOdd) {
+                dispatch(updateEliminationGames({ [nextGameKey]: { ...gamesState[nextGameKey], player1Id: winnerId, hasByePlayer } }));
+                if (round === finalRoundNumber - 1 && tournamentState.thirdPlace) {
+                    dispatch(updateEliminationGames({ ['thirdPlace']: { ...gamesState['thirdPlace'], player1Id: loserId, hasByePlayer: nextGameParentData.numberOfParentPlayers < 4 } }));
+                }
+            }
+            else {
+                dispatch(updateEliminationGames({ [nextGameKey]: { ...gamesState[nextGameKey], player2Id: winnerId, hasByePlayer } }));
+                if (round === finalRoundNumber - 1 && tournamentState.thirdPlace) {
+                    dispatch(updateEliminationGames({ ['thirdPlace']: { ...gamesState['thirdPlace'], player2Id: loserId, hasByePlayer: nextGameParentData.numberOfParentPlayers < 4 } }));
+                }
+            }
+            if (hasByePlayer) {
+                updateNextGames(nextOfNextGameKey, isNextGameOdd);
             }
         }
+
+        updateNextGames(nextGameKey, isGameOdd);
+
         handleScoreDialogClose()
     }
 

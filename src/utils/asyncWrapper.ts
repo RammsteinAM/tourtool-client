@@ -4,17 +4,18 @@ import { ErrorNames } from "../types/error";
 import i18n from "./i18n";
 
 export function asyncWrapper<T>(func: (param: any) => Promise<T>) {
-    return async (param: any) => {
+    return async (param?: any) => {
         try {
             return await func(param);
         } catch (err) {
-            const { error, message } = err.response.data;
-            toast.error(i18n.t(`ERROR_${error}`));
+            debugger
+            const resData = err?.response?.data;
+            // toast.error(i18n.t(`ERROR_${resData?.error}`));
             // if (Object.values(ErrorNames).includes(error)) {
             //     toast.error(i18n.t(`ERROR_${error}`));
             // }
 
-            throw new HttpError(err.response.status, error, message);
+            throw new HttpError(err?.response?.status, resData?.error, resData?.message);
         }
     }
 }

@@ -81,7 +81,6 @@ const styles = makeStyles((theme) => ({
         display: "flex",
         width: "350px",
         right: "12px",
-        top: "79px",
         height: "calc(100% - 90px)",
         alignContent: "space-between",
         flexDirection: "column",
