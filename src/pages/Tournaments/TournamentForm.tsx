@@ -14,6 +14,7 @@ import { formMinMaxValues } from '../../utils/constants';
 import FormSubheader from '../../components/FormComponents/FormSubheader';
 import { useDispatch } from 'react-redux';
 import { updateTournament } from '../../redux/tournamentEntities/actions';
+import { TournamentTypes } from '../../types/entities';
 import clsx from 'clsx';
 import tournamentStyles from './tournamentStyles';
 
@@ -56,7 +57,7 @@ const TournamentForm = (props: Props) => {
     const classes = tournamentStyles();
     const history = useHistory();
     const dispatch = useDispatch();
-    const { tournamentType } = useParams<{ tournamentType: string }>();
+    const { tournamentType } = useParams<{ tournamentType: TournamentTypes }>();
     const { t } = useTranslation();
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -207,7 +208,7 @@ const TournamentForm = (props: Props) => {
                                 }
                             </Select>
                         </div>
-                {(tournamentType === 'lms' || tournamentType === 'round-robin') &&
+                {(tournamentType === 'lms' || tournamentType === 'roundRobin') &&
                     <>
                         <FormSubheader title={t('Points')} /* text={t('form-subheader-points-text')} descriptionWidth={454} */ />
                         <div className={classes.formBlock}>

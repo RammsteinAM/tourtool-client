@@ -10,11 +10,12 @@ import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close'
 import { useTranslation } from "react-i18next";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { StateParticipants, StateEliminationPlayers } from '../../types/entities';
 import { updateParticipants } from '../../redux/tournamentEntities/actions';
 import toast from '../IndependentSnackbar';
 import importParticipantsDialogStyles from './importParticipantsDialogStyles';
+import { RootState } from '../../redux/store';
 
 const initialPlayer = { name: '', category: null };
 interface Props {
@@ -25,6 +26,7 @@ interface Props {
 
 const ImportParticipantsDialog = ({ open, onClose }: Props): ReactElement => {
     const [participants, setParticipants] = useState<string>('');
+    const storeParticipants = useSelector((state: RootState) => state.entities.participants);
     const dispatch = useDispatch();
     const classes = importParticipantsDialogStyles();
 
@@ -51,6 +53,7 @@ const ImportParticipantsDialog = ({ open, onClose }: Props): ReactElement => {
     const handleImport = () => {
         const participants = generateParticipants();
         const duplicates = findDuplicates(participants);
+        const storeParticipantNames = storeParticipants.map(p => p.name)
         if (duplicates.length === 1) {
             toast.warning(t('player-import-form-duplicate-name', { name: duplicates[0] }));
         }
@@ -63,7 +66,7 @@ const ImportParticipantsDialog = ({ open, onClose }: Props): ReactElement => {
             toast.warning(t('player-import-form-duplicate-names', { names: duplicateNames }));
         }
         else {
-            submitPlayersToStore(participants.filter(x => !!x));
+            submitPlayersToStore(participants.filter(x => (!!x && storeParticipantNames.indexOf(x) < 0)));
             handleClose();
         }
     }
@@ -79,13 +82,13 @@ const ImportParticipantsDialog = ({ open, onClose }: Props): ReactElement => {
         return uniqueDuplicates;
     }
 
-    const submitPlayersToStore = (participants: string[]) => {
-        const storeParticipants: StateParticipants = participants
+    const submitPlayersToStore = (newParticipants: string[]) => {
+        const storeNewParticipants: StateParticipants = newParticipants
             .map((name) => {
                 return { name, category: null }
             })
 
-        dispatch(updateParticipants(storeParticipants));
+        dispatch(updateParticipants([...storeParticipants, ...storeNewParticipants]));
     }
 
     return (

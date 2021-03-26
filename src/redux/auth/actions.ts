@@ -19,8 +19,9 @@ import {
     UserUpdateSuccessActionParams,
     LogoutActionParams,
     LOGIN_REQUEST,
-    LOGIN_FAILURE,
     LOGIN_SUCCESS,
+    LOGIN_FAILURE,
+    LOGIN_RESET,
     // LOGIN_CHECK_REQUEST,
     // LOGIN_CHECK_FAILURE,
     // LOGIN_CHECK_SUCCESS,
@@ -35,6 +36,7 @@ import {
     LOGOUT,
     ForgotPasswordReqData,
     ForgotPasswordResetActionParams,
+    LoginResetActionParams
 } from "./types"
 import { userServices } from "../../services/user";
 import { AxiosError, AxiosResponse } from "axios";
@@ -46,6 +48,8 @@ export const loginRequest = payloadedActionCreator<LoginRequestActionParams>(LOG
 export const loginSuccess = payloadedActionCreator<LoginSuccessActionParams>(LOGIN_SUCCESS);
 
 export const loginFailure = payloadedActionCreator<LoginFailureActionParams>(LOGIN_FAILURE);
+
+export const loginReset = actionCreator<LoginResetActionParams>(LOGIN_RESET);
 
 export const forgotPasswordRequest = actionCreator<ForgotPasswordRequestActionParams>(FORGOT_PASSWORD_REQUEST);
 
@@ -72,7 +76,6 @@ const login = (data: UserLoginReqData) => {
         userServices.login(data)
             .then(
                 (res: AxiosResponse<ResponseData<UserLoginResData>>) => {
-                    debugger
                     if (res && res.data) {
                         const cookies = new Cookies();
                         if (cookies.get('x-auth-token')) {
@@ -84,7 +87,6 @@ const login = (data: UserLoginReqData) => {
                     }
                 },
                 (error: AxiosError) => {
-                    debugger
                     dispatch(loginFailure({ error: error.name, message: error.message }));
                 }
             );
@@ -94,18 +96,19 @@ const login = (data: UserLoginReqData) => {
 const loginCheck = () => {
     const refreshToken = localStorage.getItem('refreshToken')
     return (dispatch: Dispatch<AuthActionParams>) => {
-        dispatch(loginRequest(null));
+        // dispatch(loginRequest(null));
         refreshToken && userServices.loginCheck({ refreshToken })
             .then(
                 (res: AxiosResponse<ResponseData<UserLoginCheckResData>>) => {
                     const cookies = new Cookies();
-                    if (res.data.data?.accessToken) {
+                    if (res?.data.data?.accessToken) {
                         cookies.set('x-auth-token', res.data.data!.accessToken, { path: '/' });
                     }
-                    dispatch(loginSuccess(res.data));
+                    dispatch(loginSuccess(res?.data));
                 },
                 (error: AxiosError) => {
-                    dispatch(loginFailure({ error: '', message: '' }));
+                    localStorage.removeItem('refreshToken');
+                    // dispatch(loginReset());
                 }
             );
     };

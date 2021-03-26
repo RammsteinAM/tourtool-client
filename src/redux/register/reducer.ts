@@ -75,7 +75,6 @@ const reducer = (state: RegisterReducerState = initialState, action: RegisterAct
       };
     }
     case VERIFY_EMAIL_SUCCESS: {
-      debugger
       return {
         ...state,
         verifyEmail: {

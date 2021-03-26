@@ -35,26 +35,33 @@ import { HttpError } from './utils/error';
 //   }
 // );
 
-axios.interceptors.response.use(undefined, function axiosRetryInterceptor(err) {
+axios.interceptors.response.use(undefined, (err) => {
   if (err.response.status === 403 || err.response.data.error === 'InvalidTokenError') {
     const refreshToken = localStorage.getItem('refreshToken');
     refreshToken && userServices.loginCheck({ refreshToken }).then(res => {
       const cookies = new Cookies();
       if (res?.data?.data?.accessToken) {
         cookies.set('x-auth-token', res?.data?.data!.accessToken, { path: '/' });
+        toast.warning(i18n.t('interceptor-success-message'));
       }
     })
   }
   else {
     const resData = err?.response?.data;
     toast.error(i18n.t(`ERROR_${resData?.error}`));
-    
-    throw new HttpError(err?.response?.status, resData?.error, resData?.message);
+    throw new Error();
   }
 });
 
-function App() {
+const App = () => {
+  const dispatch = useDispatch();
+  const authState = useSelector((state: RootState) => state.auth);
 
+  useEffect(() => {
+    if (authState.status !== ActionStatus.Success) {
+      dispatch(authActions.loginCheck());
+    }
+  }, [])
 
   return (
     <BrowserRouter>

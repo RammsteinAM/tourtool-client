@@ -34,7 +34,7 @@ const LastManStanding = (props: Props) => {
     const [rounds, setRounds] = useState<number>(1);
     const [playerData, setPlayerData] = useState<Players>({});
     const [maxScores, setMaxScores] = useState<number>(7);
-    const { width, height, ref: resizeRef } = useResizeDetector();
+    const { width, ref: resizeRef } = useResizeDetector();
     const entityState = useSelector((state: RootState) => state.entities);
     const settingsState = useSelector((state: RootState) => state.settings);
     const storeGames = useSelector((state: RootState) => state.entities.games);
@@ -240,12 +240,11 @@ const LastManStanding = (props: Props) => {
         const storeGames: Games = {};
         let i = 0, j = 1;
         while (players[i] && players[i + 1]) {
-            storeGames[`1-${j}`] = { /* player1: players[i].name, player2: players[i + 1].name, */ player1Id: players[i].id || 0, player2Id: players[i + 1].id || 0 }
+            storeGames[`1-${j}`] = { player1Id: players[i].id || 0, player2Id: players[i + 1].id || 0, index: `1-${j}` }
             i += 2
             j++
         }
 
-        debugger
         dispatch(resetGames());
         dispatch(updateGames(storeGames));
     }
@@ -279,6 +278,7 @@ const LastManStanding = (props: Props) => {
                 // player2: nextRoundPlayers[i + 1].name,
                 player1Id: nextRoundPlayers[i].id || 0,
                 player2Id: nextRoundPlayers[i + 1].id || 0,
+                index: `${nextRound}-${j}`
             }
             i += 2
             j++

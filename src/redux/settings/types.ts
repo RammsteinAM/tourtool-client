@@ -1,25 +1,26 @@
 import { Action } from "redux";
-import { LMSColOrderKeys, StateTournament } from "../../types/entities";
 import { PayloadedAction } from "../helpers";
+import { FetchedTournament, FetchedTournaments, LMSColOrderKeys, TournamentTypes } from "../../types/entities";
 
 const UPDATE_SETTINGS = "UPDATE_SETTINGS";
-const UPDATE_PLAYERS_REQUEST = "UPDATE_PLAYERS_REQUEST";
-const UPDATE_PLAYERS_SUCCESS = "UPDATE_PLAYERS_SUCCESS";
-const UPDATE_PLAYERS_FAILURE = "UPDATE_PLAYERS_FAILURE";
 
 export {
     UPDATE_SETTINGS,
-    UPDATE_PLAYERS_REQUEST,
-    UPDATE_PLAYERS_SUCCESS,
-    UPDATE_PLAYERS_FAILURE,
 }
+
+export type TournamentSortingKeys = keyof Pick<FetchedTournament, 'createdAt' | 'updatedAt' | 'name' | 'sets'>
+export type TournamentFilterKeys = TournamentTypes | 'all';
 
 export type SettingsReducerState = {
     eliminationScale?: number,
     fullScreen?: boolean,
     tournamentSidebar?: boolean,
-    tournamentSidebarColumnOrder?: LMSColOrderKeys[]
-    tournamentSidebarEnabledColumns?: LMSColOrderKeys[]
+    tournamentSidebarColumnOrder?: LMSColOrderKeys[],
+    tournamentSidebarEnabledColumns?: LMSColOrderKeys[],
+    tournamentsSortKey?: TournamentSortingKeys,
+    tournamentsSortOrder?: 1 | -1,
+    tournamentsFilterKey?: TournamentFilterKeys,
+    tournamentsSearchKeyword?: string,
 }
 
 export type UpdateSettingsActionParams = PayloadedAction<typeof UPDATE_SETTINGS, SettingsReducerState>;

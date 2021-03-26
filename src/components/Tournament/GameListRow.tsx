@@ -65,7 +65,6 @@ const GameListRow = ({ gameKey, tabIndex, normalizedPlayers, maxScores = 10 }: P
         const nextRoundFirstKey = `${splitGameKey(gameKey).round + 1}-1`;
         const nextPossibleRoundToggleButton = document.getElementById(`toggle-score-button-${nextPossibleKeyOfTheRound}`);
         const nextRoundToggleButton = document.getElementById(`toggle-score-button-${nextRoundFirstKey}`);
-        debugger
         enterScoreContentRef.current?.blur();
         nextPossibleRoundToggleButton ? nextPossibleRoundToggleButton?.focus() : nextRoundToggleButton?.focus();
         setStateChanged(true);

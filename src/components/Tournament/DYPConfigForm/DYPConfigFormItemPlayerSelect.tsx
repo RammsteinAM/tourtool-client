@@ -23,7 +23,6 @@ const DYPConfigFormItemPlayerSelect = ({ selectedPlayer, assignedPlayerIds, play
     const { t } = useTranslation();
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        debugger
         onChange(event.target.value as number, index, selectedPlayer);
     };
 

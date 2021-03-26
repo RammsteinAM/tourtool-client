@@ -6,6 +6,7 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
+  LOGIN_RESET,
   USER_UPDATE_SUCCESS,
   FORGOT_PASSWORD_REQUEST,
   FORGOT_PASSWORD_SUCCESS,
@@ -52,8 +53,15 @@ const reducer = (state: AuthReducerState = initialState, action: AuthActionParam
     case LOGIN_REQUEST: {
       return {
         ...state,
-        data: { ...initialState.data!, ...action.payload?.data },
+        data: { ...initialState.data, ...action.payload?.data },
         status: ActionStatus.Request,
+      };
+    }
+    case LOGIN_RESET: {
+      return {
+        ...state,
+        data: { ...initialState.data },
+        status: ActionStatus.Initial,
       };
     }
     case LOGIN_SUCCESS: {

@@ -7,6 +7,7 @@ import { PayloadedAction } from "../helpers";
 const LOGIN_REQUEST = "LOGIN_REQUEST";
 const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 const LOGIN_FAILURE = "LOGIN_FAILURE";
+const LOGIN_RESET = "LOGIN_RESET";
 const FORGOT_PASSWORD_REQUEST = "FORGOT_PASSWORD_REQUEST";
 const FORGOT_PASSWORD_SUCCESS = "FORGOT_PASSWORD_SUCCESS";
 const FORGOT_PASSWORD_FAILURE = "FORGOT_PASSWORD_FAILURE";
@@ -21,6 +22,7 @@ export {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
+    LOGIN_RESET,
     FORGOT_PASSWORD_REQUEST,
     FORGOT_PASSWORD_SUCCESS,
     FORGOT_PASSWORD_FAILURE,
@@ -47,6 +49,7 @@ export type AuthReducerState = AppState<UserStateData> & AuthReducerAdditionalDa
 export type LoginRequestActionParams = PayloadedAction<typeof LOGIN_REQUEST, {data: UserLoginReqData} | null>;
 export type LoginSuccessActionParams = PayloadedAction<typeof LOGIN_SUCCESS, ResponseData<UserStateData> | null>;
 export type LoginFailureActionParams = PayloadedAction<typeof LOGIN_FAILURE, ResponseError | null>;
+export type LoginResetActionParams = Action<typeof LOGIN_RESET>;
 export type ForgotPasswordRequestActionParams = Action<typeof FORGOT_PASSWORD_REQUEST>;
 export type ForgotPasswordSuccessActionParams = PayloadedAction<typeof FORGOT_PASSWORD_SUCCESS, AppState<any> | null>;
 export type ForgotPasswordFailureActionParams = PayloadedAction<typeof FORGOT_PASSWORD_FAILURE, ResponseError | null>;
@@ -60,6 +63,7 @@ export type AuthActionParams =
     LoginRequestActionParams |
     LoginSuccessActionParams |
     LoginFailureActionParams |
+    LoginResetActionParams |
     ForgotPasswordRequestActionParams |
     ForgotPasswordSuccessActionParams |
     ForgotPasswordFailureActionParams |

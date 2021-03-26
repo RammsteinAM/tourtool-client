@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import { useSelector } from 'react-redux';
-import homeStyles from './homeStyles';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
+import { entityActions } from '../../redux/tournamentEntities/actions';
+import HomeCard from '../../components/Tournament/HomeCard';
+import homeStyles from './homeStyles';
+import { FetchedTournament } from '../../types/entities';
+import { tournamentTypeIds } from '../../utils/constants';
 
 interface Props {
 }
@@ -14,17 +18,87 @@ const Home = (props: Props) => {
     const classes = homeStyles();
     const authState = useSelector((state: RootState) => state.auth);
     const entityState = useSelector((state: RootState) => state.entities);
+    const tournamentsSortKey = useSelector((state: RootState) => state.settings.tournamentsSortKey) || 'createdAt';
+    const tournamentsSortOrder = useSelector((state: RootState) => state.settings.tournamentsSortOrder) || 1;
+    const tournamentsFilterKey = useSelector((state: RootState) => state.settings.tournamentsFilterKey) || 'all';
+    const tournamentsSearchKeyword = useSelector((state: RootState) => state.settings.tournamentsSearchKeyword) || '';
     const loggedIn = authState.status === ActionStatus.Success;
+    const dispatch = useDispatch();
     const history = useHistory();
     const { t } = useTranslation();
+    const tournamentsData = entityState.fetchedTournaments?.data && Object.values(entityState.fetchedTournaments.data);
+
+    useEffect(() => {
+        if (loggedIn) {
+            dispatch(entityActions.getTournaments())
+        }
+    }, [loggedIn])
 
     const handleCreateTournament = () => {
-        history.push(authState.status === ActionStatus.Success ? '/tournament/new' : '/login');
+        history.push('/tournament/new');
+    }
+
+    const compareFunction = (a: FetchedTournament, b: FetchedTournament) => {
+        // const pos: number = tournamentsSortOrder;
+        // const neg: number = tournamentsSortOrder;
+        let result = 0;
+        switch (tournamentsSortKey) {
+            case 'createdAt':
+            case 'updatedAt':
+                result = new Date(b[tournamentsSortKey]).getTime() - new Date(a[tournamentsSortKey]).getTime();
+                break;
+            case 'name':
+                if (a[tournamentsSortKey] < b[tournamentsSortKey]) {
+                    result = -1;
+                    break;
+                }
+                if (a[tournamentsSortKey] > b[tournamentsSortKey]) {
+                    result = 1;
+                    break;
+                }
+                result = 0;
+                break;
+            case 'sets':
+                result = b[tournamentsSortKey] - a[tournamentsSortKey];
+                break;
+        }
+        return result * tournamentsSortOrder;
+    }
+
+    const filterFunction = (data: FetchedTournament) => {
+        if (tournamentsSearchKeyword) {
+            const name = data.name.toLowerCase();
+            const keyword = tournamentsSearchKeyword.toLowerCase();
+            if (tournamentsFilterKey === 'all') {
+                return name.indexOf(keyword) >= 0;
+            }
+            return (
+                data.tournamentTypeId === tournamentTypeIds[tournamentsFilterKey] &&
+                name.indexOf(keyword) >= 0
+            )
+        }
+        if (tournamentsFilterKey === 'all') {
+            return true;
+        }
+        return data.tournamentTypeId === tournamentTypeIds[tournamentsFilterKey]
     }
 
     return (
         <div className={classes.root}>
-            {<Button
+            {loggedIn &&
+                <div className={classes.cardListContainer}>
+                    {tournamentsData
+                        .filter(filterFunction)
+                        .sort(compareFunction)
+                        .map(tournament => {
+                            return (tournament ? <HomeCard
+                                key={tournament?.id}
+                                data={tournament}
+                            /> : null)
+                        })}
+                </div>
+            }
+            {(!loggedIn || tournamentsData.length === 0) && <Button
                 type="button"
                 variant="contained"
                 color="secondary"

@@ -10,6 +10,10 @@ const initialState: SettingsReducerState | null = {
   tournamentSidebar: true,
   tournamentSidebarColumnOrder: ['name', 'numberOfGames', 'goals', 'goalsIn', 'goalDiff', 'points', 'averagePoints', 'matchesWon', 'matchesLost', 'matchesDraw', 'lives'],
   tournamentSidebarEnabledColumns: ['name', 'numberOfGames', 'lives'],
+  tournamentsSortKey: 'createdAt',
+  tournamentsSortOrder: 1,
+  tournamentsFilterKey: 'all',
+  tournamentsSearchKeyword: '',
 };
 
 const reducer = (state: SettingsReducerState = initialState, action: UserActionParams): SettingsReducerState => {

@@ -17,3 +17,8 @@ export const getNextGameKey = (gameKey: string, finalRoundNumber: number): Nulla
     `${round + 1}-${isGameOdd ? (gameNumber + 1) / 2 : gameNumber / 2}` : null;
   return nextGameKey;
 }
+
+export const capitalizeNthChar = (string: string, n = 0) => 
+{
+    return string.charAt(n).toUpperCase() + string.slice(1);
+}

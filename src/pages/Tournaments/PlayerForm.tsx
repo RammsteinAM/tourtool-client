@@ -12,7 +12,7 @@ import { ReactComponent as Teams } from '../../resources/icons/teams.svg';
 import { ReactComponent as Single } from '../../resources/icons/single.svg';
 import { ReactComponent as DrawYourPartner } from '../../resources/icons/drawYourPartner.svg';
 import { ReactComponent as MonsterDYP } from '../../resources/icons/monsterDYP.svg';
-import { FetchedPlayers, PlayerCategory, StateParticipants, StateParticipantsWithId } from '../../types/entities';
+import { FetchedPlayers, PlayerCategory, StateParticipants, StateParticipantsWithId, TournamentTypes } from '../../types/entities';
 import toast from '../../components/IndependentSnackbar';
 import { updateParticipants, updateEliminationPlayers, updateTournament, updateLMSPlayers, entityActions } from '../../redux/tournamentEntities/actions';
 import PlayerFormTextField from '../../components/Tournament/PlayerFormTextField';
@@ -46,7 +46,7 @@ const PlayerForm = (props: Props) => {
     const history = useHistory();
     const { tournamentType, playerType, config } = useParams
         <{
-            tournamentType: 'elimination' | 'lms' | 'round-robin',
+            tournamentType: TournamentTypes,
             playerType: 'single' | 'teams' | 'dyp' | 'monster-dyp',
             config?: 'config'
         }>();

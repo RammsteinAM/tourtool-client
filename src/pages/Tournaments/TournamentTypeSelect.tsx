@@ -17,6 +17,7 @@ import { ReactComponent as RoundRobinIcon } from '../../resources/icons/roundRob
 import { ReactComponent as LastManStandingIcon } from '../../resources/icons/lms.svg';
 import { ReactComponent as Elimination } from '../../resources/icons/elimination.svg';
 
+import { TournamentTypes } from '../../types/entities';
 import tournamentStyles from './tournamentStyles';
 
 interface Props {
@@ -27,7 +28,7 @@ const TournamentTypeSelect = (props: Props) => {
     const history = useHistory();
     const { t } = useTranslation();
 
-    const handleCardClick = (type: string) => {
+    const handleCardClick = (type: TournamentTypes) => {
         history.push(`/tournament-form/${type}`)
     }
 
@@ -38,7 +39,7 @@ const TournamentTypeSelect = (props: Props) => {
                 <CardContent
                     className={classes.cardContent}
                     style={{ backgroundColor: '#00b8d4' }}
-                    onClick={() => handleCardClick('round-robin')}
+                    onClick={() => handleCardClick('roundRobin')}
                 >
                     <RoundRobinIcon className={classes.cardIcon} />
                     <div className={classes.cardTitle}>{t('Round Robin')}</div>
@@ -47,7 +48,7 @@ const TournamentTypeSelect = (props: Props) => {
                     <IconButton aria-label="info">
                         <MoreHorizIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleCardClick('round-robin')} >
+                    <IconButton onClick={() => handleCardClick('roundRobin')} >
                         <PlayArrowIcon />
                     </IconButton>
                 </CardActions>

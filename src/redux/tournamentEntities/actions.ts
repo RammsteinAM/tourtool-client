@@ -2,8 +2,8 @@ import { actionCreator, payloadedActionCreator, PayloadedAction } from "../helpe
 import { Dispatch } from "redux";
 import { AxiosError, AxiosResponse } from "axios";
 import { userServices } from "../../services/user";
+import { tournamentServices } from "../../services/tournament";
 import { playerServices } from "../../services/player";
-import { ForgotPasswordReqData } from "../auth/types";
 import {
     UPDATE_TOURNAMENT,
     UPDATE_PARTICIPANTS,
@@ -13,18 +13,14 @@ import {
     UPDATE_ELIMINATION_GAMES,
     RESET_GAMES,
     RESET_ELIMINATION_GAMES,
-    GET_PLAYERS_REQUEST,
-    GET_PLAYERS_SUCCESS,
-    GET_PLAYERS_FAILURE,
-    CREATE_PLAYER_REQUEST,
-    CREATE_PLAYER_SUCCESS,
-    CREATE_PLAYER_FAILURE,
-    CREATE_PLAYERS_REQUEST,
-    CREATE_PLAYERS_SUCCESS,
-    CREATE_PLAYERS_FAILURE,
-    UPDATE_PLAYERS_REQUEST,
-    UPDATE_PLAYERS_SUCCESS,
-    UPDATE_PLAYERS_FAILURE,
+    GET_PLAYERS_REQUEST, GET_PLAYERS_SUCCESS, GET_PLAYERS_FAILURE,
+    GET_TOURNAMENTS_REQUEST, GET_TOURNAMENTS_SUCCESS, GET_TOURNAMENTS_FAILURE,
+    CREATE_TOURNAMENT_REQUEST, CREATE_TOURNAMENT_SUCCESS, CREATE_TOURNAMENT_FAILURE,
+    UPDATE_TOURNAMENT_REQUEST, UPDATE_TOURNAMENT_SUCCESS, UPDATE_TOURNAMENT_FAILURE,
+    DELETE_TOURNAMENT_REQUEST, DELETE_TOURNAMENT_SUCCESS, DELETE_TOURNAMENT_FAILURE,
+    CREATE_PLAYER_REQUEST, CREATE_PLAYER_SUCCESS, CREATE_PLAYER_FAILURE,
+    CREATE_PLAYERS_REQUEST, CREATE_PLAYERS_SUCCESS, CREATE_PLAYERS_FAILURE,
+    UPDATE_PLAYERS_REQUEST, UPDATE_PLAYERS_SUCCESS, UPDATE_PLAYERS_FAILURE,
     UpdateTournamentActionParams,
     UpdateParticipantsActionParams,
     UpdateEliminationPlayersActionParams,
@@ -33,24 +29,20 @@ import {
     ResetEliminationGamesActionParams,
     UpdateGamesActionParams,
     UpdateEliminationGamesActionParams,
-    GetPlayersRequestActionParams,
-    GetPlayersSuccessActionParams,
-    GetPlayersFailureActionParams,
-    CreatePlayerRequestActionParams,
-    CreatePlayerSuccessActionParams,
-    CreatePlayerFailureActionParams,
-    CreatePlayersRequestActionParams,
-    CreatePlayersSuccessActionParams,
-    CreatePlayersFailureActionParams,
-    UpdatePlayersRequestActionParams,
-    UpdatePlayersSuccessActionParams,
-    UpdatePlayersFailureActionParams,
+    GetTournamentsRequestActionParams, GetTournamentsSuccessActionParams, GetTournamentsFailureActionParams,
+    GetPlayersRequestActionParams, GetPlayersSuccessActionParams, GetPlayersFailureActionParams,
+    CreatePlayerRequestActionParams, CreatePlayerSuccessActionParams, CreatePlayerFailureActionParams,
+    CreateTournamentRequestActionParams, CreateTournamentSuccessActionParams, CreateTournamentFailureActionParams,
+    UpdateTournamentRequestActionParams, UpdateTournamentSuccessActionParams, UpdateTournamentFailureActionParams,
+    DeleteTournamentRequestActionParams, DeleteTournamentSuccessActionParams, DeleteTournamentFailureActionParams,
+    CreatePlayersRequestActionParams, CreatePlayersSuccessActionParams, CreatePlayersFailureActionParams,
+    UpdatePlayersRequestActionParams, UpdatePlayersSuccessActionParams, UpdatePlayersFailureActionParams,
     UserActionParams,
 } from "./types"
-import { UserRegisterResData, UserStateData, UserUpdateReqData } from "../../types/user";
+import { UserStateData, UserUpdateReqData } from "../../types/user";
 import { loginSuccess } from "../auth/actions";
 import { ResponseData } from "../../types/main";
-import { FetchedPlayer, FetchedPlayers, Player, StateParticipant, StateParticipants } from "../../types/entities";
+import { BaseDatabaseEntity, FetchedPlayer, FetchedTournament, FetchedTournaments, StateParticipants, TournamentCreationReqData, TournamentUpdateReqData } from "../../types/entities";
 
 export const updateTournament = payloadedActionCreator<UpdateTournamentActionParams>(UPDATE_TOURNAMENT);
 
@@ -68,29 +60,53 @@ export const resetGames = actionCreator<ResetGamesActionParams>(RESET_GAMES);
 
 export const resetEliminationGames = actionCreator<ResetEliminationGamesActionParams>(RESET_ELIMINATION_GAMES);
 
+export const getTournamentsRequest = actionCreator<GetTournamentsRequestActionParams>(GET_TOURNAMENTS_REQUEST);
+export const getTournamentsSuccess = payloadedActionCreator<GetTournamentsSuccessActionParams>(GET_TOURNAMENTS_SUCCESS);
+export const getTournamentsFailure = payloadedActionCreator<GetTournamentsFailureActionParams>(GET_TOURNAMENTS_FAILURE);
+
 export const getPlayersRequest = actionCreator<GetPlayersRequestActionParams>(GET_PLAYERS_REQUEST);
-
 export const getPlayersSuccess = payloadedActionCreator<GetPlayersSuccessActionParams>(GET_PLAYERS_SUCCESS);
-
 export const getPlayersFailure = payloadedActionCreator<GetPlayersFailureActionParams>(GET_PLAYERS_FAILURE);
 
+export const createTournamentRequest = actionCreator<CreateTournamentRequestActionParams>(CREATE_TOURNAMENT_REQUEST);
+export const createTournamentSuccess = payloadedActionCreator<CreateTournamentSuccessActionParams>(CREATE_TOURNAMENT_SUCCESS);
+export const createTournamentFailure = payloadedActionCreator<CreateTournamentFailureActionParams>(CREATE_TOURNAMENT_FAILURE);
+
+export const updateTournamentRequest = actionCreator<UpdateTournamentRequestActionParams>(UPDATE_TOURNAMENT_REQUEST);
+export const updateTournamentSuccess = payloadedActionCreator<UpdateTournamentSuccessActionParams>(UPDATE_TOURNAMENT_SUCCESS);
+export const updateTournamentFailure = payloadedActionCreator<UpdateTournamentFailureActionParams>(UPDATE_TOURNAMENT_FAILURE);
+
+export const deleteTournamentRequest = actionCreator<DeleteTournamentRequestActionParams>(DELETE_TOURNAMENT_REQUEST);
+export const deleteTournamentSuccess = payloadedActionCreator<DeleteTournamentSuccessActionParams>(DELETE_TOURNAMENT_SUCCESS);
+export const deleteTournamentFailure = payloadedActionCreator<DeleteTournamentFailureActionParams>(DELETE_TOURNAMENT_FAILURE);
+
 export const createPlayerRequest = actionCreator<CreatePlayerRequestActionParams>(CREATE_PLAYER_REQUEST);
-
 export const createPlayerSuccess = payloadedActionCreator<CreatePlayerSuccessActionParams>(CREATE_PLAYER_SUCCESS);
-
 export const createPlayerFailure = payloadedActionCreator<CreatePlayerFailureActionParams>(CREATE_PLAYER_FAILURE);
 
 export const createPlayersRequest = actionCreator<CreatePlayersRequestActionParams>(CREATE_PLAYERS_REQUEST);
-
 export const createPlayersSuccess = payloadedActionCreator<CreatePlayersSuccessActionParams>(CREATE_PLAYERS_SUCCESS);
-
 export const createPlayersFailure = payloadedActionCreator<CreatePlayersFailureActionParams>(CREATE_PLAYERS_FAILURE);
 
 export const updatePlayersRequest = actionCreator<UpdatePlayersRequestActionParams>(UPDATE_PLAYERS_REQUEST);
-
 export const updatePlayersSuccess = payloadedActionCreator<UpdatePlayersSuccessActionParams>(UPDATE_PLAYERS_SUCCESS);
-
 export const updatePlayersFailure = payloadedActionCreator<UpdatePlayersFailureActionParams>(UPDATE_PLAYERS_FAILURE);
+
+const getTournaments = () => {
+    return (dispatch: Dispatch) => {
+        dispatch(getTournamentsRequest());
+
+        tournamentServices.getTournaments()
+            .then(
+                (res: AxiosResponse<ResponseData<FetchedTournaments>>) => {
+                    res?.data?.data && dispatch(getTournamentsSuccess(res.data.data));
+                },
+                (error: AxiosError) => {
+                    dispatch(getTournamentsFailure({ error: error.name, message: error.message }));
+                }
+            );
+    };
+}
 
 const getPlayers = () => {
     return (dispatch: Dispatch) => {
@@ -103,6 +119,51 @@ const getPlayers = () => {
                 },
                 (error: AxiosError) => {
                     dispatch(getPlayersFailure({ error: error.name, message: error.message }));
+                }
+            );
+    };
+}
+
+const createTournament = (data: TournamentCreationReqData) => {
+    return (dispatch: Dispatch) => {
+        dispatch(createTournamentRequest());
+        tournamentServices.createTournament(data)
+            .then(
+                (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
+                    res?.data?.data && dispatch(createTournamentSuccess(res.data.data));
+                },
+                (error: AxiosError) => {
+                    dispatch(createTournamentFailure({ error: error.name, message: error.message }));
+                }
+            );
+    };
+}
+
+const editTournament = (data: TournamentUpdateReqData) => {
+    return (dispatch: Dispatch) => {
+        dispatch(updateTournamentRequest());
+        tournamentServices.updateTournament(data)
+            .then(
+                (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
+                    res?.data?.data && dispatch(updateTournamentSuccess(res.data.data));
+                },
+                (error: AxiosError) => {
+                    dispatch(updateTournamentFailure({ error: error.name, message: error.message }));
+                }
+            );
+    };
+}
+
+const deleteTournament = (id: number) => {
+    return (dispatch: Dispatch) => {
+        dispatch(deleteTournamentRequest());
+        tournamentServices.deleteTournament(id)
+            .then(
+                (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
+                    res?.data?.data && dispatch(deleteTournamentSuccess(res.data.data));
+                },
+                (error: AxiosError) => {
+                    dispatch(deleteTournamentFailure({ error: error.name, message: error.message }));
                 }
             );
     };
@@ -156,7 +217,11 @@ const update = (data: UserUpdateReqData) => {
 }
 
 export const entityActions = {
+    getTournaments,
     getPlayers,
+    createTournament,
+    editTournament,
+    deleteTournament,
     createPlayer,
     createPlayers,
     update

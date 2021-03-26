@@ -5,11 +5,9 @@ const styles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100%',
     },
     button: {
         margin: theme.spacing(3, 2, 2),
-        //height: '35px',
         minWidth: '100px',
         borderRadius: '2px',
         '&:hover': {
@@ -25,7 +23,6 @@ const styles = makeStyles((theme) => ({
         '& .MuiInput-underline:hover:before': {
             borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
         }
-
     },
     content: {
         display: 'flex',
@@ -50,7 +47,14 @@ const styles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'center',
         flexDirection: 'column',
-
+    },
+    cardListContainer: {
+        display: "flex",
+        flexFlow: "column",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        paddingTop: "60px",
+        margin: "0 auto"
     },
 }));
 

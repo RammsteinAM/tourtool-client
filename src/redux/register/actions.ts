@@ -66,7 +66,6 @@ const verifyEmail = (token: string) => {
         userServices.verifyUser(token)
             .then(
                 (user: AxiosResponse) => {
-                    debugger
                     dispatch(verifyEmailSuccess(user.data.data));
                 },
                 (error: AxiosError) => {

@@ -3,13 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { EliminationGames, StateEliminationPlayers } from '../../types/entities';
 import EliminationSidebar from '../../components/Tournament/Elimination/EliminationSidebar';
-import { resetEliminationGames, resetGames, updateEliminationGames, updateTournament } from '../../redux/tournamentEntities/actions';
+import { entityActions, resetEliminationGames, updateEliminationGames } from '../../redux/tournamentEntities/actions';
 import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
 import { useHistory } from 'react-router-dom';
 import EliminationColumn from '../../components/Tournament/Elimination/EliminationColumn';
 import EliminationBracketCards from '../../components/Tournament/Elimination/EliminationBracketCards';
 import tournamentStyles from './tournamentStyles';
-import { splitGameKey } from '../../utils/stringUtils';
 import { getNormalizedParticipants } from '../../utils/arrayUtils';
 
 const EliminationBracket = () => {
@@ -49,7 +48,8 @@ const EliminationBracket = () => {
     const handleStartTournament = (e: React.FormEvent, name: string) => {
         e.preventDefault();
         submitGamesToStore();
-        dispatch(updateTournament({ name }));
+        const { draw, numberOfGoals, numberOfLives, numberOfTables, pointsForDraw, pointsForWin, sets } = entityState.tournament;
+        dispatch(entityActions.createTournament({ name, sets: sets || 1, tournamentTypeId: 1, draw, numberOfGoals, numberOfLives, numberOfTables, pointsForDraw, pointsForWin }));
         history.push('/elimination');
     };
 
@@ -71,7 +71,7 @@ const EliminationBracket = () => {
             const prevCol = col - 1;
             for (let i = 0, j = 1; i < players.length / (2 ** prevCol); i = i + 2, j++) {
                 const gameKey: string = /* col === numberOfColumns ? 'final' :  */`${col}-${j}`;
-                storeGames[gameKey] = { player1: '', player2: '', player1Id: 0, player2Id: 0, index: gameKey }
+                storeGames[gameKey] = { player1Id: 0, player2Id: 0, /* round: col, gameNumber: j,  */index: gameKey }
                 if (col === 1) {
                     // storeGames[gameKey].player1 = players[i].name;
                     // storeGames[gameKey].player2 = players[i + 1].name;
@@ -140,7 +140,7 @@ const EliminationBracket = () => {
 
         }
         if (entityState.tournament.thirdPlace) {
-            storeGames['thirdPlace'] = { player1: '', player2: '', player1Id: 0, player2Id: 0, index: 'thirdPlace' }
+            storeGames['thirdPlace'] = { player1Id: 0, player2Id: 0, index: 'thirdPlace' }
         }
         // players.forEach(player => {
         //     storeGame
@@ -185,7 +185,7 @@ const EliminationBracket = () => {
                 <div className={classes.eliminationBracketCardsContainer}>
                     {[...Array(numberOfColumns).keys()].map(key => {
                         const colNumber = key + 1;
-                        const roundNumberDenominator: number = 2 ** (numberOfColumns - colNumber);
+                        // const roundNumberDenominator: number = 2 ** (numberOfColumns - colNumber);
                         const numberOfGames = firstRoundGameNumber / (2 ** (colNumber - 1));
                         return (
                             <EliminationColumn

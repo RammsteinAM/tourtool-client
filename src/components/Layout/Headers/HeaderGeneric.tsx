@@ -100,7 +100,7 @@ const HeaderGeneric = (props: Props) => {
 
     const { icon: Icon } = props;
     return (
-        <Toolbar>
+        <Toolbar className={classes.root}>
             {props.showIcon &&
                 <div style={{ marginRight: '12px', display: 'flex' }}>{props.icon}</div>
             }

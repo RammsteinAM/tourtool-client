@@ -10,7 +10,7 @@ import { ReactComponent as Teams } from '../../resources/icons/teams.svg';
 import { ReactComponent as Single } from '../../resources/icons/single.svg';
 import { ReactComponent as DrawYourPartner } from '../../resources/icons/drawYourPartner.svg';
 import { ReactComponent as MonsterDYP } from '../../resources/icons/monsterDYP.svg';
-
+import { TournamentTypes } from '../../types/entities';
 import tournamentStyles from './tournamentStyles';
 
 interface Props {
@@ -21,7 +21,7 @@ const PlayerTypeSelect = (props: Props) => {
     const history = useHistory();
     const { t } = useTranslation();
 
-    const { tournamentType } = useParams<{ tournamentType: string }>();
+    const { tournamentType } = useParams<{ tournamentType: TournamentTypes }>();
     const handleCardClick = (type: string) => {
         history.push(`/tournament/player-form/${tournamentType}/${type}`)
     }

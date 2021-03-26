@@ -8,14 +8,13 @@ export function asyncWrapper<T>(func: (param: any) => Promise<T>) {
         try {
             return await func(param);
         } catch (err) {
-            debugger
-            const resData = err?.response?.data;
-            // toast.error(i18n.t(`ERROR_${resData?.error}`));
+            const res = err?.response;
+            res?.data?.error && toast.error(i18n.t(`ERROR_${res.data.error}`));
             // if (Object.values(ErrorNames).includes(error)) {
             //     toast.error(i18n.t(`ERROR_${error}`));
             // }
 
-            throw new HttpError(err?.response?.status, resData?.error, resData?.message);
+            throw new HttpError(res?.status, res?.data?.error, res?.data?.message);
         }
     }
 }

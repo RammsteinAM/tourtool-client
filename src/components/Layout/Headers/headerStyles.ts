@@ -4,6 +4,9 @@ const drawerWidth = 220;
 
 const styles = makeStyles((theme) =>
   createStyles({
+    root: {
+      padding: '13px 24px',
+    },
     appBar: {
       zIndex: theme.zIndex.drawer - 1,
       paddingLeft: theme.spacing(7),
@@ -15,9 +18,6 @@ const styles = makeStyles((theme) =>
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       })}, max-height 500ms`,
-      '& .MuiToolbar-root': {
-        padding: '13px 24px',
-      },
       '&.MuiPaper-elevation4': {
         boxShadow: '0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%)',
       }
@@ -56,18 +56,26 @@ const styles = makeStyles((theme) =>
       width: '28px',
       height: '28px',
     },
+    searchContainer: {
+      overflow: 'hidden',
+      marginLeft: 'auto',
+      width: '100%',
+      [theme.breakpoints.up('sm')]: {
+        marginLeft: 'auto',
+        width: 'auto',
+      },
+    },
     search: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
       backgroundColor: fade(theme.palette.common.white, 0.15),
+      display: 'flex',
+      flexDirection: 'row',
+      marginRight: '10px',
+      transition: "transform .3s cubic-bezier(.165,.84,.44,1)",
+      transform: "translateX(222px)",
       '&:hover': {
         backgroundColor: fade(theme.palette.common.white, 0.25),
-      },
-      marginLeft: 0,
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(1),
-        width: 'auto',
       },
     },
     title: {
@@ -104,12 +112,73 @@ const styles = makeStyles((theme) =>
         backgroundColor: 'initial',
       }
     },
+    sortIconButton: {
+      padding: 4,
+      margin: 0,
+      color: '#8ebd5e'
+    },
     checkboxLabel: {
       fontSize: '13px',
       color: '#000000'
     },
     checkbox: {
       marginRight: '2px',
+    },
+    headerHomeRoot: {
+      display: 'block',
+      padding: '13px 24px 4px 13px',
+    },
+    headerHomeRow: {
+      display: 'flex'
+    },
+    actionsContainer: {
+      marginTop: '8px',
+      fontSize: "13px",
+      textTransform: "uppercase",
+
+      display: 'flex',
+      '& > div:not(:last-child)': {
+        paddingRight: 40,
+      }
+    },
+    selectContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      '& > div': {
+        paddingTop: 4,
+        paddingRight: 4,
+        display: 'inline',
+        lineHeight: '10px'
+      },
+      '& $selectContainerIcon': {
+        paddingTop: 0,
+      },
+    },
+    selectContainerIcon: {
+
+    },
+    select: {
+      fontSize: 13,
+      marginLeft: 8,
+      minWidth: 120,
+      '& .MuiInputBase-input': {
+        paddingBottom: 0,
+        '&:focus': {
+          backgroundColor: 'transparent'
+        }
+      },
+
+    },
+    menuItem: {
+      fontSize: 13
+    },
+    icon: {
+      cursor: 'pointer'
+    },
+    searchIcon: {
+      cursor: 'pointer',
+      color: '#727272',
+      fontSize: 27,
     },
   }),
 );

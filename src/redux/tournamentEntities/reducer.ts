@@ -1,3 +1,4 @@
+import { FetchedTournaments } from "../../types/entities";
 import { ActionStatus } from "../../types/main";
 import {
   UserActionParams,
@@ -9,18 +10,14 @@ import {
   UPDATE_GAMES,
   RESET_GAMES,
   RESET_ELIMINATION_GAMES,
-  GET_PLAYERS_REQUEST,
-  GET_PLAYERS_SUCCESS,
-  GET_PLAYERS_FAILURE,
-  CREATE_PLAYER_REQUEST,
-  CREATE_PLAYER_SUCCESS,
-  CREATE_PLAYER_FAILURE,
-  CREATE_PLAYERS_REQUEST,
-  CREATE_PLAYERS_SUCCESS,
-  CREATE_PLAYERS_FAILURE,
-  UPDATE_PLAYERS_REQUEST,
-  UPDATE_PLAYERS_SUCCESS,
-  UPDATE_PLAYERS_FAILURE,
+  GET_PLAYERS_REQUEST, GET_PLAYERS_SUCCESS, GET_PLAYERS_FAILURE,
+  GET_TOURNAMENTS_REQUEST, GET_TOURNAMENTS_SUCCESS, GET_TOURNAMENTS_FAILURE,
+  CREATE_TOURNAMENT_REQUEST, CREATE_TOURNAMENT_SUCCESS, CREATE_TOURNAMENT_FAILURE,
+  UPDATE_TOURNAMENT_REQUEST, UPDATE_TOURNAMENT_SUCCESS, UPDATE_TOURNAMENT_FAILURE,
+  DELETE_TOURNAMENT_REQUEST, DELETE_TOURNAMENT_SUCCESS, DELETE_TOURNAMENT_FAILURE,
+  CREATE_PLAYER_REQUEST, CREATE_PLAYER_SUCCESS, CREATE_PLAYER_FAILURE,
+  CREATE_PLAYERS_REQUEST, CREATE_PLAYERS_SUCCESS, CREATE_PLAYERS_FAILURE,
+  UPDATE_PLAYERS_REQUEST, UPDATE_PLAYERS_SUCCESS, UPDATE_PLAYERS_FAILURE,
   EntitiesReducerState,
 } from "./types"
 
@@ -38,6 +35,11 @@ const initialState: EntitiesReducerState | null = {
   participants: [],
   addPlayers: {
     status: ActionStatus.Initial,
+    error: '',
+  },
+  fetchedTournaments: {
+    status: ActionStatus.Initial,
+    data: {},
     error: '',
   },
   fetchedPlayers: {
@@ -104,6 +106,36 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
         eliminationGames: { ...initialState.eliminationGames },
       };
     }
+    case GET_TOURNAMENTS_REQUEST: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Request,
+          data: { ...state.fetchedTournaments.data },
+          error: ''
+        }
+      };
+    }
+    case GET_TOURNAMENTS_SUCCESS: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Success,
+          data: { ...action.payload },
+          error: ''
+        }
+      };
+    }
+    case GET_TOURNAMENTS_FAILURE: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Failure,
+          data: { ...state.fetchedTournaments.data },
+          error: action.payload?.error,
+        }
+      };
+    }
     case GET_PLAYERS_REQUEST: {
       return {
         ...state,
@@ -130,6 +162,101 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
         fetchedPlayers: {
           status: ActionStatus.Failure,
           data: [...state.fetchedPlayers.data],
+          error: action.payload?.error,
+        }
+      };
+    }
+    case CREATE_TOURNAMENT_REQUEST: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Request,
+          data: { ...state.fetchedTournaments.data },
+          error: ''
+        }
+      };
+    }
+    case CREATE_TOURNAMENT_SUCCESS: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          ...state.fetchedTournaments,
+          status: ActionStatus.Success,
+          data: { ...state.fetchedTournaments.data, ...action.payload },
+          error: '',
+        }
+      };
+    }
+    case CREATE_TOURNAMENT_FAILURE: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Failure,
+          data: { ...state.fetchedTournaments.data },
+          error: action.payload?.error,
+        }
+      };
+    }
+    case UPDATE_TOURNAMENT_REQUEST: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Request,
+          data: { ...state.fetchedTournaments.data },
+          error: ''
+        }
+      };
+    }
+    case UPDATE_TOURNAMENT_SUCCESS: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Success,
+          data: {
+            ...state.fetchedTournaments.data,
+            [action.payload.id]: {...state.fetchedTournaments.data[action.payload.id], ...action.payload}
+          },
+          error: '',
+        }
+      };
+    }
+    case UPDATE_TOURNAMENT_FAILURE: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Failure,
+          data: { ...state.fetchedTournaments.data },
+          error: action.payload?.error,
+        }
+      };
+    }
+    case DELETE_TOURNAMENT_REQUEST: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          ...state.fetchedTournaments,
+          status: ActionStatus.Request
+        }
+      };
+    }
+    case DELETE_TOURNAMENT_SUCCESS: {
+      const clonedTournaments: FetchedTournaments = Object.assign({}, {...state.fetchedTournaments.data})
+      delete clonedTournaments[action.payload.id];
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Success,
+          data: clonedTournaments,
+          error: '',
+        }
+      };
+    }
+    case DELETE_TOURNAMENT_FAILURE: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Failure,
+          data: { ...state.fetchedTournaments.data },
           error: action.payload?.error,
         }
       };

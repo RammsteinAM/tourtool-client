@@ -47,7 +47,6 @@ const EliminationCard = (props: Props) => {
     // const player1: FetchedPlayer = props.normalizedPlayers && typeof player1Id === 'number' ? props.normalizedPlayers[player1Id].name : ;
     // const player2: FetchedPlayer = fetchedPlayers.find(p => p.id === player2Id) || { name: '' };
     const isBye = props.active ? !!game?.hasByePlayer : (!player1Name || !player2Name);
-    debugger
     useEffect(() => {
         props.gameKey && setGame(gamesState[props.gameKey]);
     }, [props.gameKey && gamesState[props.gameKey]])

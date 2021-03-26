@@ -15,11 +15,11 @@ const PrivateRoute = ({ children, ...rest }: Props) => {
     const dispatch = useDispatch();
     const authState = useSelector((state: RootState) => state.auth);
 
-    useEffect(() => {
-        if (authState.status === ActionStatus.Initial) {
-            dispatch(authActions.loginCheck());
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (authState.status !== ActionStatus.Success) {
+    //         dispatch(authActions.loginCheck());
+    //     }
+    // }, [])
 
     return (
         <Route

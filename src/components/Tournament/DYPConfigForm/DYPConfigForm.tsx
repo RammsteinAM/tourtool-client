@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import FormSubheader from '../../FormComponents/FormSubheader';
 import { ReactComponent as DrawYourPartner } from '../../../resources/icons/drawYourPartner.svg';
-import { StateEliminationPlayers, StateParticipant, StateParticipants } from '../../../types/entities';
+import { StateEliminationPlayers, StateParticipant, StateParticipants, TournamentTypes } from '../../../types/entities';
 import toast from '../../IndependentSnackbar';
 import { updateEliminationPlayers, updateLMSPlayers, updateTournament } from '../../../redux/tournamentEntities/actions';
 import DYPConfigFormItem from './DYPConfigFormItem';
@@ -22,7 +22,7 @@ type InitialTeams = InitialTeam[];
 const initialPlayer = { name: '', category: null };
 
 interface Props {
-    tournamentType: 'elimination' | 'lms' | 'round-robin',
+    tournamentType: TournamentTypes,
 }
 
 const DYPConfigForm = ({ tournamentType }: Props) => {
@@ -68,7 +68,6 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
         const playersB: StateParticipants = storeParticipants.filter(player => player.category === 'B');
         const playersNeutral: StateParticipants = storeParticipants.filter(player => player.category !== 'A' && player.category !== 'B');
         const teams: InitialTeams = [];
-        debugger
         for (let i = 0; i < storeParticipants.length / 2; i++) {
             let teamPlayer1, teamPlayer2;
             if (playersA[0]) {
@@ -106,7 +105,6 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
             toast.warning(t('You need 2 players per team'));
             return;
         }
-        debugger
         // const newStorePlayers = teams.map(team => ({ name: team.join(' / ') }));
         // const newStorePlayers: StateEliminationPlayers = teams.map(team => {
         //     const id1 = team[0], id2 = team[1];

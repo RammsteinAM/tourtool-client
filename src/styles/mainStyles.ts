@@ -54,6 +54,9 @@ const mainStyles = makeStyles((theme) => ({
         '& .MuiFormLabel-asterisk': {
             display: 'none',
         },
+        '& .MuiInput-underline:hover:before': {
+          borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
+        }
 
     },
     select: {
