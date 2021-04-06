@@ -9,42 +9,50 @@ import EnterScoreContent from './EnterScore/EnterScoreContent';
 import gameListRowStyles from './gameListRowStyles';
 import { getMultipleSetScores } from '../../utils/scoreUtils';
 import GameListEnterScoreButton from './GameListEnterScoreButton';
+import { getNormalizedGames } from '../../utils/arrayUtils';
 
 interface Props {
+    tournamentId: number;
     gameKey: string;
     maxScores?: number;
     tabIndex: number;
     normalizedPlayers?: { [id: number]: FetchedPlayer }
 }
 
-const GameListRow = ({ gameKey, tabIndex, normalizedPlayers, maxScores = 10 }: Props) => {
-    const [games, setGames] = useState<Games>({});
+const GameListRow = ({ tournamentId, gameKey, tabIndex, normalizedPlayers, maxScores = 10 }: Props) => {
+    // const [games, setGames] = useState<Games>({});
     const [scoresOpen, setScoresOpen] = useState<boolean>(false);
     const [stateChanged, setStateChanged] = useState<boolean>(false);
     const [numberOfAdditionalGames, setNumberOfAdditionalGames] = useState<number>(0);
-    const entityState = useSelector((state: RootState) => state.entities);
-    const gamesState = useSelector((state: RootState) => state.entities.games);
+    const fetchedTournamentsData = useSelector((state: RootState) => state.entities.fetchedTournaments.data);
+    const stateGameData = useSelector((state: RootState) => state.games.data);
     const settingsState = useSelector((state: RootState) => state.settings);
     const scoresRef = useRef<any>();
     const enterScoreContentRef = useRef<any>(null);
     const scoreToggleButtonRef = useRef<any>(null);
-    // const winningSets = entityState.tournament.sets || 1;
-    // const firstRoundGameNumber = Object.keys(games).filter(gameKey => splitGameKey(gameKey).round === 1).length;
     const dispatch = useDispatch();
-    const columns = Math.log(Object.keys(games).length + 1) / Math.log(2);
+    // const columns = Math.log(Object.keys(games).length + 1) / Math.log(2);
     const classes = gameListRowStyles();
     const { t } = useTranslation();
-    const player1Id = gamesState[gameKey]?.player1Id;
-    const player2Id = gamesState[gameKey]?.player2Id;
-    const player1Name: string = normalizedPlayers && player1Id ?
-        (typeof player1Id === 'number' ?
-            normalizedPlayers[player1Id].name :
-            `${normalizedPlayers[player1Id[0]].name} / ${normalizedPlayers[player1Id[1]].name}`) :
+
+    const normalizedGames = getNormalizedGames(stateGameData[tournamentId])
+
+    if (!normalizedGames || !fetchedTournamentsData[tournamentId]) {
+        return null;
+    }
+
+
+    const player1 = normalizedGames[gameKey]?.player1;
+    const player2 = normalizedGames[gameKey]?.player2;
+    const player1Name: string = normalizedPlayers && player1 ?
+        (player1?.length === 1 ?
+            normalizedPlayers[player1[0].id]?.name :
+            (player1?.length === 2 ? `${normalizedPlayers[player1[0].id]?.name} / ${normalizedPlayers[player1[1].id]?.name}` : '')) :
         '';
-    const player2Name: string = normalizedPlayers && player2Id ?
-        (typeof player2Id === 'number' ?
-            normalizedPlayers[player2Id].name :
-            `${normalizedPlayers[player2Id[0]].name} / ${normalizedPlayers[player2Id[1]].name}`) :
+    const player2Name: string = normalizedPlayers && player1 ?
+        (player2?.length === 1 ?
+            normalizedPlayers[player2[0].id]?.name :
+            (player2?.length === 2 ? `${normalizedPlayers[player2[0].id]?.name} / ${normalizedPlayers[player2[1].id]?.name}` : '')) :
         '';
 
     const toggleScoresOpen = () => {
@@ -78,13 +86,25 @@ const GameListRow = ({ gameKey, tabIndex, normalizedPlayers, maxScores = 10 }: P
         const { score1, score2 } = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length)
         const round = splitGameKey(gameKey).round;
 
-        dispatch(updateGames({ [gameKey]: { ...gamesState[gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) } }));
+        // dispatch(updateGames({ [gameKey]: { ...normalizedGames[gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) } }));
         closeScores();
     }
+    const tournamentNumberOfGoals = fetchedTournamentsData[tournamentId] && fetchedTournamentsData[tournamentId].numberOfGoals;
 
-    const visibleScores = entityState.tournament.numberOfGoals && entityState.tournament.numberOfGoals < maxScores ? entityState.tournament.numberOfGoals + 1 : maxScores;
+    const visibleScores = (typeof tournamentNumberOfGoals === 'number' &&
+        tournamentNumberOfGoals < maxScores) ?
+        tournamentNumberOfGoals + 1 :
+        maxScores;
+
     if (!normalizedPlayers) {
         return null;
+    }
+    const scores1 = normalizedGames[gameKey]?.scores1, scores2 = normalizedGames[gameKey]?.scores2
+    let score1, score2;
+    // const { score1, score2 } = (game.scores1 && game.scores2) && getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length);
+    if (scores1 && scores2) {
+        score1 = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length).score1;
+        score2 = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length).score2;
     }
 
     return (
@@ -94,8 +114,8 @@ const GameListRow = ({ gameKey, tabIndex, normalizedPlayers, maxScores = 10 }: P
                 <button className={classes.scoreContainer} onClick={toggleScoresOpen} type='button' tabIndex={tabIndex} id={`toggle-score-button-${gameKey}`}>
                     <GameListEnterScoreButton
                         scoresOpen={scoresOpen}
-                        score1={gamesState[gameKey]?.score1}
-                        score2={gamesState[gameKey]?.score2}
+                        score1={score1}
+                        score2={score2}
                     />
                 </button>
                 <div className={classes.gameRowP2}>{player2Name}</div>
@@ -118,8 +138,9 @@ const GameListRow = ({ gameKey, tabIndex, normalizedPlayers, maxScores = 10 }: P
                         onClose={closeScores}
                         onConfirm={handleScoreConfirm}
                         gameKey={gameKey}
-                        games={entityState.eliminationGames}
+                        game={normalizedGames[gameKey]}
                         visibleScores={visibleScores}
+                        tournament={fetchedTournamentsData[tournamentId]}
                         getNumberOfAdditionalGames={handleAdditionalGameCount}
                     />
                 </div>

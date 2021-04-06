@@ -5,27 +5,30 @@ import { useTranslation } from "react-i18next";
 import GameListRow from '../../components/Tournament/GameListRow';
 import { FetchedPlayer } from '../../types/entities';
 import gameListRowStyles from './gameListRowStyles';
+import { splitGameKey } from '../../utils/stringUtils';
 
 interface Props {
+    tournamentId: number;
     roundNubmer: number;
     maxScores: number;
     normalizedPlayers?: { [id: number]: FetchedPlayer }
 }
 
-const GameListRound = ({ roundNubmer, maxScores, normalizedPlayers }: Props) => {
-    const entityState = useSelector((state: RootState) => state.entities);
+const GameListRound = ({ tournamentId, roundNubmer, maxScores, normalizedPlayers }: Props) => {    
+    const storeGameData = useSelector((state: RootState) => state.games.data);
     const classes = gameListRowStyles();
-    const numberOfGames = Math.floor(entityState.lmsPlayers.length / 2);
     const { t } = useTranslation();
+    // const numberOfGames = Object.keys(storeGameData[tournamentId]).filter(key => splitGameKey(key).round === roundNubmer).length;
 
     return (
         <>
             <div className={classes.tournamentGameRound}>{t('Round', { round: roundNubmer })}</div>
-            {[...Array(numberOfGames).keys()].map((i) =>
+            {storeGameData[tournamentId]?.map((game) =>
                 <GameListRow
-                    key={`gameListRow_${i}`}
+                    key={game.id}
+                    tournamentId={tournamentId}
                     tabIndex={10}
-                    gameKey={`${roundNubmer}-${i + 1}`}
+                    gameKey={game.index}
                     maxScores={maxScores}
                     normalizedPlayers={normalizedPlayers}
                 />

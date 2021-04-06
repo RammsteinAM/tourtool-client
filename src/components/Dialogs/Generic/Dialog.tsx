@@ -16,9 +16,9 @@ interface Props {
     onConfirm: () => void;
     titleText: string;
     bodyText: string;
-    /** Default value is `Confirm`. */
+    /** @description Default value is `Confirm`. */
     confirmButtonText?: string;    
-    /** Default value is `Cancel`. */
+    /** @description Default value is `Cancel`. */
     cancelButtonText?: string;
     dialogType: 'warning' | 'error' | 'confirm'
 }

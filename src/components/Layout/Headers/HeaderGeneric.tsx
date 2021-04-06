@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import InputIcon from '@material-ui/icons/Input';
@@ -30,11 +30,13 @@ interface Props {
     shuffleEliminationPlayersButton?: boolean;
     shuffleParticipantsButton?: boolean;
     nextButton?: boolean;
+    /** Default value is `Next`. */
+    nextButtonText?: string;
     nextButtonForm?: string;
     thirdPlaceCheckbox?: boolean;
     zoomSlider?: boolean;
     fullScreenButton?: boolean;
-    tournamentName?: string;
+    tournamentName?: boolean;
     showIcon?: boolean;
     tournamentSidebar?: boolean;
     icon?: React.ReactNode;
@@ -42,13 +44,16 @@ interface Props {
 
 const HeaderGeneric = (props: Props) => {
     const classes = headerStyles();
-    const history = useHistory();
     const [path, setPath] = useState('');
     const [importparticipantsDialogOpen, setImportparticipantsDialogOpen] = useState<boolean>(false);
     const entityState = useSelector((state: RootState) => state.entities);
+    const fetchedTournamentsdata = useSelector((state: RootState) => state.entities.fetchedTournaments.data);
     const settingsState = useSelector((state: RootState) => state.settings);
+    const { tournamentId: tournamentIdString } = useParams<{ tournamentId: string }>();
     const dispatch = useDispatch();
+    const history = useHistory();
     const { t } = useTranslation();
+    const tournamentId = parseInt(tournamentIdString, 10)
 
     useEffect(() => {
         setPath(history.location.pathname)
@@ -60,7 +65,7 @@ const HeaderGeneric = (props: Props) => {
     };
 
     const handleBackButton = () => {
-        history.goBack()
+        history.goBack();
     }
 
     const handleShuffleParticipantsButton = () => {
@@ -83,7 +88,10 @@ const HeaderGeneric = (props: Props) => {
         setImportparticipantsDialogOpen(false);
     }
 
-    const delayedUpdateZoomLevel = useCallback(debounce((val: number) => dispatch(updateSettings({ eliminationScale: val })), 100), [settingsState.eliminationScale]);
+    const delayedUpdateZoomLevel = useCallback(
+        debounce((val: number) => dispatch(updateSettings({ eliminationScale: val })), 70),
+        [settingsState.eliminationScale]
+    );
 
     const handleZoomSliderChange = (event: any, newValue: number | number[]) => {
         const zoomLevel = (0.67 * (newValue as number) / 100) + 0.33;
@@ -104,8 +112,8 @@ const HeaderGeneric = (props: Props) => {
             {props.showIcon &&
                 <div style={{ marginRight: '12px', display: 'flex' }}>{props.icon}</div>
             }
-            {props.tournamentName && <Typography variant="h6" noWrap className={classes.tournamentName}>
-                {props.tournamentName}
+            {props.tournamentName && fetchedTournamentsdata[tournamentId] && <Typography variant="h6" noWrap className={classes.tournamentName}>
+                {fetchedTournamentsdata[tournamentId].name}
             </Typography>}
             <Typography variant="h6" noWrap className={classes.title}>
                 {props.title}
@@ -180,7 +188,7 @@ const HeaderGeneric = (props: Props) => {
                     color="secondary"
                     className={classes.button}
                 >
-                    {t('Next')}
+                    {props.nextButtonText || t('Next')}
                 </Button>
             }
             <ImportParticipantsDialog

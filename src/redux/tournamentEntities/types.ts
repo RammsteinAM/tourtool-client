@@ -1,6 +1,6 @@
 import { Action } from "redux";
-import { ResponseData, ResponseError } from "../../types/main";
-import { StateEliminationPlayers, StateTournament, EliminationGames, StateParticipants, Games, StateLMSPlayers, FetchedPlayers, FetchedPlayer, FetchedTournaments, FetchedTournament, BaseDatabaseEntity } from "../../types/entities";
+import { Nullable, ResponseData, ResponseError } from "../../types/main";
+import { StateEliminationPlayers, StateTournament, EliminationGames, StateParticipants, Games, StateLMSPlayers, FetchedPlayers, FetchedPlayer, FetchedTournaments, FetchedTournament, BaseDatabaseEntity, FetchedGames, FetchedCreatedGames, FetchedGameData } from "../../types/entities";
 import AppState, { DatalessState } from "../../types/redux";
 import { PayloadedAction } from "../helpers";
 
@@ -18,6 +18,9 @@ const GET_PLAYERS_FAILURE = "GET_PLAYERS_FAILURE";
 const GET_TOURNAMENTS_REQUEST = "GET_TOURNAMENTS_REQUEST";
 const GET_TOURNAMENTS_SUCCESS = "GET_TOURNAMENTS_SUCCESS";
 const GET_TOURNAMENTS_FAILURE = "GET_TOURNAMENTS_FAILURE";
+const GET_TOURNAMENT_REQUEST = "GET_TOURNAMENT_REQUEST";
+const GET_TOURNAMENT_SUCCESS = "GET_TOURNAMENT_SUCCESS";
+const GET_TOURNAMENT_FAILURE = "GET_TOURNAMENT_FAILURE";
 const CREATE_PLAYER_REQUEST = "CREATE_PLAYER_REQUEST";
 const CREATE_PLAYER_SUCCESS = "CREATE_PLAYER_SUCCESS";
 const CREATE_PLAYER_FAILURE = "CREATE_PLAYER_FAILURE";
@@ -47,6 +50,7 @@ export {
     UPDATE_GAMES,
     UPDATE_ELIMINATION_GAMES,
     GET_TOURNAMENTS_REQUEST, GET_TOURNAMENTS_SUCCESS, GET_TOURNAMENTS_FAILURE,
+    GET_TOURNAMENT_REQUEST, GET_TOURNAMENT_SUCCESS, GET_TOURNAMENT_FAILURE,
     GET_PLAYERS_REQUEST, GET_PLAYERS_SUCCESS, GET_PLAYERS_FAILURE,
     CREATE_TOURNAMENT_REQUEST, CREATE_TOURNAMENT_SUCCESS, CREATE_TOURNAMENT_FAILURE,
     UPDATE_TOURNAMENT_REQUEST, UPDATE_TOURNAMENT_SUCCESS, UPDATE_TOURNAMENT_FAILURE,
@@ -59,7 +63,7 @@ export {
 export type EntitiesReducerState = {
     tournament: StateTournament,
     participants: StateParticipants,
-    fetchedTournaments: AppState<FetchedTournaments>,
+    fetchedTournaments: AppState<FetchedTournaments> & { createdTournamentId?: Nullable<number> },
     fetchedPlayers: AppState<FetchedPlayers>,
     addPlayers: DatalessState,
     eliminationPlayers: StateEliminationPlayers,
@@ -76,30 +80,43 @@ export type UpdateEliminationGamesActionParams = PayloadedAction<typeof UPDATE_E
 export type UpdateGamesActionParams = PayloadedAction<typeof UPDATE_GAMES, Games>;
 export type ResetGamesActionParams = Action<typeof RESET_GAMES>;
 export type ResetEliminationGamesActionParams = Action<typeof RESET_ELIMINATION_GAMES>;
+
 export type GetTournamentsRequestActionParams = Action<typeof GET_TOURNAMENTS_REQUEST>;
 export type GetTournamentsSuccessActionParams = PayloadedAction<typeof GET_TOURNAMENTS_SUCCESS, FetchedTournaments>;
 export type GetTournamentsFailureActionParams = PayloadedAction<typeof GET_TOURNAMENTS_FAILURE, ResponseError | null>;
+
+export type GetTournamentRequestActionParams = Action<typeof GET_TOURNAMENT_REQUEST>;
+export type GetTournamentSuccessActionParams = PayloadedAction<typeof GET_TOURNAMENT_SUCCESS, FetchedTournament>;
+export type GetTournamentFailureActionParams = PayloadedAction<typeof GET_TOURNAMENT_FAILURE, ResponseError | null>;
+
 export type GetPlayersRequestActionParams = Action<typeof GET_PLAYERS_REQUEST>;
 export type GetPlayersSuccessActionParams = PayloadedAction<typeof GET_PLAYERS_SUCCESS, FetchedPlayers>;
 export type GetPlayersFailureActionParams = PayloadedAction<typeof GET_PLAYERS_FAILURE, ResponseError | null>;
+
 export type CreatePlayerRequestActionParams = Action<typeof CREATE_PLAYER_REQUEST>;
 export type CreatePlayerSuccessActionParams = PayloadedAction<typeof CREATE_PLAYER_SUCCESS, FetchedPlayer>;
 export type CreatePlayerFailureActionParams = PayloadedAction<typeof CREATE_PLAYER_FAILURE, ResponseError | null>;
+
 export type CreateTournamentRequestActionParams = Action<typeof CREATE_TOURNAMENT_REQUEST>;
 export type CreateTournamentSuccessActionParams = PayloadedAction<typeof CREATE_TOURNAMENT_SUCCESS, FetchedTournament>;
 export type CreateTournamentFailureActionParams = PayloadedAction<typeof CREATE_TOURNAMENT_FAILURE, ResponseError | null>;
+
 export type UpdateTournamentRequestActionParams = Action<typeof UPDATE_TOURNAMENT_REQUEST>;
 export type UpdateTournamentSuccessActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_SUCCESS, FetchedTournament>;
 export type UpdateTournamentFailureActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_FAILURE, ResponseError | null>;
+
 export type DeleteTournamentRequestActionParams = Action<typeof DELETE_TOURNAMENT_REQUEST>;
 export type DeleteTournamentSuccessActionParams = PayloadedAction<typeof DELETE_TOURNAMENT_SUCCESS, BaseDatabaseEntity>;
 export type DeleteTournamentFailureActionParams = PayloadedAction<typeof DELETE_TOURNAMENT_FAILURE, ResponseError | null>;
+
 export type CreatePlayersRequestActionParams = Action<typeof CREATE_PLAYERS_REQUEST>;
 export type CreatePlayersSuccessActionParams = PayloadedAction<typeof CREATE_PLAYERS_SUCCESS, FetchedPlayers>;
 export type CreatePlayersFailureActionParams = PayloadedAction<typeof CREATE_PLAYERS_FAILURE, ResponseError | null>;
+
 export type UpdatePlayersRequestActionParams = Action<typeof UPDATE_PLAYERS_REQUEST>;
 export type UpdatePlayersSuccessActionParams = PayloadedAction<typeof UPDATE_PLAYERS_SUCCESS, ResponseData | null>;
 export type UpdatePlayersFailureActionParams = PayloadedAction<typeof UPDATE_PLAYERS_FAILURE, ResponseError | null>;
+
 export type UserActionParams =
     UpdateTournamentActionParams |
     UpdateEliminationPlayersActionParams |
@@ -112,6 +129,9 @@ export type UserActionParams =
     GetTournamentsRequestActionParams |
     GetTournamentsSuccessActionParams |
     GetTournamentsFailureActionParams |
+    GetTournamentRequestActionParams |
+    GetTournamentSuccessActionParams |
+    GetTournamentFailureActionParams |
     GetPlayersRequestActionParams |
     GetPlayersSuccessActionParams |
     GetPlayersFailureActionParams |

@@ -13,6 +13,11 @@ const getTournaments = async (): Promise<AxiosResponse> => {
     return response;
 }
 
+const getTournament = async (id: number): Promise<AxiosResponse> => {
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.get(`${endpoint}/tournament/${id}`, { withCredentials: true });
+    return response;
+}
+
 const createTournament = async (data: TournamentCreationReqData): Promise<AxiosResponse> => {
     const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/tournament`, data, { withCredentials: true });
     return response;
@@ -30,6 +35,7 @@ const deleteTournament = async (id: number): Promise<AxiosResponse> => {
 
 export const tournamentServices = {
     getTournaments,
+    getTournament,
     createTournament,
     updateTournament,
     deleteTournament,

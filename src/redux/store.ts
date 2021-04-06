@@ -4,12 +4,14 @@ import userReducer from './user/reducer';
 import authReducer from './auth/reducer';
 import registerReducer from './register/reducer';
 import entitiesReducer from './tournamentEntities/reducer';
+import gamesReducer from './games/reducer';
 import settingsReducer from './settings/reducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 export const rootReducer = combineReducers({
     auth: authReducer,
     entities: entitiesReducer,
+    games: gamesReducer,
     user: userReducer,
     register: registerReducer,
     settings: settingsReducer,

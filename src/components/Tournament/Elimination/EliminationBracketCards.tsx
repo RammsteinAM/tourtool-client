@@ -2,15 +2,15 @@ import React from 'react';
 import { useTranslation } from "react-i18next";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { StateEliminationPlayers, StateParticipant } from '../../../types/entities';
-import EliminationCard from './EliminationCard';
+import { FetchedPlayer, StateEliminationPlayers, StateParticipant } from '../../../types/entities';
+import EliminationBracketCard from './EliminationBracketCard';
 import tournamentStyles from './eliminationStyles';
 
 interface Props {
     players: StateEliminationPlayers;
     columnNumber: number;
     numberOfGames: number;
-    normalizedPlayers: { [id: number]: StateParticipant }
+    normalizedPlayers: { [id: number]: FetchedPlayer }
 }
 
 const EliminationBracketCards = ({ players, columnNumber, numberOfGames, normalizedPlayers }: Props) => {
@@ -27,7 +27,7 @@ const EliminationBracketCards = ({ players, columnNumber, numberOfGames, normali
             if (key === numberOfGames - 1 && columnNumber === numberOfColumns && entityState.tournament.thirdPlace) {
                 return (
                     <div className={classes.gameColumnWithThirdPlace} key={`gameCard_${columnNumber}_${key}`}>
-                        <EliminationCard
+                        <EliminationBracketCard
                             key={`gameCard_${columnNumber}_${key}`}
 
                         />
@@ -35,7 +35,7 @@ const EliminationBracketCards = ({ players, columnNumber, numberOfGames, normali
                             <div className={classes.gameColumnHeader}>
                                 <span>{t('Third Place')}</span>
                             </div>
-                            <EliminationCard
+                            <EliminationBracketCard
                                 key={`gameCard_${columnNumber}_${key}`}
                             />
                         </div>
@@ -43,7 +43,7 @@ const EliminationBracketCards = ({ players, columnNumber, numberOfGames, normali
                 )
             }
             return (
-                <EliminationCard
+                <EliminationBracketCard
                     key={`gameCard_${columnNumber}_${key}`}
                     // player1={p1?.name}
                     // player2={p2?.name}

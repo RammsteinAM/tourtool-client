@@ -12,6 +12,7 @@ import {
   RESET_ELIMINATION_GAMES,
   GET_PLAYERS_REQUEST, GET_PLAYERS_SUCCESS, GET_PLAYERS_FAILURE,
   GET_TOURNAMENTS_REQUEST, GET_TOURNAMENTS_SUCCESS, GET_TOURNAMENTS_FAILURE,
+  GET_TOURNAMENT_REQUEST, GET_TOURNAMENT_SUCCESS, GET_TOURNAMENT_FAILURE,
   CREATE_TOURNAMENT_REQUEST, CREATE_TOURNAMENT_SUCCESS, CREATE_TOURNAMENT_FAILURE,
   UPDATE_TOURNAMENT_REQUEST, UPDATE_TOURNAMENT_SUCCESS, UPDATE_TOURNAMENT_FAILURE,
   DELETE_TOURNAMENT_REQUEST, DELETE_TOURNAMENT_SUCCESS, DELETE_TOURNAMENT_FAILURE,
@@ -40,6 +41,7 @@ const initialState: EntitiesReducerState | null = {
   fetchedTournaments: {
     status: ActionStatus.Initial,
     data: {},
+    createdTournamentId: null,
     error: '',
   },
   fetchedPlayers: {
@@ -136,6 +138,35 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
         }
       };
     }
+    case GET_TOURNAMENT_REQUEST: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          ...state.fetchedTournaments,
+          status: ActionStatus.Request,
+        }
+      };
+    }
+    case GET_TOURNAMENT_SUCCESS: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Success,
+          data: { ...state.fetchedTournaments.data, [action.payload.id]: { ...action.payload } },
+          error: ''
+        }
+      };
+    }
+    case GET_TOURNAMENT_FAILURE: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          ...state.fetchedTournaments,
+          status: ActionStatus.Failure,
+          error: action.payload?.error,
+        }
+      };
+    }
     case GET_PLAYERS_REQUEST: {
       return {
         ...state,
@@ -172,7 +203,8 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
         fetchedTournaments: {
           status: ActionStatus.Request,
           data: { ...state.fetchedTournaments.data },
-          error: ''
+          createdTournamentId: null,
+          error: '',
         }
       };
     }
@@ -182,7 +214,8 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
         fetchedTournaments: {
           ...state.fetchedTournaments,
           status: ActionStatus.Success,
-          data: { ...state.fetchedTournaments.data, ...action.payload },
+          data: { ...state.fetchedTournaments.data, [action.payload.id]: { ...action.payload } },
+          createdTournamentId: action.payload.id,
           error: '',
         }
       };
@@ -193,6 +226,7 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
         fetchedTournaments: {
           status: ActionStatus.Failure,
           data: { ...state.fetchedTournaments.data },
+          createdTournamentId: null,
           error: action.payload?.error,
         }
       };
@@ -214,7 +248,7 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
           status: ActionStatus.Success,
           data: {
             ...state.fetchedTournaments.data,
-            [action.payload.id]: {...state.fetchedTournaments.data[action.payload.id], ...action.payload}
+            [action.payload.id]: { ...state.fetchedTournaments.data[action.payload.id], ...action.payload }
           },
           error: '',
         }
@@ -240,7 +274,7 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
       };
     }
     case DELETE_TOURNAMENT_SUCCESS: {
-      const clonedTournaments: FetchedTournaments = Object.assign({}, {...state.fetchedTournaments.data})
+      const clonedTournaments: FetchedTournaments = Object.assign({}, { ...state.fetchedTournaments.data })
       delete clonedTournaments[action.payload.id];
       return {
         ...state,

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { EliminationGames, StateEliminationPlayers } from '../../types/entities';
+import { DBGameData, EliminationGames, StateEliminationPlayers } from '../../types/entities';
 import EliminationSidebar from '../../components/Tournament/Elimination/EliminationSidebar';
 import { entityActions, resetEliminationGames, updateEliminationGames } from '../../redux/tournamentEntities/actions';
 import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
-import { useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import EliminationColumn from '../../components/Tournament/Elimination/EliminationColumn';
 import EliminationBracketCards from '../../components/Tournament/Elimination/EliminationBracketCards';
 import tournamentStyles from './tournamentStyles';
 import { getNormalizedParticipants } from '../../utils/arrayUtils';
+import { ActionStatus } from '../../types/main';
 
 const EliminationBracket = () => {
     const [players, setPlayers] = useState<StateEliminationPlayers>([]);
@@ -24,6 +25,12 @@ const EliminationBracket = () => {
     const history = useHistory();
 
     const normalizedParticipants = getNormalizedParticipants(entityState.participants);
+
+    useEffect(() => {
+        if (entityState.fetchedTournaments.createdTournamentId && entityState.fetchedTournaments.status == ActionStatus.Success) {
+            history.push(`/elimination/${entityState.fetchedTournaments.createdTournamentId}`);
+        }
+    }, [entityState.fetchedTournaments.status, entityState.fetchedTournaments.createdTournamentId])
 
     useEffect(() => {
         const newPlayers: StateEliminationPlayers = [];
@@ -47,10 +54,49 @@ const EliminationBracket = () => {
 
     const handleStartTournament = (e: React.FormEvent, name: string) => {
         e.preventDefault();
-        submitGamesToStore();
+        const storeGames = generateStoreGames();
+        dispatch(resetEliminationGames());
+        dispatch(updateEliminationGames(storeGames));
+        const dbGames: DBGameData[] = Object.values(storeGames).map(game => {
+            if (typeof game.player1Id === 'number' && typeof game.player2Id === 'number') {
+                return {
+                    index: game.index,
+                    player1: [{ id: game.player1Id }],
+                    player2: [{ id: game.player2Id }],
+                    hasByePlayer: game.hasByePlayer,
+                }
+            }
+            if (typeof game.player1Id === 'object' || typeof game.player2Id === 'object') {
+                return {
+                    index: game.index,
+                    player1: typeof game.player1Id === 'object' ?
+                        [{ id: game.player1Id[0] }, { id: game.player1Id[1] }] :
+                        [{ id: game.player1Id }],
+                    player2: typeof game.player2Id === 'object' ?
+                        [{ id: game.player2Id[0] }, { id: game.player2Id[1] }] :
+                        [{ id: game.player2Id }],
+                    hasByePlayer: game.hasByePlayer,
+                }
+            }
+            return {
+                index: game.index,
+                hasByePlayer: game.hasByePlayer,
+            }
+        })
         const { draw, numberOfGoals, numberOfLives, numberOfTables, pointsForDraw, pointsForWin, sets } = entityState.tournament;
-        dispatch(entityActions.createTournament({ name, sets: sets || 1, tournamentTypeId: 1, draw, numberOfGoals, numberOfLives, numberOfTables, pointsForDraw, pointsForWin }));
-        history.push('/elimination');
+        dispatch(entityActions.createTournament({
+            name,
+            sets: sets || 1,
+            tournamentTypeId: 1,
+            draw,
+            numberOfGoals,
+            numberOfLives,
+            numberOfTables,
+            pointsForDraw,
+            pointsForWin,
+            games: dbGames
+        }));
+
     };
 
     const getByeIndexes = (n: number) => {
@@ -65,21 +111,22 @@ const EliminationBracket = () => {
         ]
     }
 
-    const submitGamesToStore = () => {
+    const generateStoreGames = (): EliminationGames => {
         const storeGames: EliminationGames = {};
         for (let col = 1; col <= numberOfColumns; col++) {
             const prevCol = col - 1;
             for (let i = 0, j = 1; i < players.length / (2 ** prevCol); i = i + 2, j++) {
-                const gameKey: string = /* col === numberOfColumns ? 'final' :  */`${col}-${j}`;
+                const gameKey: string = `${col}-${j}`;
                 storeGames[gameKey] = { player1Id: 0, player2Id: 0, /* round: col, gameNumber: j,  */index: gameKey }
                 if (col === 1) {
                     // storeGames[gameKey].player1 = players[i].name;
                     // storeGames[gameKey].player2 = players[i + 1].name;
                     const { id: player1Id } = players[i];
                     const { id: player2Id } = players[i + 1];
+                    debugger
                     storeGames[gameKey].player1Id = player1Id || 0;
                     storeGames[gameKey].player2Id = player2Id || 0;
-                    storeGames[gameKey].isPredetermined = true;
+                    // storeGames[gameKey].isPredetermined = true;
                     if (players[i].bye || players[i + 1].bye) {
                         storeGames[gameKey].hasByePlayer = true;
                     }
@@ -98,32 +145,32 @@ const EliminationBracket = () => {
                     parent1HasByePlayer,
                     parent1HasNoPlayer,
                     parent1HasOnePlayer,
-                    parent1isPredetermined,
+                    // parent1isPredetermined,
                     parent2HasByePlayer,
                     parent2HasNoPlayer,
                     parent2HasOnePlayer,
-                    parent2isPredetermined,
+                    // parent2isPredetermined,
                     // numberOfParentPlayers
                 } = {
                     p1p1: p1Game?.player1Id,
                     p1p2: p1Game?.player2Id,
                     parent1HasByePlayer: p1Game?.hasByePlayer,
-                    parent1isPredetermined: p1Game?.isPredetermined,
+                    // parent1isPredetermined: p1Game?.isPredetermined,
                     parent1HasOnePlayer: (p1Game?.player1Id && !p1Game?.player2Id) || (p1Game?.player2Id && !p1Game?.player1Id),
                     parent1HasNoPlayer: !p1Game?.player1Id && !p1Game?.player2Id,
                     p2p1: p2Game?.player1Id,
                     p2p2: p2Game?.player2Id,
                     parent2HasByePlayer: p2Game?.hasByePlayer,
-                    parent2isPredetermined: p2Game?.isPredetermined,
+                    // parent2isPredetermined: p2Game?.isPredetermined,
                     parent2HasOnePlayer: (p2Game?.player1Id && !p2Game?.player2Id) || (p2Game?.player2Id && !p2Game?.player1Id),
                     parent2HasNoPlayer: !p2Game?.player1Id && !p2Game?.player2Id,
                     // numberOfParentPlayers: Number(!!p1Game?.player1Id) + Number(!!p1Game?.player2Id) + Number(!!p2Game?.player1Id) + Number(!!p2Game?.player2Id),
                 };
 
 
-                if (parent1isPredetermined && parent2isPredetermined) {
-                    storeGames[gameKey].isPredetermined = true;
-                }
+                // if (parent1isPredetermined && parent2isPredetermined) {
+                //     storeGames[gameKey].isPredetermined = true;
+                // }
                 if ((parent2HasNoPlayer || parent1HasNoPlayer) && ((parent1HasByePlayer && parent2HasOnePlayer) || (parent2HasByePlayer && parent1HasOnePlayer))) {
                     storeGames[gameKey].hasByePlayer = true;
                 }
@@ -145,8 +192,7 @@ const EliminationBracket = () => {
         // players.forEach(player => {
         //     storeGame
         // })
-        dispatch(resetEliminationGames());
-        dispatch(updateEliminationGames(storeGames));
+        return storeGames;
     }
 
     const insertByePlayers = (players: StateEliminationPlayers) => {
@@ -189,6 +235,7 @@ const EliminationBracket = () => {
                         const numberOfGames = firstRoundGameNumber / (2 ** (colNumber - 1));
                         return (
                             <EliminationColumn
+                                key={key}
                                 numberOfColumns={numberOfColumns}
                                 firstRoundGameNumber={firstRoundGameNumber}
                                 colNumber={colNumber}

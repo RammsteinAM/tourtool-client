@@ -2,18 +2,21 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import { Games, StateLMSPlayers } from '../../types/entities';
+import { Games, StateLMSPlayer, StateLMSPlayers } from '../../types/entities';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
-import { resetGames, updateGames } from '../../redux/tournamentEntities/actions';
+import { entityActions, resetGames, updateGames } from '../../redux/tournamentEntities/actions';
 import { debounce, differenceBy, shuffle } from 'lodash';
 import { useResizeDetector } from 'react-resize-detector';
 import GameListRound from '../../components/Tournament/GameListRound';
 import LastManStandingPlayerStatsList from '../../components/Tournament/TournamentStats/LastManStandingPlayerStatsList';
 import { getNormalizedParticipants } from '../../utils/arrayUtils';
 import lastManStandingStyles from './lastManStandingStyles';
+import { splitGameKey } from '../../utils/stringUtils';
+import { useParams } from 'react-router-dom';
+import { gameActions } from '../../redux/games/actions';
 
 export interface Players {
     [key: string]: {
@@ -41,13 +44,22 @@ const LastManStanding = (props: Props) => {
     const lmsPlayers = useSelector((state: RootState) => state.entities.lmsPlayers);
     const dispatch = useDispatch();
     const classes = lastManStandingStyles();
+    const { tournamentId: tournamentIdString } = useParams<{ tournamentId: string }>();
+    const tournamentId = parseInt(tournamentIdString, 10)
     const { t } = useTranslation();
 
     const normalizedParticipants = getNormalizedParticipants(entityState.participants);
-    
-    useEffect(() => {
-        submitInitialGamesToStore();
+
+    // useEffect(() => {
+    //     submitInitialGamesToStore();
+    // }, [])
+
+    useEffect(() => {        
+        dispatch(entityActions.getPlayers());
+        dispatch(gameActions.getTournamentGames(tournamentId));
     }, [])
+
+
 
     useEffect(() => {
         const playerData = getPlayersDataWithStats();
@@ -211,6 +223,12 @@ const LastManStanding = (props: Props) => {
     }
 
     const validateRoundComplete = () => {
+        // return Object.values(entityState.games).filter(game => {
+        //     if (typeof game.score1 !== 'number' || typeof game.score2 !== 'number') {
+        //         return true;
+        //     }
+        //     return false;
+        // }).length > 0
         const games = entityState.games;
         for (const key in games) {
             if (Object.prototype.hasOwnProperty.call(games, key)) {
@@ -225,7 +243,7 @@ const LastManStanding = (props: Props) => {
 
     const alivePlayerCount = Object.values(playerData).reduce((acc, val) => {
         if (val.lives > 0) {
-            return acc + 1;
+            ++acc;
         }
         return acc;
     }, 0);
@@ -249,42 +267,102 @@ const LastManStanding = (props: Props) => {
         dispatch(updateGames(storeGames));
     }
 
+    const aliveFilterCallback = (player: StateLMSPlayer) => {
+        let result: boolean = false;
+        switch (typeof player.id) {
+            case 'number':
+                result = playerData[player.id].lives > 0;
+                break;
+            case 'object':
+                result = playerData[player.id[0]].lives > 0;
+                break;
+            default:
+                break;
+        }
+        return result;
+    }
+
     const submitNewRoundGamesToStore = (nextRound: number, currentRound: number) => {
-        const players = entityState.lmsPlayers;
-        const games = entityState.games;
-        const lastRoundPlayers: StateLMSPlayers = []
-        let nextRoundPlayers: StateLMSPlayers = [];
-        const numberOfGames = Math.floor(players.length / 2);
+        const storeLmsPlayers = entityState.lmsPlayers;
+        const storeCurrentGames = entityState.games;
+        // const lastRoundPlayers: StateLMSPlayers = []
+        // let nextRoundPlayers: StateLMSPlayers = [];
+        // const numberOfGames = Math.floor(storeLmsPlayers.length / 2);
 
-        for (let i = 1; i <= numberOfGames; i++) {
-            lastRoundPlayers.push({ id: games[`${currentRound}-${i}`].player1Id });
-            lastRoundPlayers.push({ id: games[`${currentRound}-${i}`].player2Id });
+        // for (let i = 1; i <= numberOfGames; i++) {
+        //     lastRoundPlayers.push({ id: storeCurrentGames[`${currentRound}-${i}`].player1Id });
+        //     lastRoundPlayers.push({ id: storeCurrentGames[`${currentRound}-${i}`].player2Id });
+        // }
+
+
+        // const waitingPlayer = differenceBy(storeLmsPlayers, lastRoundPlayers, 'name');
+        // const shuffledLastRoundPlayers = shuffle(lastRoundPlayers);
+        // if (waitingPlayer.length > 0) {
+        //     shuffledLastRoundPlayers.pop();
+        //     shuffledLastRoundPlayers.push(waitingPlayer[0])
+        // }
+
+        // nextRoundPlayers = shuffledLastRoundPlayers;
+
+        // const storeNextGames: Games = {};
+        // let i = 0, j = 1;
+        // while (storeLmsPlayers[i] && storeLmsPlayers[i + 1]) {
+        //     storeNextGames[`${nextRound}-${j}`] = {
+        //         // player1: nextRoundPlayers[i].name,
+        //         // player2: nextRoundPlayers[i + 1].name,
+        //         player1Id: nextRoundPlayers[i].id || 0,
+        //         player2Id: nextRoundPlayers[i + 1].id || 0,
+        //         index: `${nextRound}-${j}`
+        //     }
+        //     i += 2
+        //     j++
+        // }
+
+
+        const lastRoundPlayers: StateLMSPlayers = Object.values(storeCurrentGames).reduce(
+            (acc: StateLMSPlayers, val) => {
+                if (splitGameKey(val.index).round === currentRound) {
+                    acc.push({ id: val.player1Id }, { id: val.player2Id });
+                }
+                return acc;
+            },
+            []
+        )
+
+        const alivePlayers = storeLmsPlayers.filter(aliveFilterCallback)
+
+        const waitingPlayer = differenceBy(alivePlayers, lastRoundPlayers, 'id')[0];
+
+        // const shuffledLastRoundPlayers = shuffle(lastRoundPlayers);
+
+
+        const nextRoundPlayers: StateLMSPlayers = lastRoundPlayers.filter(aliveFilterCallback)
+
+        if (waitingPlayer) {
+            nextRoundPlayers.unshift(waitingPlayer)
         }
+        // if (waitingPlayer) {
+        //     shuffledLastRoundPlayers.pop();
+        //     shuffledLastRoundPlayers.push(waitingPlayer)
+        // }
 
-        const waitingPlayer = differenceBy(players, lastRoundPlayers, 'name');
-        const shuffledLastRoundPlayers = shuffle(lastRoundPlayers);
-        if (waitingPlayer.length > 0) {
-            shuffledLastRoundPlayers.pop();
-            shuffledLastRoundPlayers.push(waitingPlayer[0])
-        }
+        const shuffledNextRoundPlayers = shuffle(nextRoundPlayers);
 
-        nextRoundPlayers = shuffledLastRoundPlayers;
-
-        const storeGames: Games = {};
-        let i = 0, j = 1;
-        while (players[i] && players[i + 1]) {
-            storeGames[`${nextRound}-${j}`] = {
-                // player1: nextRoundPlayers[i].name,
-                // player2: nextRoundPlayers[i + 1].name,
-                player1Id: nextRoundPlayers[i].id || 0,
-                player2Id: nextRoundPlayers[i + 1].id || 0,
-                index: `${nextRound}-${j}`
+        const storeNextGames: Games = shuffledNextRoundPlayers.reduce((acc: Games, val: StateLMSPlayer, i: number, arr: StateLMSPlayers) => {
+            if (!arr[i + 1] || i % 2 === 1) {
+                return acc;
             }
-            i += 2
-            j++
-        }
+            acc[`${nextRound}-${Math.ceil((i + 1) / 2)}`] = {
+                player1Id: val.id,
+                player2Id: arr[i + 1].id,
+                index: `${nextRound}-${Math.ceil((i + 1) / 2)}`
+            }
 
-        dispatch(updateGames(storeGames));
+            return acc;
+        }, {});
+
+        debugger
+        dispatch(updateGames(storeNextGames));
     }
 
     return (
@@ -296,10 +374,17 @@ const LastManStanding = (props: Props) => {
             >
                 <div className={classes.tournamentGameContainerHeader}>
                 </div>
-                <CardContent className={classes.cardContent}                >
+                <CardContent className={classes.cardContent}>
                     {[...Array(rounds).keys()].map((i) => {
                         return (
-                            <GameListRound key={`gameListRound_${i}`} roundNubmer={i + 1} maxScores={maxScores} normalizedPlayers={normalizedParticipants} />
+                            <GameListRound
+                                key={`gameListRound_${i}`}
+                                tournamentId={tournamentId}
+                                roundNubmer={i + 1}
+                                maxScores={maxScores}
+                                normalizedPlayers={entityState.fetchedPlayers.data}
+
+                            />
                         )
                     })}
                 </CardContent>

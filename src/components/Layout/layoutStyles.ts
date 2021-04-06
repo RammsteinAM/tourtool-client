@@ -72,8 +72,9 @@ const styles = makeStyles((theme) =>
     },
     content: {
       flexGrow: 1,
-      padding: '12px',
+      padding: 0,
       height: '100vh',
+      position: 'relative',
       //height: 'calc(100vh - 64px)',
     },
     listItems: {

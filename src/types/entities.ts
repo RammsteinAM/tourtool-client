@@ -27,7 +27,7 @@ export interface StateGame extends BaseEntity {
     score1?: number,
     score2?: number,
     scores1?: number[],
-    scores2?: number[],    
+    scores2?: number[],
     index: string,
     // round: number;
     // gameNumber: number;
@@ -57,7 +57,7 @@ export interface StateParticipantWithId {
     category?: PlayerCategory,
 }
 
-export interface FetchedPlayer extends BaseEntity {
+export interface FetchedPlayer extends BaseDatabaseEntity {
     name: string,
     weight?: number,
 }
@@ -66,6 +66,7 @@ export interface FetchedTournament extends BaseDatabaseEntity {
     name: string,
     numberOfTables?: number,
     goals?: boolean,
+    games?: FetchedGameData[];
     numberOfGoals?: number,
     draw?: boolean,
     sets: number;
@@ -77,16 +78,40 @@ export interface FetchedTournament extends BaseDatabaseEntity {
     updatedAt: Date;
 }
 
+export interface FetchedCreatedGames extends BaseDatabaseEntity {
+    games?: FetchedGameData[];
+}
+
+export interface DBGameData extends BaseEntity {
+    index: string;
+    player1?: { id: number }[],
+    player2?: { id: number }[],
+    scores1?: number[];
+    scores2?: number[];
+    tournamentId?: number;
+    hasByePlayer?: boolean;
+}
+
+export type FetchedGameData = DBGameData & Required<BaseEntity> & { tournamentId?: number }
+
+// export interface FetchedGameData extends BaseDatabaseEntity {
+//     index: string;
+//     tournamentId: number;
+//     player1?: { id: number }[],
+//     player2?: { id: number }[],
+//     scores1?: StateScore;
+//     scores2?: StateScore;
+//     hasByePlayer?: boolean;
+// }
+
 export interface StateEliminationPlayer {
     id: number | [number, number],
-    // name?: string | [string, string],
     category?: PlayerCategory,
     bye?: boolean,
 }
 
 export interface StateLMSPlayer {
     id: number | [number, number],
-    // name?: string | [string, string],
     category?: PlayerCategory,
 }
 
@@ -107,6 +132,7 @@ export type StateParticipants = StateParticipant[];
 export type StateParticipantsWithId = StateParticipantWithId[];
 export type FetchedTournaments = { [id: number]: FetchedTournament };
 export type FetchedPlayers = FetchedPlayer[];
+export type FetchedGames = { [tournamentId: number]: FetchedGameData[] };
 export type StateEliminationPlayers = StateEliminationPlayer[];
 export type StateLMSPlayers = StateLMSPlayer[];
 // export type StateGames = StateEliminationGame[];
@@ -118,9 +144,9 @@ export type EliminationPlayers = {
 export type EliminationGames = {
     [key: string]: StateEliminationGame
 }
-export interface StateScore {
+export type StateScore = number[]/* {
     [set: number]: number;
-}
+} */
 
 export interface LMSTableProps {
     name?: string;
@@ -156,6 +182,12 @@ export interface TournamentCreationReqData {
     thirdPlace?: boolean;
     pointsForWin?: number,
     pointsForDraw?: number;
+    games?: DBGameData[];
+}
+
+export interface GamesCreationReqData {
+    tournamentId: number;
+    games?: DBGameData[];
 }
 
 export interface TournamentUpdateReqData {
@@ -170,6 +202,23 @@ export interface TournamentUpdateReqData {
     thirdPlace?: boolean;
     pointsForWin?: number,
     pointsForDraw?: number;
+}
+
+export interface GameCreationReqData {
+    tournamentId: number;
+    index: string,
+    player1?: { id: number }[],
+    player2?: { id: number }[],
+    hasByePlayer?: boolean;
+}
+
+export interface GameUpdateReqData {
+    id: number;
+    player1?: { id: number }[],
+    player2?: { id: number }[],
+    scores1?: StateScore,
+    scores2?: StateScore,
+    hasByePlayer?: boolean;
 }
 
 export type TournamentTypes = 'elimination' | 'lms' | 'roundRobin';

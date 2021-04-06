@@ -71,12 +71,16 @@ const styles = makeStyles((theme) =>
       backgroundColor: fade(theme.palette.common.white, 0.15),
       display: 'flex',
       flexDirection: 'row',
-      marginRight: '10px',
+      marginRight: '8px',
       transition: "transform .3s cubic-bezier(.165,.84,.44,1)",
       transform: "translateX(222px)",
+      width: '240px',
       '&:hover': {
         backgroundColor: fade(theme.palette.common.white, 0.25),
       },
+    },
+    searchOpen: {      
+      transform: "translateX(0px)",
     },
     title: {
       fontSize: '24px',

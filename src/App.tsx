@@ -25,6 +25,7 @@ import { userServices } from './services/user';
 import toast from './components/IndependentSnackbar';
 import i18n from "./utils/i18n";
 import { HttpError } from './utils/error';
+import TournamentResult from './components/Tournament/TournamentResult';
 // axios.interceptors.response.use(
 //   function(successRes) {
 //     ... modify response; 
@@ -67,9 +68,6 @@ const App = () => {
     <BrowserRouter>
       <Layout>
         <Switch>
-          {/* <PrivateRoute exact path="/">
-            <Tournaments />
-          </PrivateRoute> */}
           <PrivateRoute exact path="/tournament/new">
             <TournamentTypeSelect />
           </PrivateRoute>
@@ -79,14 +77,17 @@ const App = () => {
           <PrivateRoute exact path="/tournament/elimination-bracket">
             <EliminationBracket />
           </PrivateRoute>
-          <PrivateRoute exact path="/elimination">
+          <PrivateRoute exact path="/elimination/:tournamentId">
             <Elimination />
           </PrivateRoute>
-          {/* <PrivateRoute exact path="/:tournamentType/:playerType">
-            <Elimination />
-          </PrivateRoute> */}
-          <PrivateRoute exact path="/lms/:playerType">
+          <PrivateRoute exact path="/lms/:playerType?/:tournamentId">
             <LastManStanding />
+          </PrivateRoute>
+          <PrivateRoute exact path="/elimination/:tournamentId/result">
+            <TournamentResult />
+          </PrivateRoute>
+          <PrivateRoute exact path="/lms/:playerType?/:tournamentId/result">
+            <TournamentResult />
           </PrivateRoute>
           <PrivateRoute exact path="/tournament/player-type-select/:tournamentType">
             <PlayerTypeSelect />

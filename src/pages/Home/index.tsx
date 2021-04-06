@@ -39,6 +39,9 @@ const Home = (props: Props) => {
     }
 
     const compareFunction = (a: FetchedTournament, b: FetchedTournament) => {
+        if (!a || !b) {
+            return 0;
+        }
         // const pos: number = tournamentsSortOrder;
         // const neg: number = tournamentsSortOrder;
         let result = 0;

@@ -126,8 +126,10 @@ const styles = makeStyles((theme) => ({
     },
     eliminationCardsContainer: {
         display: 'flex',
-        paddingLeft: '26px',
+        padding: '12px 12px 12px 26px',
         marginTop: theme.spacing(1),
+        transition: 'transform 0.2s ease-in-out',
+        transformOrigin: 'top left',
     },
     gameColumn: {
         display: 'flex',
@@ -223,6 +225,23 @@ const styles = makeStyles((theme) => ({
         position: "absolute",
         bottom: "0",
         left: "34px",
+    },
+    eliminationProgressContainer: {
+        position: "absolute",
+        width: "100%",
+    },
+    eliminationSnackbarContainer: {
+        position: "absolute",
+        bottom: "12px",
+        width: "100%",
+    },
+    eliminationSnackbar: {
+        margin: 'auto',
+        width: '600px',
+        backgroundColor: '#e16f3d'
+    },
+    eliminationSnackbarButton: {
+        color: '#ffffff'
     },
 }));
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
@@ -23,16 +23,26 @@ interface Props {
 }
 
 const Header = (props: Props) => {
+    const [newPlayers, setNewPlayers] = useState<boolean>();
     const classes = headerStyles();
-    const history = useHistory();
+    // const history = useHistory();
     const fullScreen = useSelector((state: RootState) => state.settings.fullScreen);
-    const tournament = useSelector((state: RootState) => state.entities.tournament);
+    const fetchedPlayers = useSelector((state: RootState) => state.entities.fetchedPlayers.data);
+    const participants = useSelector((state: RootState) => state.entities.participants);
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
     const handleExitFullScreen = () => {
         dispatch(updateSettings({ fullScreen: false }))
     }
+
+    useEffect(() => {
+        const dbPlayerNames = fetchedPlayers?.map(p => p.name)
+        const addedPlayers = participants.filter((val, i, arr) => {
+            return (!!val.name || i === arr.length - 1) && val.name && dbPlayerNames && dbPlayerNames.indexOf(val.name) < 0;
+        }).map(p => p.name);
+        setNewPlayers(addedPlayers.length > 0);
+    }, [fetchedPlayers, participants])
 
     return (
         <AppBar
@@ -59,7 +69,10 @@ const Header = (props: Props) => {
                         />
                     </Route>
                     <Route exact path="/tournament/player-type-select/:tournamentType">
-                        <HeaderGeneric title={t('Add Participants')} backButton />
+                        <HeaderGeneric
+                            title={t('Add Participants')}
+                            backButton
+                        />
                     </Route>
                     <Route exact path="/tournament/player-form/:tournamentType/:playerType">
                         <HeaderGeneric
@@ -68,6 +81,7 @@ const Header = (props: Props) => {
                             shuffleParticipantsButton
                             importPlayersButton
                             nextButton
+                            nextButtonText={newPlayers ? t('Submit New Players') : undefined}
                             nextButtonForm='player-form'
                         />
                     </Route>
@@ -89,7 +103,7 @@ const Header = (props: Props) => {
                             thirdPlaceCheckbox
                         />
                     </Route>
-                    <Route exact path="/elimination">
+                    <Route exact path="/elimination/:id">
                         <HeaderGeneric
                             showIcon
                             icon={<EliminationIcon width={36} height={36} fill='#404040' />}
@@ -98,12 +112,12 @@ const Header = (props: Props) => {
                             fullScreenButton
                         />
                     </Route>
-                    <Route exact path="/lms/:playerType">
+                    <Route exact path="/lms/:playerType?/:tournamentId">
                         <HeaderGeneric
                             showIcon
                             tournamentSidebar
                             icon={<LastManStandingIcon width={36} height={36} fill='#404040' />}
-                            tournamentName={tournament.name || ''}
+                            tournamentName
                             fullScreenButton
                         />
                     </Route>

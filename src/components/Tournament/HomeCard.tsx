@@ -33,6 +33,8 @@ import { getLocale } from '../../utils/i18n';
 import mainStyles from '../../styles/mainStyles';
 import homeCard from './homeCardStyles';
 import Dialog from '../Dialogs/Generic/Dialog';
+import { tournamentTypeIds } from '../../utils/constants';
+import { getKeyByValue } from '../../utils/objectUtils';
 
 interface Props {
     data: FetchedTournament;
@@ -47,9 +49,11 @@ const TournamentTypeSelect = (props: Props) => {
     const classes = homeCard();
     const mainClasses = mainStyles();
     const { t } = useTranslation();
-    moment.locale('hy-am')
+    moment.locale('hy-am');
+    const tournamentTypeKey = getKeyByValue(tournamentTypeIds,props.data.tournamentTypeId);
+
     const handleOpenTournament = () => {
-        history.push(`/tournament/${props.data.id}`)
+        history.push(`/${tournamentTypeKey}/${props.data.id}`)
     }
 
     const handleStartRename = () => {

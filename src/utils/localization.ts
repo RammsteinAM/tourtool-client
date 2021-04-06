@@ -204,6 +204,8 @@ const localization = {
             'Sort Ascending': 'Sort Ascending',
             'Sort Descending': 'Sort Descending',
             'All Types': 'All Types',
+            'Submit New Players': 'Submit New Players',
+            'Tournament Completed': 'Tournament Completed',
         }
     },
     hy: {
@@ -411,6 +413,8 @@ const localization = {
             'Sort Ascending': 'Դասավորել աճման կարգով',
             'Sort Descending': 'Դասավորել նվազման կարգով',
             'All Types': 'Բոլոր տեսակները',
+            'Submit New Players': 'Ավելացնել նոր խաղացողներին',
+            'Tournament Completed': 'Մրցաշարն ավարտված է',
         }
     },
     ru: {
@@ -627,6 +631,8 @@ const localization = {
             'Sort Ascending': 'Сортировать по возрастанию',
             'Sort Descending': 'Сортировать по убыванию',
             'All Types': 'Все типы',
+            'Submit New Players': 'Добавить новых игроков',
+            'Tournament Completed': 'Турнир завершен',
         }
     }
 }

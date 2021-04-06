@@ -15,13 +15,12 @@ import { ActionStatus } from '../../../types/main';
 import SortIcon from '@material-ui/icons/Sort';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Tooltip from '@material-ui/core/Tooltip';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { TournamentFilterKeys, TournamentSortingKeys } from '../../../redux/settings/types';
 import { updateSettings } from '../../../redux/settings/actions';
 import { debounce } from 'lodash';
+import clsx from 'clsx';
 import headerStyles from './headerStyles';
 
 
@@ -78,7 +77,9 @@ const Header = (props: Props) => {
     const handleSearchOpen = () => {
         dispatch(updateSettings({ tournamentsSearchKeyword: '' }));
         setSearchOpen(true);
-        searchFieldRef?.current?.focus(); // TODO
+        setTimeout(() => {
+            searchFieldRef?.current?.focus();
+        }, 300);
     };
 
     const handleSearchClose = () => {
@@ -155,14 +156,12 @@ const Header = (props: Props) => {
                         </Select>
                     </div>
                     <div className={classes.searchContainer}>
-
-                        <FormControl className={classes.search} style={searchOpen ? { transform: "translateX(0px)" } : {}}>
+                        <div className={clsx(classes.search, {[classes.searchOpen]: searchOpen })}>
                             <SearchIcon onClick={handleSearchOpen} className={classes.searchIcon} />
                             <Input
-                                id="standard-adornment-password"
                                 type='text'
                                 value={searchKeyword}
-                                ref={searchFieldRef}
+                                inputRef={searchFieldRef}
                                 // value={settingsState.tournamentsSearchKeyword}
                                 onChange={handleSearchChange}
                                 endAdornment={
@@ -171,7 +170,7 @@ const Header = (props: Props) => {
                                     </InputAdornment>
                                 }
                             />
-                        </FormControl>
+                        </div>
                     </div>
                 </div>
             }

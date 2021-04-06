@@ -1,4 +1,4 @@
-import { actionCreator, payloadedActionCreator, PayloadedAction } from "../helpers";
+import { actionCreator, payloadedActionCreator } from "../helpers";
 import { Dispatch } from "redux";
 import { AxiosError, AxiosResponse } from "axios";
 import { userServices } from "../../services/user";
@@ -14,6 +14,7 @@ import {
     RESET_GAMES,
     RESET_ELIMINATION_GAMES,
     GET_PLAYERS_REQUEST, GET_PLAYERS_SUCCESS, GET_PLAYERS_FAILURE,
+    GET_TOURNAMENT_REQUEST, GET_TOURNAMENT_SUCCESS, GET_TOURNAMENT_FAILURE,
     GET_TOURNAMENTS_REQUEST, GET_TOURNAMENTS_SUCCESS, GET_TOURNAMENTS_FAILURE,
     CREATE_TOURNAMENT_REQUEST, CREATE_TOURNAMENT_SUCCESS, CREATE_TOURNAMENT_FAILURE,
     UPDATE_TOURNAMENT_REQUEST, UPDATE_TOURNAMENT_SUCCESS, UPDATE_TOURNAMENT_FAILURE,
@@ -30,6 +31,7 @@ import {
     UpdateGamesActionParams,
     UpdateEliminationGamesActionParams,
     GetTournamentsRequestActionParams, GetTournamentsSuccessActionParams, GetTournamentsFailureActionParams,
+    GetTournamentRequestActionParams, GetTournamentSuccessActionParams, GetTournamentFailureActionParams,
     GetPlayersRequestActionParams, GetPlayersSuccessActionParams, GetPlayersFailureActionParams,
     CreatePlayerRequestActionParams, CreatePlayerSuccessActionParams, CreatePlayerFailureActionParams,
     CreateTournamentRequestActionParams, CreateTournamentSuccessActionParams, CreateTournamentFailureActionParams,
@@ -37,12 +39,12 @@ import {
     DeleteTournamentRequestActionParams, DeleteTournamentSuccessActionParams, DeleteTournamentFailureActionParams,
     CreatePlayersRequestActionParams, CreatePlayersSuccessActionParams, CreatePlayersFailureActionParams,
     UpdatePlayersRequestActionParams, UpdatePlayersSuccessActionParams, UpdatePlayersFailureActionParams,
-    UserActionParams,
 } from "./types"
 import { UserStateData, UserUpdateReqData } from "../../types/user";
 import { loginSuccess } from "../auth/actions";
 import { ResponseData } from "../../types/main";
-import { BaseDatabaseEntity, FetchedPlayer, FetchedTournament, FetchedTournaments, StateParticipants, TournamentCreationReqData, TournamentUpdateReqData } from "../../types/entities";
+import { FetchedPlayer, FetchedPlayers, FetchedTournament, FetchedTournaments, TournamentCreationReqData, TournamentUpdateReqData } from "../../types/entities";
+import { createGamesSuccess, getGamesSuccess } from "../games/actions";
 
 export const updateTournament = payloadedActionCreator<UpdateTournamentActionParams>(UPDATE_TOURNAMENT);
 
@@ -59,6 +61,10 @@ export const updateEliminationGames = payloadedActionCreator<UpdateEliminationGa
 export const resetGames = actionCreator<ResetGamesActionParams>(RESET_GAMES);
 
 export const resetEliminationGames = actionCreator<ResetEliminationGamesActionParams>(RESET_ELIMINATION_GAMES);
+
+export const getTournamentRequest = actionCreator<GetTournamentRequestActionParams>(GET_TOURNAMENT_REQUEST);
+export const getTournamentSuccess = payloadedActionCreator<GetTournamentSuccessActionParams>(GET_TOURNAMENT_SUCCESS);
+export const getTournamentFailure = payloadedActionCreator<GetTournamentFailureActionParams>(GET_TOURNAMENT_FAILURE);
 
 export const getTournamentsRequest = actionCreator<GetTournamentsRequestActionParams>(GET_TOURNAMENTS_REQUEST);
 export const getTournamentsSuccess = payloadedActionCreator<GetTournamentsSuccessActionParams>(GET_TOURNAMENTS_SUCCESS);
@@ -114,11 +120,28 @@ const getPlayers = () => {
 
         playerServices.getPlayers()
             .then(
-                (res: AxiosResponse<ResponseData<StateParticipants>>) => {
+                (res: AxiosResponse<ResponseData<FetchedPlayers>>) => {
                     res?.data?.data && dispatch(getPlayersSuccess(res.data.data));
                 },
                 (error: AxiosError) => {
                     dispatch(getPlayersFailure({ error: error.name, message: error.message }));
+                }
+            );
+    };
+}
+
+const getTournament = (id: number) => {
+    return (dispatch: Dispatch) => {
+        dispatch(createTournamentRequest());
+        tournamentServices.getTournament(id)
+            .then(
+                (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
+                    const data = res.data.data;
+                    data && dispatch(getTournamentSuccess(data));
+                    data?.games && dispatch(getGamesSuccess({ [data.id]: data.games }))
+                },
+                (error: AxiosError) => {
+                    dispatch(createTournamentFailure({ error: error.name, message: error.message }));
                 }
             );
     };
@@ -130,7 +153,9 @@ const createTournament = (data: TournamentCreationReqData) => {
         tournamentServices.createTournament(data)
             .then(
                 (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
-                    res?.data?.data && dispatch(createTournamentSuccess(res.data.data));
+                    const data = res.data.data;
+                    data && dispatch(createTournamentSuccess(data));
+                    data?.games && dispatch(createGamesSuccess({ [data.id]: data.games }))
                 },
                 (error: AxiosError) => {
                     dispatch(createTournamentFailure({ error: error.name, message: error.message }));
@@ -218,11 +243,12 @@ const update = (data: UserUpdateReqData) => {
 
 export const entityActions = {
     getTournaments,
+    getTournament,
     getPlayers,
     createTournament,
     editTournament,
     deleteTournament,
     createPlayer,
     createPlayers,
-    update
+    update,
 };

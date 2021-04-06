@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from 'react'
+import React, { createRef, useEffect, useState, useCallback } from 'react'
 import Paper from '@material-ui/core/Paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
@@ -12,15 +12,18 @@ import { ReactComponent as Teams } from '../../resources/icons/teams.svg';
 import { ReactComponent as Single } from '../../resources/icons/single.svg';
 import { ReactComponent as DrawYourPartner } from '../../resources/icons/drawYourPartner.svg';
 import { ReactComponent as MonsterDYP } from '../../resources/icons/monsterDYP.svg';
-import { FetchedPlayers, PlayerCategory, StateParticipants, StateParticipantsWithId, TournamentTypes } from '../../types/entities';
+import { DBGameData, FetchedPlayers, PlayerCategory, StateLMSPlayer, StateLMSPlayers, StateParticipants, StateParticipantsWithId, TournamentTypes } from '../../types/entities';
 import toast from '../../components/IndependentSnackbar';
-import { updateParticipants, updateEliminationPlayers, updateTournament, updateLMSPlayers, entityActions } from '../../redux/tournamentEntities/actions';
+import { updateParticipants, updateEliminationPlayers, updateLMSPlayers, entityActions } from '../../redux/tournamentEntities/actions';
 import PlayerFormTextField from '../../components/Tournament/PlayerFormTextField';
 import FormControl from '@material-ui/core/FormControl';
-import mainStyles from '../../styles/mainStyles';
-import tournamentStyles from './tournamentStyles';
 import DYPConfigForm from '../../components/Tournament/DYPConfigForm/DYPConfigForm';
 import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
+import { ActionStatus } from '../../types/main';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { debounce } from 'lodash';
+import tournamentStyles from './tournamentStyles';
+import mainStyles from '../../styles/mainStyles';
 
 interface Duplicate {
     player: string;
@@ -29,11 +32,7 @@ interface Duplicate {
 
 const initialParticipants = { name: '', category: null };
 
-interface Props {
-
-}
-
-const PlayerForm = (props: Props) => {
+const PlayerForm = () => {
     const [participants, setParticipants] = useState<StateParticipants>([{ ...initialParticipants }]);
     const [fetchedPlayers, setFetchedPlayers] = useState<FetchedPlayers>();
     const [checkboxSetPlayers, setCheckboxSetPlayers] = useState<boolean>(false);
@@ -71,10 +70,16 @@ const PlayerForm = (props: Props) => {
 
     useEffect(() => {
         const storeParticipants = entityState.participants;
-        //if (storeParticipants.length === participants.length - 1) {
         setParticipants([...storeParticipants, { ...initialParticipants }]);
-        //}
     }, [entityState.participants]);
+
+    const delayedSubmitParticipantsToStore = useCallback(debounce(newPlayers => submitParticipantsToStore(newPlayers), 400), [entityState.participants]);
+
+    if (entityState.fetchedTournaments.status === ActionStatus.Request) {
+        return <div className={mainClasses.progress}>
+            <CircularProgress />
+        </div>
+    }
 
     const handleCheckboxChange = () => {
         setCheckboxSetPlayers(!checkboxSetPlayers);
@@ -90,9 +95,45 @@ const PlayerForm = (props: Props) => {
 
     const handleStartTournament = (e: React.FormEvent, name: string) => {
         e.preventDefault();
-        //submitGamesToStore();
-        dispatch(updateTournament({ name }));
-        history.push(`/${tournamentType}/${playerType}`)
+        const dbGames: DBGameData[] = entityState.lmsPlayers.reduce((acc: DBGameData[], val: StateLMSPlayer, i, arr: StateLMSPlayers) => {
+            if (i % 2 === 1) {
+                return acc;
+            }
+            const id1 = arr[i]?.id;
+            const id2 = arr[i + 1]?.id;
+            if (typeof id1 === 'number' && typeof id2 === 'number') {
+                acc.push({
+                    index: `1-${Math.ceil((i + 1) / 2)}`,
+                    player1: [{ id: id1 }],
+                    player2: [{ id: id2 }],
+                })
+            }
+            if (typeof id1 === 'object' && typeof id2 === 'object') {
+                acc.push({
+                    index: `1-${Math.ceil((i + 1) / 2)}`,
+                    player1: [{ id: id1[0] }, { id: id1[1] }],
+                    player2: [{ id: id2[0] }, { id: id2[1] }],
+                })
+            }
+            return acc;
+        }, [])
+
+        const { draw, numberOfGoals, numberOfLives, numberOfTables, pointsForDraw, pointsForWin, sets } = entityState.tournament;
+        dispatch(entityActions.createTournament({
+            name,
+            sets: sets || 1,
+            tournamentTypeId: 2,
+            draw,
+            numberOfGoals,
+            numberOfLives,
+            numberOfTables,
+            pointsForDraw,
+            pointsForWin,
+            games: dbGames,
+        }));
+        if (entityState.fetchedTournaments.status === ActionStatus.Success && entityState.fetchedTournaments.createdTournamentId) {
+            history.push(`/${tournamentType}/${playerType}/${entityState.fetchedTournaments.createdTournamentId}`)
+        }
     };
 
     const handleSubmit = (e: React.FormEvent): void => {
@@ -109,23 +150,26 @@ const PlayerForm = (props: Props) => {
             toast.warning(t('player-form-few-players', { number: minPlayers }));
             return;
         }
-        // const participantsWithIds = participants.map(p => {
-        //     const id = entityState.fetchedPlayers.data.find(fp => fp.name === p.name)?.id
-        //     if (id) {
-        //         return { ...p, id };
-        //     }
-        // })
+
         const participantsWithIds = participants.reduce((acc: StateParticipantsWithId, val) => {
-            const id = entityState.fetchedPlayers.data.find(fp => fp.name === val.name)?.id
+            const id = fetchedPlayers?.find(fp => fp.name === val.name)?.id
             if (id) {
                 acc.push({ ...val, id });
             }
             return acc;
         }, [])
-        const participantNames = participants.map(p => p.name);
-        // const participantsWithIds = entityState.fetchedPlayers.data.filter(p => {
-        //     return participantNames.indexOf(p.name) >= 0;
-        // })
+
+        const dbPlayerNames = fetchedPlayers?.map(p => p.name)
+        const addedPlayers = participants.filter((val, i, arr) => {
+            return (!!val.name || i === arr.length - 1) && val.name && dbPlayerNames && dbPlayerNames.indexOf(val.name) < 0;
+        }).map(p => p.name);
+
+        if (addedPlayers.length > 0) {
+            addedPlayers.length > 0 && dispatch(entityActions.createPlayers(addedPlayers));
+            return;
+        }
+
+
         submitParticipantsToStore([...participantsWithIds]);
         if (playerType === 'dyp') {
             if ((participants.length - 1) % 2 === 1) {
@@ -159,13 +203,14 @@ const PlayerForm = (props: Props) => {
         return duplicates[0];
     }
 
-    const handlePlayerChange = (index: number/*, name: string */) => {
-        // let newPlayers = [...players];
-        // newPlayers[index].name = name;
-        // if (newPlayers[newPlayers.length - 1].name) {
-        //     newPlayers.push({ ...initialPlayer });
-        // }
+    const handlePlayerChange = (index: number, name: string) => {
+        const newParticipants = [...participants];
+        newParticipants[index].name = name;
+
         // setPlayers([...newPlayers]);
+
+        delayedSubmitParticipantsToStore([...newParticipants]);
+
         if (participants[participants.length - 1].name || index === participants.length - 1) {
             setParticipants([...participants, { ...initialParticipants }]);
             //players.push({ ...initialPlayer });
@@ -214,11 +259,9 @@ const PlayerForm = (props: Props) => {
     }
 
     const handleBlur = (e: React.FocusEvent, index: number, name: string) => {
-        let newPlayers = [...participants];
+        const newPlayers = [...participants];
         newPlayers[index].name = name;
-        newPlayers = newPlayers.filter((val, i, arr) => {
-            return (!!val.name || i === arr.length - 1);
-        });
+
         const duplicate = getDuplicate(index, name);
         if (duplicate) {
             toast.warning(t('player-form-duplicate-name', { name: duplicate.player }));
@@ -226,11 +269,7 @@ const PlayerForm = (props: Props) => {
             fieldRefs[duplicate.index]?.current?.select();
             return;
         }
-        const dbPlayerNames = fetchedPlayers?.map(p => p.name)
-        const addedPlayers = newPlayers.filter(p => {
-            return p.name && dbPlayerNames && dbPlayerNames.indexOf(p.name) < 0;
-        }).map(p => p.name);
-        addedPlayers.length > 0 && dispatch(entityActions.createPlayers(addedPlayers));
+
         setParticipants([...newPlayers]);
         submitParticipantsToStore([...newPlayers]);
     }
@@ -243,7 +282,6 @@ const PlayerForm = (props: Props) => {
                     { id: player.id, name: player.name, category: player.category } :
                     { id: player.id, name: player.name, category: null };
             })
-
         dispatch(updateParticipants(storeParticipants));
         // dispatch(updateEliminationPlayers(storeParticipants));
     }

@@ -25,7 +25,7 @@ interface Props {
     onKeyDown: (e: React.KeyboardEvent, index: number, name: string) => void;
     onCategoryChange: (index: number, category: PlayerCategory) => void;
     onBlur: (e: React.FocusEvent<Element>, index: number, name: string) => void;
-    onChange: (index: number) => void;
+    onChange: (index: number, name: string) => void;
 }
 
 const PlayerFormTextField = (props: Props) => {
@@ -40,7 +40,7 @@ const PlayerFormTextField = (props: Props) => {
 
     const handleChange = (name: string) => {
         setPlayerName(name);
-        props.onChange(props.index);
+        props.onChange(props.index, name);
     };
 
     const handleBlur = (e: React.FocusEvent) => {
@@ -56,7 +56,7 @@ const PlayerFormTextField = (props: Props) => {
                 value={playerName}
                 type="text"
                 onChange={
-                    (event: React.ChangeEvent<{ value: unknown }>) => handleChange(event.target.value as string)
+                    (event: React.ChangeEvent<HTMLInputElement>) => handleChange(event.target.value)
                 }
                 onKeyDown={
                     (event: React.KeyboardEvent) => {
