@@ -28,7 +28,6 @@ const EnterScoreDialog = (props: Props) => {
     if (!fetchedTournamentsData[tournamentId]) {
         return null;
     }
-
     return (
         <Dialog open={props.open} onClose={props.onClose} classes={{ paper: classes.dialog }}>
             <div className={classes.dialogHeader}>
@@ -42,7 +41,6 @@ const EnterScoreDialog = (props: Props) => {
                 gameKey={props.gameKey}
                 game={props.game}
                 tournament={fetchedTournamentsData[tournamentId]}
-                visibleScores={props.visibleScores}
             />
         </Dialog>
     )

@@ -109,34 +109,7 @@ const HeaderGeneric = (props: Props) => {
     }
 
     const handlePrint = () => {
-        // const printElement = document.getElementById('print-section');
-        // if (printElement) {
-        //     // window.print();
-        // }
-        // else {
-        //     document.body.setAttribute('id', 'print-section');
-        //     window.print();
-        //     document.body.removeAttribute('id');
-        // }
-
-
-
         window.print();
-        // const printContent = document.getElementById('print-section')?.innerHTML;
-        // debugger
-        // const originalContent = document.getElementById('root')?.innerHTML;
-        // if (!originalContent) {
-        //     return;
-        // }
-        // const body = document.body
-        // if (printContent && body) {
-        //     body.innerHTML = printContent;
-        //     window.print();
-        //     body.innerHTML = originalContent;
-        // }
-        // else {
-        //     window.print();
-        // }
     }
 
     const { icon: Icon } = props;

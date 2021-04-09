@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useTranslation } from "react-i18next";
 import { Nullable } from '../../../types/main';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,7 +8,6 @@ import enterScoresStyles from './enterScoresStyles';
 
 interface PreviousHookValue {
     selection: number;
-    //scoreShift: number;
     lastVisibleScore: number;
 }
 
@@ -26,22 +22,19 @@ function usePrevious(value: any) {
 interface Props {
     selectedNumber?: Nullable<number>;
     onScoreSelect: (score: number) => void;
+    numberOfGoals: number;
     disabledScore?: number;
     visibleScores?: number;
     mirrored?: boolean;
 }
 
-const EnterScoreSelector = ({ selectedNumber, onScoreSelect, disabledScore, mirrored, visibleScores = 9 }: Props) => {
+const EnterScoreSelector = ({ selectedNumber, onScoreSelect, disabledScore, mirrored, numberOfGoals, visibleScores = 9 }: Props) => {
     const [scoreShift, setScoreShift] = useState<number>(0);
     const [initiallyLastVisibleScore, setInitiallyLastVisibleScore] = useState<number>(visibleScores);
     const [isInitial, setIsInitial] = useState<boolean>(true);
     const [plusMinusAction, setPlusMinusAction] = useState<'plus' | 'minus' | null>();
-    const entityState = useSelector((state: RootState) => state.entities);
     const classes = enterScoresStyles();
-    const { t } = useTranslation();
-
     const shiftStep = Math.floor(visibleScores / 2);
-    const numberOfGoals = entityState.tournament.numberOfGoals || 7;
     const lastVisibleScore = initiallyLastVisibleScore + scoreShift;
     const hiddenStartingScores = lastVisibleScore - visibleScores + 1;
     const numberOfRenderedScores = lastVisibleScore + shiftStep + 1;

@@ -139,7 +139,6 @@ const GameListRow = ({ tournamentId, gameKey, tabIndex, normalizedPlayers, maxSc
                         onConfirm={handleScoreConfirm}
                         gameKey={gameKey}
                         game={normalizedGames[gameKey]}
-                        visibleScores={visibleScores}
                         tournament={fetchedTournamentsData[tournamentId]}
                         getNumberOfAdditionalGames={handleAdditionalGameCount}
                     />

@@ -10,10 +10,11 @@ interface Props {
     onScoreSelect1: (score: number) => void;
     onScoreSelect2: (score: number) => void;
     visibleScores?: number;
+    numberOfGoals: number;
     disallowTie?: boolean;
 }
 
-const EnterScoreScoresConainer = ({ score1, score2, onScoreSelect1, onScoreSelect2, disallowTie, visibleScores }: Props) => {
+const EnterScoreScoresConainer = ({ score1, score2, onScoreSelect1, onScoreSelect2, disallowTie, numberOfGoals, visibleScores }: Props) => {
     const classes = enterScoreDialogStyles();
     const { t } = useTranslation();
 
@@ -26,7 +27,7 @@ const EnterScoreScoresConainer = ({ score1, score2, onScoreSelect1, onScoreSelec
         if (disallowTie && score1 === score) return;
         onScoreSelect2(score);
     }
-
+debugger
     return (
         <div className={classes.pointsContainer}>
             <EnterScoreSelector
@@ -34,6 +35,7 @@ const EnterScoreScoresConainer = ({ score1, score2, onScoreSelect1, onScoreSelec
                 onScoreSelect={handleScoreSelect1}
                 disabledScore={disallowTie && typeof score2 === 'number' ? score2 : undefined}
                 visibleScores={visibleScores}
+                numberOfGoals={numberOfGoals}
             />
             <div className={classes.pointsMiddle}>
                 <span>{typeof score1 === 'number' ? score1 : '-'} </span>
@@ -45,6 +47,7 @@ const EnterScoreScoresConainer = ({ score1, score2, onScoreSelect1, onScoreSelec
                 onScoreSelect={handleScoreSelect2}
                 disabledScore={disallowTie && typeof score1 === 'number' ? score1 : undefined}
                 visibleScores={visibleScores}
+                numberOfGoals={numberOfGoals}
                 mirrored
             />
         </div>

@@ -2,15 +2,12 @@ import React, { useState, useEffect } from 'react'
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import { useTranslation } from "react-i18next";
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
 import EnterScoreScoresConainer from './EnterScoreScoresConainer';
-import { Games, EliminationGames, StateScore, FetchedGameData, FetchedTournament } from '../../../types/entities';
+import { StateScore, FetchedGameData, FetchedTournament } from '../../../types/entities';
 import { getNthIndexOf, getScoresFromPressedKeys } from '../../../utils/arrayUtils';
 import toast from '../../IndependentSnackbar';
 import { getMultipleSetScores } from '../../../utils/scoreUtils';
 import clsx from 'clsx';
-import { splitGameKey } from '../../../utils/stringUtils';
 import enterScoreDialogStyles from './enterScoresStyles';
 
 interface Props {
@@ -19,18 +16,17 @@ interface Props {
     game: FetchedGameData;
     gameKey: string;
     tournament: FetchedTournament;
-    visibleScores?: number;
     getNumberOfAdditionalGames?: (n: number) => void;
     forwardedRef?: any;
 }
 
-const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, visibleScores, getNumberOfAdditionalGames, forwardedRef }: Props) => {
+const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getNumberOfAdditionalGames, forwardedRef }: Props) => {
     const classes = enterScoreDialogStyles();
     const [score1, setScore1] = useState<StateScore>([]);
     const [score2, setScore2] = useState<StateScore>([]);
     const [numberOfGames, setNumberOfGames] = useState<number>(tournament.sets || 1);
     const { t } = useTranslation();
-    const numberOfGoals = tournament.numberOfGoals || 7;
+    const numberOfGoals = tournament.numberOfGoals;
     let pressedKeys: string[] = [];
 
     useEffect(() => {
@@ -44,24 +40,17 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, visi
     }, [])
 
     useEffect(() => {
-        const storeScores1 = game.scores1// && Object.values(game.scores1);
-        const storeScores2 = game.scores2// && Object.values(game.scores2);
-        // const scores1: StateScore = new Array(storeScores1?.length);
-        // const scores2: StateScore = new Array(storeScores2?.length)
+        const storeScores1 = game.scores1;
+        const storeScores2 = game.scores2;
         let numberOfPlayedGames: number = numberOfGames;
 
         if (storeScores1 && storeScores1?.length > 0) {
-            // for (let i = 0; i < storeScores1?.length; i++) {
-            //     scores1[i] = storeScores1[i];
-            // }
             if (!storeScores2 || storeScores2?.length <= storeScores1?.length) {
                 numberOfPlayedGames = storeScores1?.length;
             }
         }
         if (storeScores2 && storeScores2?.length > 0) {
-            // for (let i = 0; i < storeScores2?.length; i++) {
-            //     scores2[i] = storeScores2[i];
-            // }
+
             if (!storeScores1 || storeScores1?.length <= storeScores2?.length) {
                 numberOfPlayedGames = storeScores2?.length;
             }
@@ -70,6 +59,10 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, visi
         storeScores2 && storeScores2.length > 0 && setScore2(storeScores2);
         setNumberOfGames(numberOfPlayedGames);
     }, [game]);
+
+    if (!numberOfGoals) {
+        return null;
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.ctrlKey) {
@@ -82,8 +75,6 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, visi
                 pressedKeys = [];
                 return;
             }
-            // setScore1({ 1: scores[0] });
-            // setScore2({ 1: scores[1] });
             setScore1([scores[0]]);
             setScore2([scores[1]]);
             pressedKeys = [];
@@ -162,13 +153,10 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, visi
             }
             return;
         }
-        // const newScore1: StateScore = { ...score1, [setNumber]: score }
         const newScore1: StateScore = [...score1];
         newScore1[setNumber] = score;
-        // let newScore2: StateScore = { ...score2 }
         let newScore2: StateScore = [...score2]
         if (typeof score2[setNumber] !== 'number' && score < numberOfGoals) {
-            // newScore2 = { ...newScore2, [setNumber]: numberOfGoals }
             newScore2[setNumber] = numberOfGoals;
         }
         const newNumberOfGames = getNewNumberOfGames(newScore1, newScore2);
@@ -187,17 +175,11 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, visi
             }
             return;
         }
-        // const newScore2: StateScore = { ...score2, [setNumber]: score }
-        // let newScore1: StateScore = { ...score1 }
-        // if (typeof score1[setNumber] !== 'number' && score < numberOfGoals) {
-        //     newScore1 = { ...newScore1, [setNumber]: numberOfGoals }
-        // }
+
         const newScore2: StateScore = [...score2];
         newScore2[setNumber] = score;
-        // let newScore2: StateScore = { ...score2 }
         let newScore1: StateScore = [...score1]
         if (typeof score1[setNumber] !== 'number' && score < numberOfGoals) {
-            // newScore2 = { ...newScore2, [setNumber]: numberOfGoals }
             newScore1[setNumber] = numberOfGoals;
         }
         const newNumberOfGames = getNewNumberOfGames(newScore1, newScore2);
@@ -209,8 +191,6 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, visi
     }
 
     const handleClose = () => {
-        // setScore1({});
-        // setScore2({});
         onClose()
     }
 
@@ -232,7 +212,8 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, visi
                         score2={score2[key]}
                         onScoreSelect1={(score) => handleScoreSelectLeft(score, key)}
                         onScoreSelect2={(score) => handleScoreSelectRight(score, key)}
-                        visibleScores={tournament.numberOfGoals}
+                        visibleScores={numberOfGoals < 9 ? numberOfGoals + 1 : 9}
+                        numberOfGoals={numberOfGoals}
                         disallowTie={!tournament.draw}
                     />
                 )
@@ -254,7 +235,7 @@ export default React.memo(EnterScoreContent, (props: Props, nextProps: Props) =>
     return (
         props.gameKey === nextProps.gameKey &&
         props.game === nextProps.game &&
-        props.tournament === nextProps.tournament
-        // props.visibleScores === nextProps.visibleScores
+        props.tournament === nextProps.tournament &&
+        props.tournament.numberOfGoals === nextProps.tournament.numberOfGoals
     )
 })

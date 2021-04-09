@@ -7,8 +7,9 @@ import { entityActions, updateEliminationGames } from '../../../redux/tournament
 import EnterScoreDialog from '../EnterScore/EnterScoreDialog';
 import { getNextGameKey, splitGameKey } from '../../../utils/stringUtils';
 import { getMultipleSetScores } from '../../../utils/scoreUtils';
-import eliminationSidebarStyles from './eliminationSidebarStyles';
 import { gameActions } from '../../../redux/games/actions';
+import { useParams } from 'react-router-dom';
+import eliminationSidebarStyles from './eliminationSidebarStyles';
 
 interface Props {
     games: { [index: string]: FetchedGameData };
@@ -20,22 +21,19 @@ interface Props {
 }
 
 const EliminationCard = (props: Props) => {
-    // const [game, setGame] = useState<StateEliminationGame>();
     const [scoreDialogOpen, setScoreDialogOpen] = useState<boolean>(false);
     const [scores, setScores] = useState<{ 1: number, 2: number }>();
 
-    // const [winner, setWinner] = useState<string>();
-
-    // const [score2, setScore2] = useState<number>();
-    const gamesState = useSelector((state: RootState) => state.entities.eliminationGames);
-    const tournamentState = useSelector((state: RootState) => state.entities.tournament);
+    const { tournamentId: tournamentIdString } = useParams<{ tournamentId: string }>();
+    const tournamentId = parseInt(tournamentIdString, 10)
+    const fethchedTournamentData = useSelector((state: RootState) => state.entities.fetchedTournaments.data);
+    const fethchedTournament = fethchedTournamentData[tournamentId]
     const dispatch = useDispatch();
     const classes = eliminationSidebarStyles();
     const { t } = useTranslation();
 
     useEffect(() => {
         let score1, score2;
-        // const { score1, score2 } = (game.scores1 && game.scores2) && getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length);
         if (game.scores1 && game.scores2) {
             score1 = getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length).score1;
             score2 = getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length).score2;
@@ -43,19 +41,10 @@ const EliminationCard = (props: Props) => {
         if (typeof score1 === 'number' && typeof score2 === 'number') {
             setScores({ 1: score1, 2: score2 })
         }
-        // let winner = null;
-        // if (score1 !== undefined && score2 !== undefined && score1 > score2) {
-        //     setWinner(player1Name);
-        // }
-        // if (score1 !== undefined && score2 !== undefined && score1 < score2) {
-        //     setWinner(player2Name);
-        // }
 
     }, [props.game?.scores1, props.game?.scores2])
 
-    // debugger
-    // const { player1Id, player2Id } = props.gameKey && game ? game : props;
-    const game = props.game//s[props.gameKey];
+    const game = props.game;
     if (!game) {
         return null;
     }
@@ -84,7 +73,6 @@ const EliminationCard = (props: Props) => {
     const isBye = props.games[props.gameKey]?.hasByePlayer;
 
     let score1, score2;
-    // const { score1, score2 } = (game.scores1 && game.scores2) && getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length);
     if (game.scores1 && game.scores2) {
         score1 = getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length).score1;
         score2 = getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length).score2;
@@ -99,7 +87,7 @@ const EliminationCard = (props: Props) => {
     }
 
     const handleScoreInput = (scores1: StateScore, scores2: StateScore) => {
-        if (!props.gameKey/*  || !player1Id || !player2Id */) return;
+        if (!props.gameKey) return;
         const finalRoundNumber = Object.values(props.games).map(game => splitGameKey(game.index).round).sort(function (a, b) { return b - a })[0];
         const { score1, score2 } = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length);
 
@@ -207,7 +195,7 @@ const EliminationCard = (props: Props) => {
             }
             setTimeout(() => {
                 updateNextGame(nextGameKey, isNextGameOdd);
-            }, 500); // TODO
+            }, 0); // TODO
         }
 
         nextGameKey && updateNextGame(nextGameKey, isGameOdd);
@@ -259,7 +247,7 @@ const EliminationCard = (props: Props) => {
                 player2={player2Name}
                 gameKey={props.gameKey}
                 game={props.games[props.gameKey]}
-                visibleScores={tournamentState.numberOfGoals && tournamentState.numberOfGoals < 9 ? tournamentState.numberOfGoals + 1 : 9}
+                visibleScores={fethchedTournament.numberOfGoals && fethchedTournament.numberOfGoals < 9 ? fethchedTournament.numberOfGoals + 1 : 9}
             />
         </div>
     )
