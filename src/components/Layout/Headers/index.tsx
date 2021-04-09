@@ -103,7 +103,7 @@ const Header = (props: Props) => {
                             thirdPlaceCheckbox
                         />
                     </Route>
-                    <Route exact path="/elimination/:id">
+                    <Route exact path="/elimination/:tournamentId">
                         <HeaderGeneric
                             showIcon
                             icon={<EliminationIcon width={36} height={36} fill='#404040' />}
@@ -119,6 +119,22 @@ const Header = (props: Props) => {
                             icon={<LastManStandingIcon width={36} height={36} fill='#404040' />}
                             tournamentName
                             fullScreenButton
+                        />
+                    </Route>
+                    <Route exact path="/elimination/:tournamentId/result">
+                        <HeaderGeneric
+                            backButton
+                            title={t('Result')}
+                            fullScreenButton
+                            printButton
+                        />
+                    </Route>
+                    <Route exact path="/lms/:playerType?/:tournamentId/result">
+                        <HeaderGeneric
+                            backButton
+                            title={t('Result')}
+                            fullScreenButton
+                            printButton
                         />
                     </Route>
                     <Route path="/">

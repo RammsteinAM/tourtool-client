@@ -4,10 +4,9 @@ const styles = makeStyles((theme) => ({
     eliminationSidebar: {
         width: "250px",
         height: "calc(100% - 66px)",
-        zIndex: 1199,
+        zIndex: 1200,
         position: "fixed",
         top: "66px",
-        marginLeft: "-24px",
         overflowY: "auto",
         transition: "left .2s cubic-bezier(.645,.045,.355,1)",
         backgroundColor: "hsla(0,0%,98%,.97)",

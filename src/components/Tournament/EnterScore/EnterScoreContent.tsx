@@ -147,7 +147,7 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, visi
         const newScore1: StateScore = [];
         const newScore2: StateScore = [];
 
-        for (let i = 1; i <= numberOfGames; i++) {
+        for (let i = 0; i < numberOfGames; i++) {
             newScore1[i] = scores1[i]
             newScore2[i] = scores2[i]
         }
@@ -232,7 +232,7 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, visi
                         score2={score2[key]}
                         onScoreSelect1={(score) => handleScoreSelectLeft(score, key)}
                         onScoreSelect2={(score) => handleScoreSelectRight(score, key)}
-                        visibleScores={visibleScores}
+                        visibleScores={tournament.numberOfGoals}
                         disallowTie={!tournament.draw}
                     />
                 )
@@ -254,6 +254,7 @@ export default React.memo(EnterScoreContent, (props: Props, nextProps: Props) =>
     return (
         props.gameKey === nextProps.gameKey &&
         props.game === nextProps.game &&
-        props.visibleScores === nextProps.visibleScores
+        props.tournament === nextProps.tournament
+        // props.visibleScores === nextProps.visibleScores
     )
 })

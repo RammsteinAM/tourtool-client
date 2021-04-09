@@ -10,6 +10,7 @@ import ListIcon from '@material-ui/icons/List';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import PrintIcon from '@material-ui/icons/Print';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -36,6 +37,7 @@ interface Props {
     thirdPlaceCheckbox?: boolean;
     zoomSlider?: boolean;
     fullScreenButton?: boolean;
+    printButton?: boolean;
     tournamentName?: boolean;
     showIcon?: boolean;
     tournamentSidebar?: boolean;
@@ -106,6 +108,37 @@ const HeaderGeneric = (props: Props) => {
         dispatch(updateSettings({ fullScreen: true }))
     }
 
+    const handlePrint = () => {
+        // const printElement = document.getElementById('print-section');
+        // if (printElement) {
+        //     // window.print();
+        // }
+        // else {
+        //     document.body.setAttribute('id', 'print-section');
+        //     window.print();
+        //     document.body.removeAttribute('id');
+        // }
+
+
+
+        window.print();
+        // const printContent = document.getElementById('print-section')?.innerHTML;
+        // debugger
+        // const originalContent = document.getElementById('root')?.innerHTML;
+        // if (!originalContent) {
+        //     return;
+        // }
+        // const body = document.body
+        // if (printContent && body) {
+        //     body.innerHTML = printContent;
+        //     window.print();
+        //     body.innerHTML = originalContent;
+        // }
+        // else {
+        //     window.print();
+        // }
+    }
+
     const { icon: Icon } = props;
     return (
         <Toolbar className={classes.root}>
@@ -118,23 +151,6 @@ const HeaderGeneric = (props: Props) => {
             <Typography variant="h6" noWrap className={classes.title}>
                 {props.title}
             </Typography>
-            {props.zoomSlider &&
-                <HeaderSlider onChange={handleZoomSliderChange} defaultValue={100} />
-            }
-            {props.tournamentSidebar &&
-                <Tooltip title={settingsState.tournamentSidebar ? `${t("Hide Standings")}` : `${t("Show Standings")}`}>
-                    <IconButton className={classes.iconButton} aria-label="toggle-standings" onClick={handleToggleTournamentSidebarButton}>
-                        <ListIcon />
-                    </IconButton>
-                </Tooltip>
-            }
-            {props.fullScreenButton &&
-                <Tooltip title={`${t("Full Screen")}`}>
-                    <IconButton className={classes.iconButton} aria-label="full-screen" onClick={handleEnterFullScreen}>
-                        <FullscreenIcon />
-                    </IconButton>
-                </Tooltip>
-            }
             {props.thirdPlaceCheckbox &&
                 <FormControlLabel
                     value="start"
@@ -177,6 +193,30 @@ const HeaderGeneric = (props: Props) => {
                 <Tooltip title={`${t("Return to Previous Step")}`}>
                     <IconButton className={classes.iconButton} aria-label="back" onClick={handleBackButton}>
                         <ChevronLeftIcon />
+                    </IconButton>
+                </Tooltip>
+            }
+            {props.zoomSlider &&
+                <HeaderSlider onChange={handleZoomSliderChange} defaultValue={settingsState.eliminationScale ? settingsState.eliminationScale * 100 : 100} />
+            }
+            {props.tournamentSidebar &&
+                <Tooltip title={settingsState.tournamentSidebar ? `${t("Hide Standings")}` : `${t("Show Standings")}`}>
+                    <IconButton className={classes.iconButton} aria-label="toggle-standings" onClick={handleToggleTournamentSidebarButton}>
+                        <ListIcon />
+                    </IconButton>
+                </Tooltip>
+            }
+            {props.fullScreenButton &&
+                <Tooltip title={`${t("Full Screen")}`}>
+                    <IconButton className={classes.iconButton} aria-label="full-screen" onClick={handleEnterFullScreen}>
+                        <FullscreenIcon />
+                    </IconButton>
+                </Tooltip>
+            }
+            {props.printButton &&
+                <Tooltip title={`${t("Print")}`}>
+                    <IconButton className={classes.iconButton} aria-label="print" onClick={handlePrint}>
+                        <PrintIcon />
                     </IconButton>
                 </Tooltip>
             }

@@ -117,16 +117,12 @@ const EliminationBracket = () => {
             const prevCol = col - 1;
             for (let i = 0, j = 1; i < players.length / (2 ** prevCol); i = i + 2, j++) {
                 const gameKey: string = `${col}-${j}`;
-                storeGames[gameKey] = { player1Id: 0, player2Id: 0, /* round: col, gameNumber: j,  */index: gameKey }
+                storeGames[gameKey] = { player1Id: 0, player2Id: 0, index: gameKey }
                 if (col === 1) {
-                    // storeGames[gameKey].player1 = players[i].name;
-                    // storeGames[gameKey].player2 = players[i + 1].name;
                     const { id: player1Id } = players[i];
                     const { id: player2Id } = players[i + 1];
-                    debugger
                     storeGames[gameKey].player1Id = player1Id || 0;
                     storeGames[gameKey].player2Id = player2Id || 0;
-                    // storeGames[gameKey].isPredetermined = true;
                     if (players[i].bye || players[i + 1].bye) {
                         storeGames[gameKey].hasByePlayer = true;
                     }
@@ -145,32 +141,22 @@ const EliminationBracket = () => {
                     parent1HasByePlayer,
                     parent1HasNoPlayer,
                     parent1HasOnePlayer,
-                    // parent1isPredetermined,
                     parent2HasByePlayer,
                     parent2HasNoPlayer,
                     parent2HasOnePlayer,
-                    // parent2isPredetermined,
-                    // numberOfParentPlayers
                 } = {
                     p1p1: p1Game?.player1Id,
                     p1p2: p1Game?.player2Id,
                     parent1HasByePlayer: p1Game?.hasByePlayer,
-                    // parent1isPredetermined: p1Game?.isPredetermined,
                     parent1HasOnePlayer: (p1Game?.player1Id && !p1Game?.player2Id) || (p1Game?.player2Id && !p1Game?.player1Id),
                     parent1HasNoPlayer: !p1Game?.player1Id && !p1Game?.player2Id,
                     p2p1: p2Game?.player1Id,
                     p2p2: p2Game?.player2Id,
                     parent2HasByePlayer: p2Game?.hasByePlayer,
-                    // parent2isPredetermined: p2Game?.isPredetermined,
                     parent2HasOnePlayer: (p2Game?.player1Id && !p2Game?.player2Id) || (p2Game?.player2Id && !p2Game?.player1Id),
                     parent2HasNoPlayer: !p2Game?.player1Id && !p2Game?.player2Id,
-                    // numberOfParentPlayers: Number(!!p1Game?.player1Id) + Number(!!p1Game?.player2Id) + Number(!!p2Game?.player1Id) + Number(!!p2Game?.player2Id),
                 };
 
-
-                // if (parent1isPredetermined && parent2isPredetermined) {
-                //     storeGames[gameKey].isPredetermined = true;
-                // }
                 if ((parent2HasNoPlayer || parent1HasNoPlayer) && ((parent1HasByePlayer && parent2HasOnePlayer) || (parent2HasByePlayer && parent1HasOnePlayer))) {
                     storeGames[gameKey].hasByePlayer = true;
                 }

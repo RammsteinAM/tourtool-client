@@ -9,9 +9,11 @@ export function asyncWrapper<T>(func: (param: any) => Promise<T>) {
             return await func(param);
         } catch (err) {
             const res = err?.response;
-            res?.data?.error && toast.error(i18n.t(`ERROR_${res.data.error}`));
-            // if (Object.values(ErrorNames).includes(error)) {
-            //     toast.error(i18n.t(`ERROR_${error}`));
+            if (res?.data?.error) {
+                toast.error(i18n.t(`ERROR_${res.data.error}`))
+            }
+            // if (Object.values(ErrorNames).includes(res.data.error)) {
+            //     toast.error(i18n.t(`ERROR_${res.data.error}`));
             // }
 
             throw new HttpError(res?.status, res?.data?.error, res?.data?.message);

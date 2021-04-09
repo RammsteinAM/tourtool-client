@@ -25,7 +25,7 @@ import { userServices } from './services/user';
 import toast from './components/IndependentSnackbar';
 import i18n from "./utils/i18n";
 import { HttpError } from './utils/error';
-import TournamentResult from './components/Tournament/TournamentResult';
+import TournamentResult from './components/Tournament/EliminationResult';
 // axios.interceptors.response.use(
 //   function(successRes) {
 //     ... modify response; 

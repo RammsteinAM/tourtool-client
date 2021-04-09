@@ -84,8 +84,8 @@ export interface FetchedCreatedGames extends BaseDatabaseEntity {
 
 export interface DBGameData extends BaseEntity {
     index: string;
-    player1?: { id: number }[],
-    player2?: { id: number }[],
+    player1?: Player,
+    player2?: Player,
     scores1?: number[];
     scores2?: number[];
     tournamentId?: number;
@@ -164,12 +164,7 @@ export interface LMSTableProps {
 
 export type LMSColOrderKeys = (keyof LMSTableProps);
 
-export interface Player {
-    id: number;
-    name: string;
-}
-
-export type Players = Player[];
+export type Player = { id: number }[];
 
 export interface TournamentCreationReqData {
     name: string;
@@ -207,15 +202,15 @@ export interface TournamentUpdateReqData {
 export interface GameCreationReqData {
     tournamentId: number;
     index: string,
-    player1?: { id: number }[],
-    player2?: { id: number }[],
+    player1?: Player,
+    player2?: Player,
     hasByePlayer?: boolean;
 }
 
 export interface GameUpdateReqData {
     id: number;
-    player1?: { id: number }[],
-    player2?: { id: number }[],
+    player1?: Player,
+    player2?: Player,
     scores1?: StateScore,
     scores2?: StateScore,
     hasByePlayer?: boolean;

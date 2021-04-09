@@ -29,7 +29,7 @@ import 'moment/locale/hy-am';
 import { useDispatch } from 'react-redux';
 import { entityActions } from '../../redux/tournamentEntities/actions';
 import { capitalizeNthChar } from '../../utils/stringUtils';
-import { getLocale } from '../../utils/i18n';
+import { getFullLocale } from '../../utils/i18n';
 import mainStyles from '../../styles/mainStyles';
 import homeCard from './homeCardStyles';
 import Dialog from '../Dialogs/Generic/Dialog';
@@ -49,7 +49,8 @@ const TournamentTypeSelect = (props: Props) => {
     const classes = homeCard();
     const mainClasses = mainStyles();
     const { t } = useTranslation();
-    moment.locale('hy-am');
+    const locale = getFullLocale().toLowerCase();
+    // moment.locale(locale);
     const tournamentTypeKey = getKeyByValue(tournamentTypeIds,props.data.tournamentTypeId);
 
     const handleOpenTournament = () => {
@@ -148,8 +149,7 @@ const TournamentTypeSelect = (props: Props) => {
                         }
                         <div className={classes.date}>
                             <Tooltip title={`${t('Creation Date')}`}>
-                                <span>{capitalizeNthChar(moment(props.data.createdAt).locale(getLocale()).format('MMM DD, YYYY'))}</span>
-                                {/* {<Moment locale="ru">{'1976-04-19T12:59-0500'}</Moment>} */}
+                                <span>{capitalizeNthChar(moment(props.data.createdAt).locale(locale).format('MMM DD, YYYY'))}</span>
                             </Tooltip>
                         </div>
                     </div>

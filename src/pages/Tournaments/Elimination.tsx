@@ -26,8 +26,9 @@ const Elimination = () => {
     const { t } = useTranslation();
 
     useEffect(() => {
+        dispatch(entityActions.getTournament(tournamentId));
         dispatch(entityActions.getPlayers());
-        dispatch(gameActions.getTournamentGames(tournamentId))
+        dispatch(gameActions.getTournamentGames(tournamentId));
     }, [])
 
     const { tournamentId: tournamentIdString } = useParams<{ tournamentId: string }>();
@@ -68,7 +69,7 @@ const Elimination = () => {
     return (
         <>
             <div className={classes.eliminationProgressContainer}>
-                <LinearProgress variant="determinate" value={progress} />
+                <LinearProgress variant="determinate" color="secondary" value={progress} />
             </div>
             <div
                 className={classes.eliminationCardsContainer}
@@ -76,7 +77,10 @@ const Elimination = () => {
             >
                 {[...Array(Math.round(numberOfColumns)).keys()].map(key => {
                     const colNumber = key + 1;
-                    const numberOfGames = firstRoundGameNumber / (2 ** (colNumber - 1));
+                    let numberOfGames = firstRoundGameNumber / (2 ** (colNumber - 1));
+                    // if (games['thirdPlace']) {
+                    //     numberOfGames++
+                    // }
                     return (
                         <EliminationColumn
                             key={key}

@@ -1,26 +1,12 @@
 import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import languageSelectStyles from './languageSelectStyles';
-import i18n, { updateAxiosLocale } from '../../utils/i18n';
+import i18n, { updateAxiosLocale, getFullLocale } from '../../utils/i18n';
 import { useTranslation } from "react-i18next";
 import mainStyles from '../../styles/mainStyles';
 
-interface Props {
-
-}
-
-export type AppLanguages = 'en' | 'hy' | 'ru';
-
-export enum AppLanguageNames {
-    English = 'en',
-    Armenian = 'hy',
-    Russian = 'ru'
-}
-
-const LanguageSelect = (props: Props) => {
+const LanguageSelect = () => {
     const mainClasses = mainStyles();
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         //console.log()
@@ -30,7 +16,7 @@ const LanguageSelect = (props: Props) => {
     };
 
     const { t } = useTranslation();
-    const currentLanguage: string = i18n.language.substring(0, 2);
+    const currentLanguage: string = getFullLocale();
     return (
         <div>
             <InputLabel id="demo-simple-select-label">{t('Language')}</InputLabel>
@@ -41,7 +27,7 @@ const LanguageSelect = (props: Props) => {
                 className={mainClasses.select}
             >
                 <MenuItem value={'en'}>{t('English')}</MenuItem>
-                <MenuItem value={'hy'}>{t('Armenian')}</MenuItem>
+                <MenuItem value={'hy-am'}>{t('Armenian')}</MenuItem>
                 <MenuItem value={'ru'}>{t('Russian')}</MenuItem>
             </Select>
         </div>

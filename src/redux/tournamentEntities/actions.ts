@@ -136,7 +136,7 @@ const getTournament = (id: number) => {
         tournamentServices.getTournament(id)
             .then(
                 (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
-                    const data = res.data.data;
+                    const data = res?.data?.data;
                     data && dispatch(getTournamentSuccess(data));
                     data?.games && dispatch(getGamesSuccess({ [data.id]: data.games }))
                 },
@@ -153,7 +153,7 @@ const createTournament = (data: TournamentCreationReqData) => {
         tournamentServices.createTournament(data)
             .then(
                 (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
-                    const data = res.data.data;
+                    const data = res?.data?.data;
                     data && dispatch(createTournamentSuccess(data));
                     data?.games && dispatch(createGamesSuccess({ [data.id]: data.games }))
                 },
@@ -215,7 +215,7 @@ const createPlayers = (names: string[]) => {
         playerServices.createPlayers(names)
             .then(
                 (res: AxiosResponse) => {
-                    res?.data?.data && res.data.data?.length > 0 && dispatch(createPlayersSuccess(res.data.data));
+                    res?.data?.data && res.data.data.length > 0 && dispatch(createPlayersSuccess(res.data.data));
                 },
                 (error: AxiosError) => {
                     dispatch(createPlayersFailure({ error: error.name, message: error.message }));

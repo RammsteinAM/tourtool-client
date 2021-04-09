@@ -84,6 +84,7 @@ const Header = (props: Props) => {
 
     const handleSearchClose = () => {
         dispatch(updateSettings({ tournamentsSearchKeyword: '' }));
+        setSearchKeyword('');
         setSearchOpen(false);
     };
 

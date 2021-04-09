@@ -122,7 +122,7 @@ const styles = makeStyles((theme) => ({
     },
     eliminationBracketCardsContainer: {
         display: 'flex',
-        paddingLeft: '250px',
+        paddingLeft: '274px',
     },
     eliminationCardsContainer: {
         display: 'flex',
@@ -227,11 +227,13 @@ const styles = makeStyles((theme) => ({
         left: "34px",
     },
     eliminationProgressContainer: {
-        position: "absolute",
+        position: "fixed",
         width: "100%",
+        marginTop: "-4px",
+        zIndex: 1199,
     },
     eliminationSnackbarContainer: {
-        position: "absolute",
+        position: "fixed",
         bottom: "12px",
         width: "100%",
     },

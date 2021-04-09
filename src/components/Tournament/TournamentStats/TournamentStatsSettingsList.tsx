@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from "react-i18next";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import TournamentStatsSettingsListItem from './TournamentStatsSettingsListItem';
-import { LMSColOrderKeys } from '../../types/entities';
+import { LMSColOrderKeys } from '../../../types/entities';
 import tournamentStatsSettingsListStyles from './tournamentStatsSettingsListStyles';
 
 const reorder = (list: LMSColOrderKeys[], startIndex: number, endIndex: number) => {

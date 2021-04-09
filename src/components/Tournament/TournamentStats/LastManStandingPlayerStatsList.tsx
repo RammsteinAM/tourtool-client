@@ -10,7 +10,7 @@ import clsx from 'clsx';
 import LastManStandingPlayerStatsRow from './LastManStandingPlayerStatsRow';
 import { Players } from '../../../pages/Tournaments/LastManStanding';
 import toast from '../../IndependentSnackbar';
-import TournamentStatsSettingsList from '../TournamentStatsSettingsList';
+import TournamentStatsSettingsList from './TournamentStatsSettingsList';
 import { updateSettings } from '../../../redux/settings/actions';
 import lastManStandingStyles from './lastManStandingStyles';
 import { LMSColOrderKeys } from '../../../types/entities';

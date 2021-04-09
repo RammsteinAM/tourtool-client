@@ -13,11 +13,11 @@ const login = asyncWrapper<AxiosResponse>(async (data: UserLoginReqData): Promis
     return response;
 })
 
-const loginCheck = asyncWrapper<AxiosResponse>(async (data: UserLoginCheckReqData): Promise<AxiosResponse> => {
+const loginCheck = /* asyncWrapper<AxiosResponse>( */async (data: UserLoginCheckReqData): Promise<AxiosResponse> => {
     const { refreshToken } = data;
     const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/login-check`, { refreshToken }, { withCredentials: true });
     return response;
-})
+}/* ) */
 
 const register = /* asyncWrapper<AxiosResponse>( */async (data: UserRegisterReqData): Promise<AxiosResponse> => {
     const { email, password, displayName } = data;

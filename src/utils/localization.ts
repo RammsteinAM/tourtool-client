@@ -162,6 +162,7 @@ const localization = {
             'select-both-scores-message': 'The score for both opponents must be selected.',
             'Round': 'Round {{round}}',
             'New Round': 'New Round',
+            'Result': 'Result',
             'Show Result': 'Show Result',
             'Show Standings': 'Show Standings',
             'Hide Standings': 'Hide Standings',
@@ -206,6 +207,9 @@ const localization = {
             'All Types': 'All Types',
             'Submit New Players': 'Submit New Players',
             'Tournament Completed': 'Tournament Completed',
+            'matches-won-num': '{{n}} Matches Won',
+            'matches-lost-num': '{{n}} Matches Lost',
+            'Print': 'Print',
         }
     },
     hy: {
@@ -371,6 +375,7 @@ const localization = {
             'select-both-scores-message': 'Երկու հակառակորդի հաշիվն էլ պետք է նշված լինի։',
             'Round': 'Փուլ {{round}}',
             'New Round': 'Նոր փուլ',
+            'Result': 'Արդյունք',
             'Show Result': 'Ցուցադրել արդյունքը',
             'Show Standings': 'Ցույց տալ մրցաշարային աղյուսակը',
             'Hide Standings': 'Թաքցնել մրցաշարային աղյուսակը',
@@ -415,6 +420,9 @@ const localization = {
             'All Types': 'Բոլոր տեսակները',
             'Submit New Players': 'Ավելացնել նոր խաղացողներին',
             'Tournament Completed': 'Մրցաշարն ավարտված է',
+            'matches-won-num': '{{n}} հաղթանակ',
+            'matches-lost-num': '{{n}} պարտություն',
+            'Print': 'Տպել',
         }
     },
     ru: {
@@ -589,6 +597,7 @@ const localization = {
             'select-both-scores-message': 'Необходимо выбрать счет для обоих соперников.',
             'Round': 'Раунд {{round}}',
             'New Round': 'Новый раунд',
+            'Result': 'Результат',
             'Show Result': 'Показать результат',
             'Show Standings': 'Показать турнирную таблицу',
             'Hide Standings': 'Скрыть турнирную таблицу',
@@ -633,6 +642,9 @@ const localization = {
             'All Types': 'Все типы',
             'Submit New Players': 'Добавить новых игроков',
             'Tournament Completed': 'Турнир завершен',
+            'matches-won-num': 'Выиграно {{n}} игр',
+            'matches-lost-num': 'Проиграно {{n}} игр',
+            'Print': 'Распечатать',
         }
     }
 }

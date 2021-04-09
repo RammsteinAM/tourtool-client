@@ -125,3 +125,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@media print {
+     header, .MuiDrawer-root, .MuiTooltip-popper {
+          display: none !important;
+      }
+     main { 
+          position: fixed;
+     }
+     #print-section, #print-section * {
+       visibility: visible;
+     }
+     #print-section {
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          margin: auto;
+     }
+   }

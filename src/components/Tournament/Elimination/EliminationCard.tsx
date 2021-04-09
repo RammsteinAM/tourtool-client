@@ -41,7 +41,7 @@ const EliminationCard = (props: Props) => {
             score2 = getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length).score2;
         }
         if (typeof score1 === 'number' && typeof score2 === 'number') {
-            setScores({1: score1, 2: score2})
+            setScores({ 1: score1, 2: score2 })
         }
         // let winner = null;
         // if (score1 !== undefined && score2 !== undefined && score1 > score2) {
@@ -50,12 +50,15 @@ const EliminationCard = (props: Props) => {
         // if (score1 !== undefined && score2 !== undefined && score1 < score2) {
         //     setWinner(player2Name);
         // }
-    
-    }, [props.game.scores1, props.game.scores2])
+
+    }, [props.game?.scores1, props.game?.scores2])
 
     // debugger
     // const { player1Id, player2Id } = props.gameKey && game ? game : props;
     const game = props.game//s[props.gameKey];
+    if (!game) {
+        return null;
+    }
     const player1 = game.player1;
     const player2 = game.player2;
     let player1Name = '';
@@ -130,60 +133,81 @@ const EliminationCard = (props: Props) => {
                 p1p1: props.games[parent1GameKey]?.player1,
                 p1p2: props.games[parent1GameKey]?.player2,
                 parent1HasByePlayer: props.games[parent1GameKey]?.hasByePlayer,
-                parent1HasNoPlayer: !props.games[parent1GameKey]?.player1 && !props.games[parent1GameKey]?.player2,
+                parent1HasNoPlayer: !props.games[parent1GameKey]?.player1?.[0]?.id && !props.games[parent1GameKey]?.player2?.[0]?.id,
                 p2p1: props.games[parent2GameKey]?.player1,
                 p2p2: props.games[parent2GameKey]?.player2,
                 parent2HasByePlayer: props.games[parent2GameKey]?.hasByePlayer,
-                parent2HasNoPlayer: !props.games[parent2GameKey]?.player1 && !props.games[parent2GameKey]?.player2,
-                numberOfParentPlayers: Number(!!props.games[parent1GameKey]?.player1) + Number(!!props.games[parent1GameKey]?.player2) + Number(!!props.games[parent2GameKey]?.player1) + Number(!!props.games[parent2GameKey]?.player2),
+                parent2HasNoPlayer: !props.games[parent2GameKey]?.player1?.[0]?.id && !props.games[parent2GameKey]?.player2?.[0]?.id,
+                numberOfParentPlayers: Number(!!props.games[parent1GameKey]?.player1?.[0]?.id) + Number(!!props.games[parent1GameKey]?.player2?.[0]?.id) + Number(!!props.games[parent2GameKey]?.player1?.[0]?.id) + Number(!!props.games[parent2GameKey]?.player2?.[0]?.id),
             };
             return data;
         }
 
-        function updateNextGame(nextGameKey: string, isGameOdd: boolean) {
-            const nextGameParentData = getParentsData(nextGameKey);
-            const nextOfNextGameKey = getNextGameKey(nextGameKey, finalRoundNumber);
-            const gameNumber = splitGameKey(nextGameKey).gameNumber;
+        function updateNextGame(gameKey: string, isGameOdd: boolean) {
+            const parentGamesData = getParentsData(gameKey);
+            const nextGameKey = getNextGameKey(gameKey, finalRoundNumber);
+            const gameNumber = splitGameKey(gameKey).gameNumber;
             const isNextGameOdd = !isNaN(gameNumber) ? gameNumber % 2 === 1 : true;
-            const hasByePlayer = (nextGameParentData.parent1HasNoPlayer) || (nextGameParentData.parent2HasNoPlayer);
-            const nextGame = props.games[nextGameKey];
+            const hasByePlayer = parentGamesData.parent1HasNoPlayer || parentGamesData.parent2HasNoPlayer;
+            const game = props.games[gameKey];
             if (isGameOdd) {
                 const gameData: GameUpdateReqData = {
-                    id: nextGame.id,
+                    id: game.id,
                     player1: winner,
                     hasByePlayer
                 }
                 dispatch(gameActions.editGame(gameData));
-
                 if (round === finalRoundNumber - 1 && props.games['thirdPlace']) {
                     const thirdPlaceGameData: GameUpdateReqData = {
                         id: props.games['thirdPlace'].id,
                         player1: loser ? [...loser] : undefined,
-                        hasByePlayer: nextGameParentData.numberOfParentPlayers < 4
+                        hasByePlayer: parentGamesData.numberOfParentPlayers < 4
                     }
                     dispatch(gameActions.editGame(thirdPlaceGameData));
                 }
             }
             else {
                 const gameData: GameUpdateReqData = {
-                    id: nextGame.id,
+                    id: game.id,
                     player2: winner,
                     hasByePlayer
                 }
                 dispatch(gameActions.editGame(gameData));
-
                 if (round === finalRoundNumber - 1 && props.games['thirdPlace']) {
                     const thirdPlaceGameData: GameUpdateReqData = {
                         id: props.games['thirdPlace'].id,
                         player2: loser ? [...loser] : undefined,
-                        hasByePlayer: nextGameParentData.numberOfParentPlayers < 4
+                        hasByePlayer: parentGamesData.numberOfParentPlayers < 4
                     }
                     dispatch(gameActions.editGame(thirdPlaceGameData));
                 }
             }
-            if (nextOfNextGameKey && (hasByePlayer || (nextGame.scores1 && nextGame.scores2 && nextGame.scores1?.length > 0 && nextGame.scores2?.length > 0))) {
-                updateNextGame(nextOfNextGameKey, isNextGameOdd);
+
+            if (!nextGameKey) {
+                return;
             }
+            if (hasByePlayer) {
+                updateNextGame(nextGameKey, isNextGameOdd);
+                return;
+            }
+            if (game.player1 && game.player2 && game.scores1 && winner && loser && game.scores2 && game.scores1.length > 0 && game.scores2.length > 0) {
+                const score1 = getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length).score1;
+                const score2 = getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length).score2;
+                const p1JSON = JSON.stringify(game.player1);
+                const p2JSON = JSON.stringify(game.player2);
+                const winnerJSON = JSON.stringify(winner);
+                const loserJSON = JSON.stringify(loser);
+
+                if (
+                    (score1 < score2 && (p1JSON === winnerJSON || p1JSON === loserJSON)) ||
+                    (score1 > score2 && (p2JSON === winnerJSON || p2JSON === loserJSON))
+                ) {
+                    return; // Prevent updating next game if the updated player lost this game.
+                }
+            }
+            setTimeout(() => {
+                updateNextGame(nextGameKey, isNextGameOdd);
+            }, 500); // TODO
         }
 
         nextGameKey && updateNextGame(nextGameKey, isGameOdd);

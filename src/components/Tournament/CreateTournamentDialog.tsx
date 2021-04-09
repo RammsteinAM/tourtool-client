@@ -8,6 +8,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import { useTranslation } from "react-i18next";
+import moment from 'moment';
+import 'moment/locale/ru';
+import 'moment/locale/hy-am';
+import { getFullLocale } from '../../utils/i18n';
 import createTournamentDialogStyles from './createTournamentDialogStyles';
 interface Props {
     open: boolean;
@@ -20,13 +24,14 @@ const CreateTournamentDialog = ({ open, onClose, onSubmit }: Props): ReactElemen
     const [tournamentName, setTournamentName] = useState<string>('');
     const classes = createTournamentDialogStyles();
     const { t } = useTranslation();
+    const locale = getFullLocale().toLowerCase();
 
     const handleTournamentNameChange = (e: React.ChangeEvent<{ value: string }>) => {
         setTournamentName(e.target.value)
     }
 
     const handleSubmit = (e: React.FormEvent) => {
-        const name = tournamentName || new Date().toLocaleDateString();
+        const name = tournamentName || moment(new Date()).locale(locale).format('L');
         onSubmit(e, name);
     }
 
@@ -50,7 +55,7 @@ const CreateTournamentDialog = ({ open, onClose, onSubmit }: Props): ReactElemen
                         id="name"
                         onChange={handleTournamentNameChange}
                         onFocus={() => { setTournamentNameLabel(t('Tournament Name')) }}
-                        onBlur={() => { !tournamentName && setTournamentNameLabel(new Date().toLocaleDateString()) }}
+                        onBlur={() => { !tournamentName && setTournamentNameLabel(moment(new Date()).locale(locale).format('L')) }}
                         label={tournamentNameLabel || t('Tournament Name')}
                         type="text"
                         fullWidth

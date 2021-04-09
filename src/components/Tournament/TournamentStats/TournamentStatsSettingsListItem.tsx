@@ -5,9 +5,9 @@ import DragHandleIcon from '@material-ui/icons/DragHandle';
 import IconButton from '@material-ui/core/IconButton';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { updateSettings } from '../../redux/settings/actions';
-import { LMSColOrderKeys } from '../../types/entities';
+import { RootState } from '../../../redux/store';
+import { updateSettings } from '../../../redux/settings/actions';
+import { LMSColOrderKeys } from '../../../types/entities';
 import tournamentStatsSettingsListStyles from './tournamentStatsSettingsListStyles';
 
 interface Props {

@@ -20,7 +20,8 @@ const EliminationCards = ({ games, columnNumber, numberOfGames, normalizedPlayer
     const numberOfPlayers = entityState.eliminationPlayers.length;
     // const games = entityState.eliminationGames;
     // const games = getNormalizedGames(fetchedGames);
-    const numberOfColumns = Math.ceil((Math.log(numberOfPlayers) / Math.log(2)));
+    // const numberOfColumns = Math.ceil((Math.log(numberOfPlayers) / Math.log(2)));
+    const numberOfColumns = Math.ceil((Math.log(Object.keys(games).length) / Math.log(2)));
     const classes = tournamentStyles();
     const { t } = useTranslation();
 
@@ -33,7 +34,7 @@ const EliminationCards = ({ games, columnNumber, numberOfGames, normalizedPlayer
             const player2Id = game?.player2 && game?.player2[0]?.id;
             const thirdPlaceP1Id = games[`thirdPlace`]?.player1 && games[`thirdPlace`]?.player1[0]?.id;
             const thirdPlaceP2Id = games[`thirdPlace`]?.player2 && games[`thirdPlace`]?.player2[0]?.id;
-            if (key === numberOfGames - 1 && columnNumber === numberOfColumns && entityState.tournament.thirdPlace) {
+            if (key === numberOfGames - 1 && columnNumber === numberOfColumns && games['thirdPlace']) {
                 return (
                     <div className={classes.gameColumnWithThirdPlace} key={`gameCard_${columnNumber}_${key}`}>
                         <EliminationCard
@@ -60,20 +61,20 @@ const EliminationCards = ({ games, columnNumber, numberOfGames, normalizedPlayer
                     </div>
                 )
             }
-            if (key === numberOfGames - 1 && columnNumber === numberOfColumns) {
-                return (
-                    <div className={classes.gameColumnWithThirdPlace} key={`gameCard_${columnNumber}_${key}`}>
-                        <EliminationCard
-                            games={games}
-                            game={game}
-                            normalizedPlayers={normalizedPlayers}
-                            player1Id={player1Id}
-                            player2Id={player2Id}
-                            gameKey={`${columnNumber}-${numberOfGame}`}
-                        />
-                    </div>
-                )
-            }
+            // if (key === numberOfGames - 1 && columnNumber === numberOfColumns) {
+            //     return (
+            //         <div className={classes.gameColumnWithThirdPlace} key={`gameCard_${columnNumber}_${key}`}>
+            //             <EliminationCard
+            //                 games={games}
+            //                 game={game}
+            //                 normalizedPlayers={normalizedPlayers}
+            //                 player1Id={player1Id}
+            //                 player2Id={player2Id}
+            //                 gameKey={`${columnNumber}-${numberOfGame}`}
+            //             />
+            //         </div>
+            //     )
+            // }
             return (
                 <EliminationCard
                     key={`gameCard_${columnNumber}_${numberOfGame}`}

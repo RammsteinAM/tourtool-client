@@ -360,8 +360,7 @@ const LastManStanding = (props: Props) => {
 
             return acc;
         }, {});
-
-        debugger
+        
         dispatch(updateGames(storeNextGames));
     }
 
