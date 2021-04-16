@@ -18,6 +18,7 @@ import {
     GET_TOURNAMENTS_REQUEST, GET_TOURNAMENTS_SUCCESS, GET_TOURNAMENTS_FAILURE,
     CREATE_TOURNAMENT_REQUEST, CREATE_TOURNAMENT_SUCCESS, CREATE_TOURNAMENT_FAILURE,
     UPDATE_TOURNAMENT_REQUEST, UPDATE_TOURNAMENT_SUCCESS, UPDATE_TOURNAMENT_FAILURE,
+    UPDATE_TOURNAMENT_GAMES_REQUEST, UPDATE_TOURNAMENT_GAMES_SUCCESS, UPDATE_TOURNAMENT_GAMES_FAILURE,
     DELETE_TOURNAMENT_REQUEST, DELETE_TOURNAMENT_SUCCESS, DELETE_TOURNAMENT_FAILURE,
     CREATE_PLAYER_REQUEST, CREATE_PLAYER_SUCCESS, CREATE_PLAYER_FAILURE,
     CREATE_PLAYERS_REQUEST, CREATE_PLAYERS_SUCCESS, CREATE_PLAYERS_FAILURE,
@@ -36,6 +37,7 @@ import {
     CreatePlayerRequestActionParams, CreatePlayerSuccessActionParams, CreatePlayerFailureActionParams,
     CreateTournamentRequestActionParams, CreateTournamentSuccessActionParams, CreateTournamentFailureActionParams,
     UpdateTournamentRequestActionParams, UpdateTournamentSuccessActionParams, UpdateTournamentFailureActionParams,
+    UpdateTournamentGamesRequestActionParams, UpdateTournamentGamesSuccessActionParams, UpdateTournamentGamesFailureActionParams,
     DeleteTournamentRequestActionParams, DeleteTournamentSuccessActionParams, DeleteTournamentFailureActionParams,
     CreatePlayersRequestActionParams, CreatePlayersSuccessActionParams, CreatePlayersFailureActionParams,
     UpdatePlayersRequestActionParams, UpdatePlayersSuccessActionParams, UpdatePlayersFailureActionParams,
@@ -43,8 +45,9 @@ import {
 import { UserStateData, UserUpdateReqData } from "../../types/user";
 import { loginSuccess } from "../auth/actions";
 import { ResponseData } from "../../types/main";
-import { FetchedPlayer, FetchedPlayers, FetchedTournament, FetchedTournaments, TournamentCreationReqData, TournamentUpdateReqData } from "../../types/entities";
+import { FetchedGameData, FetchedPlayer, FetchedPlayers, FetchedTournament, FetchedTournaments, GameUpdateReqData, TournamentCreationReqData, TournamentUpdateReqData } from "../../types/entities";
 import { createGamesSuccess, getGamesSuccess } from "../games/actions";
+import { gameServices } from "../../services/game";
 
 export const updateTournament = payloadedActionCreator<UpdateTournamentActionParams>(UPDATE_TOURNAMENT);
 
@@ -81,6 +84,10 @@ export const createTournamentFailure = payloadedActionCreator<CreateTournamentFa
 export const updateTournamentRequest = actionCreator<UpdateTournamentRequestActionParams>(UPDATE_TOURNAMENT_REQUEST);
 export const updateTournamentSuccess = payloadedActionCreator<UpdateTournamentSuccessActionParams>(UPDATE_TOURNAMENT_SUCCESS);
 export const updateTournamentFailure = payloadedActionCreator<UpdateTournamentFailureActionParams>(UPDATE_TOURNAMENT_FAILURE);
+
+export const updateTournamentGamesRequest = actionCreator<UpdateTournamentGamesRequestActionParams>(UPDATE_TOURNAMENT_GAMES_REQUEST);
+export const updateTournamentGamesSuccess = payloadedActionCreator<UpdateTournamentGamesSuccessActionParams>(UPDATE_TOURNAMENT_GAMES_SUCCESS);
+export const updateTournamentGamesFailure = payloadedActionCreator<UpdateTournamentGamesFailureActionParams>(UPDATE_TOURNAMENT_GAMES_FAILURE);
 
 export const deleteTournamentRequest = actionCreator<DeleteTournamentRequestActionParams>(DELETE_TOURNAMENT_REQUEST);
 export const deleteTournamentSuccess = payloadedActionCreator<DeleteTournamentSuccessActionParams>(DELETE_TOURNAMENT_SUCCESS);
@@ -241,6 +248,21 @@ const update = (data: UserUpdateReqData) => {
     };
 }
 
+const editGameAndNextGames = (data: GameUpdateReqData) => {
+    return (dispatch: Dispatch) => {
+        dispatch(updateTournamentGamesRequest());
+        gameServices.updateGameAndNextGames(data)
+            .then(
+                (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
+                    res?.data?.data && dispatch(updateTournamentGamesSuccess(res.data.data));
+                },
+                (error: AxiosError) => {
+                    dispatch(updateTournamentGamesFailure({ error: error.name, message: error.message }));
+                }
+            );
+    };
+}
+
 export const entityActions = {
     getTournaments,
     getTournament,
@@ -250,5 +272,6 @@ export const entityActions = {
     deleteTournament,
     createPlayer,
     createPlayers,
+    editGameAndNextGames,
     update,
 };

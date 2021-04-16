@@ -2,9 +2,8 @@ import React, { useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import { FetchedPlayer, Games, StateScore } from '../../types/entities';
+import { FetchedPlayer, StateScore } from '../../types/entities';
 import { splitGameKey } from '../../utils/stringUtils';
-import { resetGames, updateGames } from '../../redux/tournamentEntities/actions';
 import EnterScoreContent from './EnterScore/EnterScoreContent';
 import gameListRowStyles from './gameListRowStyles';
 import { getMultipleSetScores } from '../../utils/scoreUtils';

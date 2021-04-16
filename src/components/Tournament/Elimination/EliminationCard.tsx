@@ -3,9 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useTranslation } from "react-i18next";
 import { FetchedGameData, FetchedPlayer, GameUpdateReqData, StateEliminationGame, StateScore } from '../../../types/entities';
-import { entityActions, updateEliminationGames } from '../../../redux/tournamentEntities/actions';
 import EnterScoreDialog from '../EnterScore/EnterScoreDialog';
-import { getNextGameKey, splitGameKey } from '../../../utils/stringUtils';
 import { getMultipleSetScores } from '../../../utils/scoreUtils';
 import { gameActions } from '../../../redux/games/actions';
 import { useParams } from 'react-router-dom';
@@ -23,7 +21,6 @@ interface Props {
 const EliminationCard = (props: Props) => {
     const [scoreDialogOpen, setScoreDialogOpen] = useState<boolean>(false);
     const [scores, setScores] = useState<{ 1: number, 2: number }>();
-
     const { tournamentId: tournamentIdString } = useParams<{ tournamentId: string }>();
     const tournamentId = parseInt(tournamentIdString, 10)
     const fethchedTournamentData = useSelector((state: RootState) => state.entities.fetchedTournaments.data);
@@ -88,117 +85,13 @@ const EliminationCard = (props: Props) => {
 
     const handleScoreInput = (scores1: StateScore, scores2: StateScore) => {
         if (!props.gameKey) return;
-        const finalRoundNumber = Object.values(props.games).map(game => splitGameKey(game.index).round).sort(function (a, b) { return b - a })[0];
-        const { score1, score2 } = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length);
-
         const gameData: GameUpdateReqData = {
             id: props.games[props.gameKey].id,
             scores1: Object.values(scores1),
             scores2: Object.values(scores2),
         }
 
-        dispatch(gameActions.editGame(gameData));
-
-        const winner = score1 > score2 ? player1 : player2;
-        const loser = score1 > score2 ? player2 : player1;
-
-        const round = splitGameKey(props.gameKey).round;
-        const gameNumber = splitGameKey(props.gameKey).gameNumber;
-        if (isNaN(round)) {
-            handleScoreDialogClose()
-            return;
-        }
-        const isGameOdd = gameNumber % 2 === 1;
-
-        const nextGameKey = getNextGameKey(props.gameKey, finalRoundNumber);
-
-        const getParentsData = (gameKey: string) => {
-            const round = splitGameKey(gameKey).round;
-            const gameNumber = splitGameKey(gameKey).gameNumber;
-            const parent1GameKey = `${round - 1}-${gameNumber * 2 - 1}`;
-            const parent2GameKey = `${round - 1}-${gameNumber * 2}`;
-            const data = {
-                p1p1: props.games[parent1GameKey]?.player1,
-                p1p2: props.games[parent1GameKey]?.player2,
-                parent1HasByePlayer: props.games[parent1GameKey]?.hasByePlayer,
-                parent1HasNoPlayer: !props.games[parent1GameKey]?.player1?.[0]?.id && !props.games[parent1GameKey]?.player2?.[0]?.id,
-                p2p1: props.games[parent2GameKey]?.player1,
-                p2p2: props.games[parent2GameKey]?.player2,
-                parent2HasByePlayer: props.games[parent2GameKey]?.hasByePlayer,
-                parent2HasNoPlayer: !props.games[parent2GameKey]?.player1?.[0]?.id && !props.games[parent2GameKey]?.player2?.[0]?.id,
-                numberOfParentPlayers: Number(!!props.games[parent1GameKey]?.player1?.[0]?.id) + Number(!!props.games[parent1GameKey]?.player2?.[0]?.id) + Number(!!props.games[parent2GameKey]?.player1?.[0]?.id) + Number(!!props.games[parent2GameKey]?.player2?.[0]?.id),
-            };
-            return data;
-        }
-
-        function updateNextGame(gameKey: string, isGameOdd: boolean) {
-            const parentGamesData = getParentsData(gameKey);
-            const nextGameKey = getNextGameKey(gameKey, finalRoundNumber);
-            const gameNumber = splitGameKey(gameKey).gameNumber;
-            const isNextGameOdd = !isNaN(gameNumber) ? gameNumber % 2 === 1 : true;
-            const hasByePlayer = parentGamesData.parent1HasNoPlayer || parentGamesData.parent2HasNoPlayer;
-            const game = props.games[gameKey];
-            if (isGameOdd) {
-                const gameData: GameUpdateReqData = {
-                    id: game.id,
-                    player1: winner,
-                    hasByePlayer
-                }
-                dispatch(gameActions.editGame(gameData));
-                if (round === finalRoundNumber - 1 && props.games['thirdPlace']) {
-                    const thirdPlaceGameData: GameUpdateReqData = {
-                        id: props.games['thirdPlace'].id,
-                        player1: loser ? [...loser] : undefined,
-                        hasByePlayer: parentGamesData.numberOfParentPlayers < 4
-                    }
-                    dispatch(gameActions.editGame(thirdPlaceGameData));
-                }
-            }
-            else {
-                const gameData: GameUpdateReqData = {
-                    id: game.id,
-                    player2: winner,
-                    hasByePlayer
-                }
-                dispatch(gameActions.editGame(gameData));
-                if (round === finalRoundNumber - 1 && props.games['thirdPlace']) {
-                    const thirdPlaceGameData: GameUpdateReqData = {
-                        id: props.games['thirdPlace'].id,
-                        player2: loser ? [...loser] : undefined,
-                        hasByePlayer: parentGamesData.numberOfParentPlayers < 4
-                    }
-                    dispatch(gameActions.editGame(thirdPlaceGameData));
-                }
-            }
-
-            if (!nextGameKey) {
-                return;
-            }
-            if (hasByePlayer) {
-                updateNextGame(nextGameKey, isNextGameOdd);
-                return;
-            }
-            if (game.player1 && game.player2 && game.scores1 && winner && loser && game.scores2 && game.scores1.length > 0 && game.scores2.length > 0) {
-                const score1 = getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length).score1;
-                const score2 = getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length).score2;
-                const p1JSON = JSON.stringify(game.player1);
-                const p2JSON = JSON.stringify(game.player2);
-                const winnerJSON = JSON.stringify(winner);
-                const loserJSON = JSON.stringify(loser);
-
-                if (
-                    (score1 < score2 && (p1JSON === winnerJSON || p1JSON === loserJSON)) ||
-                    (score1 > score2 && (p2JSON === winnerJSON || p2JSON === loserJSON))
-                ) {
-                    return; // Prevent updating next game if the updated player lost this game.
-                }
-            }
-            setTimeout(() => {
-                updateNextGame(nextGameKey, isNextGameOdd);
-            }, 0); // TODO
-        }
-
-        nextGameKey && updateNextGame(nextGameKey, isGameOdd);
+        dispatch(gameActions.editGameAndNextGames(gameData));
 
         handleScoreDialogClose();
     }
@@ -247,7 +140,7 @@ const EliminationCard = (props: Props) => {
                 player2={player2Name}
                 gameKey={props.gameKey}
                 game={props.games[props.gameKey]}
-                visibleScores={fethchedTournament.numberOfGoals && fethchedTournament.numberOfGoals < 9 ? fethchedTournament.numberOfGoals + 1 : 9}
+                visibleScores={fethchedTournament?.numberOfGoals && fethchedTournament.numberOfGoals < 9 ? fethchedTournament.numberOfGoals + 1 : 9}
             />
         </div>
     )

@@ -1,6 +1,6 @@
 import { Action } from "redux";
 import { ResponseData, ResponseError } from "../../types/main";
-import { FetchedCreatedGames, FetchedGameData, FetchedGames } from "../../types/entities";
+import { FetchedCreatedGames, FetchedGameData, FetchedGames, FetchedGamesData } from "../../types/entities";
 import AppState, { DatalessState } from "../../types/redux";
 import { PayloadedAction } from "../helpers";
 
@@ -12,6 +12,10 @@ const CREATE_GAMES_REQUEST = "CREATE_GAMES_REQUEST";
 const CREATE_GAMES_SUCCESS = "CREATE_GAMES_SUCCESS";
 const CREATE_GAMES_FAILURE = "CREATE_GAMES_FAILURE";
 
+const UPDATE_GAME_REQUEST = "UPDATE_GAME_REQUEST";
+const UPDATE_GAME_SUCCESS = "UPDATE_GAME_SUCCESS";
+const UPDATE_GAME_FAILURE = "UPDATE_GAME_FAILURE";
+
 const UPDATE_GAMES_REQUEST = "UPDATE_GAMES_REQUEST";
 const UPDATE_GAMES_SUCCESS = "UPDATE_GAMES_SUCCESS";
 const UPDATE_GAMES_FAILURE = "UPDATE_GAMES_FAILURE";
@@ -19,6 +23,7 @@ const UPDATE_GAMES_FAILURE = "UPDATE_GAMES_FAILURE";
 export {
     GET_GAMES_REQUEST, GET_GAMES_SUCCESS, GET_GAMES_FAILURE,
     CREATE_GAMES_REQUEST, CREATE_GAMES_SUCCESS, CREATE_GAMES_FAILURE,
+    UPDATE_GAME_REQUEST, UPDATE_GAME_SUCCESS, UPDATE_GAME_FAILURE,
     UPDATE_GAMES_REQUEST, UPDATE_GAMES_SUCCESS, UPDATE_GAMES_FAILURE,
 }
 
@@ -33,9 +38,13 @@ export type CreateGamesRequestActionParams = Action<typeof CREATE_GAMES_REQUEST>
 export type CreateGamesSuccessActionParams = PayloadedAction<typeof CREATE_GAMES_SUCCESS, FetchedGames>;
 export type CreateGamesFailureActionParams = PayloadedAction<typeof CREATE_GAMES_FAILURE, ResponseError | null>;
 
-export type UpdateGameRequestActionParams = Action<typeof UPDATE_GAMES_REQUEST>;
-export type UpdateGameSuccessActionParams = PayloadedAction<typeof UPDATE_GAMES_SUCCESS, FetchedGameData>;
-export type UpdateGameFailureActionParams = PayloadedAction<typeof UPDATE_GAMES_FAILURE, ResponseError | null>;
+export type UpdateGameRequestActionParams = Action<typeof UPDATE_GAME_REQUEST>;
+export type UpdateGameSuccessActionParams = PayloadedAction<typeof UPDATE_GAME_SUCCESS, FetchedGameData>;
+export type UpdateGameFailureActionParams = PayloadedAction<typeof UPDATE_GAME_FAILURE, ResponseError | null>;
+
+export type UpdateGamesRequestActionParams = Action<typeof UPDATE_GAMES_REQUEST>;
+export type UpdateGamesSuccessActionParams = PayloadedAction<typeof UPDATE_GAMES_SUCCESS, FetchedGamesData>;
+export type UpdateGamesFailureActionParams = PayloadedAction<typeof UPDATE_GAMES_FAILURE, ResponseError | null>;
 
 export type UserActionParams =
     GetGamesRequestActionParams |
@@ -46,4 +55,7 @@ export type UserActionParams =
     CreateGamesFailureActionParams |
     UpdateGameRequestActionParams |
     UpdateGameSuccessActionParams |
-    UpdateGameFailureActionParams
+    UpdateGameFailureActionParams |
+    UpdateGamesRequestActionParams |
+    UpdateGamesSuccessActionParams |
+    UpdateGamesFailureActionParams

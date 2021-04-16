@@ -7,6 +7,7 @@ import { ActionStatus } from '../../types/main';
 interface Props {
     children: React.ReactElement;
     path: string;
+    location?: any;
     exact?: boolean;
 }
 
@@ -18,7 +19,7 @@ const PublicRoute = ({ children, ...rest }: Props) => {
             render={() =>
                 login.status !== ActionStatus.Success ?
                     children :
-                    <Redirect to="/" />
+                    <Redirect to={rest.location.state.from || "/"} />
             }
         />
     )

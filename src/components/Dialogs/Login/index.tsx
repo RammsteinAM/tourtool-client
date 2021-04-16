@@ -19,7 +19,7 @@ import NotVerified from '../../../pages/Register/NotVerified';
 import { ActionStatus } from '../../../types/main';
 
 interface Props {
-    //children: ReactElement
+    location?: any
 }
 
 enum LoginDialogState {
@@ -39,7 +39,6 @@ const LoginDialog = (props: Props) => {
     const history = useHistory();
     const authState = useSelector((state: RootState) => state.auth);
     const { t } = useTranslation();
-
     const handleClose = () => {
         history.push('/');
     };

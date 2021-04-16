@@ -15,6 +15,7 @@ import {
   GET_TOURNAMENT_REQUEST, GET_TOURNAMENT_SUCCESS, GET_TOURNAMENT_FAILURE,
   CREATE_TOURNAMENT_REQUEST, CREATE_TOURNAMENT_SUCCESS, CREATE_TOURNAMENT_FAILURE,
   UPDATE_TOURNAMENT_REQUEST, UPDATE_TOURNAMENT_SUCCESS, UPDATE_TOURNAMENT_FAILURE,
+  UPDATE_TOURNAMENT_GAMES_REQUEST, UPDATE_TOURNAMENT_GAMES_SUCCESS, UPDATE_TOURNAMENT_GAMES_FAILURE,
   DELETE_TOURNAMENT_REQUEST, DELETE_TOURNAMENT_SUCCESS, DELETE_TOURNAMENT_FAILURE,
   CREATE_PLAYER_REQUEST, CREATE_PLAYER_SUCCESS, CREATE_PLAYER_FAILURE,
   CREATE_PLAYERS_REQUEST, CREATE_PLAYERS_SUCCESS, CREATE_PLAYERS_FAILURE,
@@ -255,6 +256,39 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
       };
     }
     case UPDATE_TOURNAMENT_FAILURE: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Failure,
+          data: { ...state.fetchedTournaments.data },
+          error: action.payload?.error,
+        }
+      };
+    }
+    case UPDATE_TOURNAMENT_GAMES_REQUEST: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Request,
+          data: { ...state.fetchedTournaments.data },
+          error: ''
+        }
+      };
+    }
+    case UPDATE_TOURNAMENT_GAMES_SUCCESS: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          status: ActionStatus.Success,
+          data: {
+            ...state.fetchedTournaments.data,
+            [action.payload.id]: { ...state.fetchedTournaments.data[action.payload.id], ...action.payload }
+          },
+          error: '',
+        }
+      };
+    }
+    case UPDATE_TOURNAMENT_GAMES_FAILURE: {
       return {
         ...state,
         fetchedTournaments: {

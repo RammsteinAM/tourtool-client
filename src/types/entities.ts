@@ -94,6 +94,8 @@ export interface DBGameData extends BaseEntity {
 
 export type FetchedGameData = DBGameData & Required<BaseEntity> & { tournamentId?: number }
 
+export type FetchedGamesData = { tournamentId: number, games: MultipleDBGameData[] }
+
 // export interface FetchedGameData extends BaseDatabaseEntity {
 //     index: string;
 //     tournamentId: number;
@@ -214,6 +216,22 @@ export interface GameUpdateReqData {
     scores1?: StateScore,
     scores2?: StateScore,
     hasByePlayer?: boolean;
+    tournamentId?: number;
 }
+
+export interface MultipleDBGameData {
+    id: number;
+    player1?: Player,
+    player2?: Player,
+    scores1?: StateScore,
+    scores2?: StateScore,
+    index: string;
+    hasByePlayer?: boolean;
+    tournamentId?: number;
+}
+
+// export type GamesData = DBGameData[];
+
+// export type GamesResData = { [tournamentId: number]: GamesData }
 
 export type TournamentTypes = 'elimination' | 'lms' | 'roundRobin';

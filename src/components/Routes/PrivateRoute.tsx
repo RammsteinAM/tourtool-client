@@ -4,6 +4,7 @@ import { Redirect, Route } from 'react-router-dom'
 import { authActions } from '../../redux/auth/actions';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
+import { useHistory } from "react-router-dom";
 
 interface Props {
     children: React.ReactElement;
@@ -12,14 +13,8 @@ interface Props {
 }
 
 const PrivateRoute = ({ children, ...rest }: Props) => {
-    const dispatch = useDispatch();
     const authState = useSelector((state: RootState) => state.auth);
-
-    // useEffect(() => {
-    //     if (authState.status !== ActionStatus.Success) {
-    //         dispatch(authActions.loginCheck());
-    //     }
-    // }, [])
+    const history = useHistory();
 
     return (
         <Route
@@ -27,7 +22,7 @@ const PrivateRoute = ({ children, ...rest }: Props) => {
             render={() =>
                 authState.status === ActionStatus.Success ?
                     children :
-                    <Redirect to="/login" />
+                    <Redirect to={{ pathname: "/login", state: { from: history.location.pathname } }} />
             }
         />
     )

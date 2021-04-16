@@ -160,6 +160,9 @@ const EliminationBracket = () => {
                 if ((parent2HasNoPlayer || parent1HasNoPlayer) && ((parent1HasByePlayer && parent2HasOnePlayer) || (parent2HasByePlayer && parent1HasOnePlayer))) {
                     storeGames[gameKey].hasByePlayer = true;
                 }
+                if (parent2HasNoPlayer && parent1HasNoPlayer) {
+                    storeGames[gameKey].hasByePlayer = true;
+                }
                 if (!parent1HasByePlayer && !parent2HasByePlayer) {
                     continue;
                 }

@@ -30,6 +30,9 @@ const CREATE_TOURNAMENT_FAILURE = "CREATE_TOURNAMENT_FAILURE";
 const UPDATE_TOURNAMENT_REQUEST = "UPDATE_TOURNAMENT_REQUEST";
 const UPDATE_TOURNAMENT_SUCCESS = "UPDATE_TOURNAMENT_SUCCESS";
 const UPDATE_TOURNAMENT_FAILURE = "UPDATE_TOURNAMENT_FAILURE";
+const UPDATE_TOURNAMENT_GAMES_REQUEST = "UPDATE_TOURNAMENT_GAMES_REQUEST";
+const UPDATE_TOURNAMENT_GAMES_SUCCESS = "UPDATE_TOURNAMENT_GAMES_SUCCESS";
+const UPDATE_TOURNAMENT_GAMES_FAILURE = "UPDATE_TOURNAMENT_GAMES_FAILURE";
 const DELETE_TOURNAMENT_REQUEST = "DELETE_TOURNAMENT_REQUEST";
 const DELETE_TOURNAMENT_SUCCESS = "DELETE_TOURNAMENT_SUCCESS";
 const DELETE_TOURNAMENT_FAILURE = "DELETE_TOURNAMENT_FAILURE";
@@ -54,6 +57,7 @@ export {
     GET_PLAYERS_REQUEST, GET_PLAYERS_SUCCESS, GET_PLAYERS_FAILURE,
     CREATE_TOURNAMENT_REQUEST, CREATE_TOURNAMENT_SUCCESS, CREATE_TOURNAMENT_FAILURE,
     UPDATE_TOURNAMENT_REQUEST, UPDATE_TOURNAMENT_SUCCESS, UPDATE_TOURNAMENT_FAILURE,
+    UPDATE_TOURNAMENT_GAMES_REQUEST, UPDATE_TOURNAMENT_GAMES_SUCCESS, UPDATE_TOURNAMENT_GAMES_FAILURE,
     DELETE_TOURNAMENT_REQUEST, DELETE_TOURNAMENT_SUCCESS, DELETE_TOURNAMENT_FAILURE,
     CREATE_PLAYER_REQUEST, CREATE_PLAYER_SUCCESS, CREATE_PLAYER_FAILURE,
     CREATE_PLAYERS_REQUEST, CREATE_PLAYERS_SUCCESS, CREATE_PLAYERS_FAILURE,
@@ -105,6 +109,10 @@ export type UpdateTournamentRequestActionParams = Action<typeof UPDATE_TOURNAMEN
 export type UpdateTournamentSuccessActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_SUCCESS, FetchedTournament>;
 export type UpdateTournamentFailureActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_FAILURE, ResponseError | null>;
 
+export type UpdateTournamentGamesRequestActionParams = Action<typeof UPDATE_TOURNAMENT_GAMES_REQUEST>;
+export type UpdateTournamentGamesSuccessActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_GAMES_SUCCESS, FetchedTournament>;
+export type UpdateTournamentGamesFailureActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_GAMES_FAILURE, ResponseError | null>;
+
 export type DeleteTournamentRequestActionParams = Action<typeof DELETE_TOURNAMENT_REQUEST>;
 export type DeleteTournamentSuccessActionParams = PayloadedAction<typeof DELETE_TOURNAMENT_SUCCESS, BaseDatabaseEntity>;
 export type DeleteTournamentFailureActionParams = PayloadedAction<typeof DELETE_TOURNAMENT_FAILURE, ResponseError | null>;
@@ -141,6 +149,9 @@ export type UserActionParams =
     UpdateTournamentRequestActionParams |
     UpdateTournamentSuccessActionParams |
     UpdateTournamentFailureActionParams |
+    UpdateTournamentGamesRequestActionParams |
+    UpdateTournamentGamesSuccessActionParams |
+    UpdateTournamentGamesFailureActionParams |
     DeleteTournamentRequestActionParams |
     DeleteTournamentSuccessActionParams |
     DeleteTournamentFailureActionParams |

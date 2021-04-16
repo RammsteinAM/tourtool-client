@@ -22,6 +22,11 @@ const updateGame = async (data: GameUpdateReqData): Promise<AxiosResponse> => {
     return response;
 }
 
+const updateGameAndNextGames = async (data: GameUpdateReqData): Promise<AxiosResponse> => {
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.put(`${endpoint}/game/update-with-nexts/${data.id}`, data, { withCredentials: true });
+    return response;
+}
+
 const deleteGame = async (id: number): Promise<AxiosResponse> => {
     const response: AxiosResponse<AxiosRequestConfig> = await axios.delete(`${endpoint}/game/${id}`, { withCredentials: true });
     return response;
@@ -37,5 +42,6 @@ export const gameServices = {
     createGame,
     createGames,
     updateGame,
+    updateGameAndNextGames,
     deleteGame,
 }

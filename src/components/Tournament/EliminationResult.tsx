@@ -26,17 +26,23 @@ const EliminationResult = () => {
     const fetchedPlayersData = useSelector((state: RootState) => state.entities.fetchedPlayers.data);
     const fetchedGames = useSelector((state: RootState) => state.games.data);
     const tournamentGames = fetchedGames[tournamentId];
-    const normalizedPlayers = getNormalizedParticipants(fetchedPlayersData);
     const classes = eliminationResultStyles();
     const { t } = useTranslation();
 
     useEffect(() => {
         if (!fetchedTournamentsData[tournamentId]) {
-            dispatch(entityActions.getTournaments())
-            return;
+            dispatch(entityActions.getTournament(tournamentId));
         }
         if (!tournamentGames) {
             dispatch(gameActions.getTournamentGames(tournamentId))
+        }
+        if (fetchedPlayersData.length === 0) {
+            dispatch(entityActions.getPlayers())
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!fetchedTournamentsData[tournamentId] || !tournamentGames || fetchedPlayersData?.length === 0) {
             return;
         }
         const finalRoundKey = tournamentGames.reduce((acc: number[], val) => {
@@ -111,44 +117,26 @@ const EliminationResult = () => {
             if (loser[1]?.id) {
                 acc[loser[1]?.id] = { wins: acc[loser[1]?.id]?.wins || 0, losses: acc[winner[1]?.id]?.losses ? acc[winner[1]?.id].losses + 1 : 1 }
             }
-            // if (val.index === 'thirdPlace') {
-            //     acc[3] = [winner];
-            //     acc[4] = [loser];
-            //     return acc;
-            // }
-            // const distanceFromFinal = finalRoundKey - splitGameKey(val.index).round;
-            // if (distanceFromFinal === 0) {
-            //     acc[1] = [winner];
-            //     acc[2] = [loser];
-            //     return acc;
-            // }
-            // if (distanceFromFinal === 1 && acc[4]) {
-            //     return acc;
-            // }
-            // const placement = 2 ** (distanceFromFinal) + 1;
-            // if (acc[placement]) {
-            //     acc[placement].push(loser)
-            // }
-            // else {
-            //     acc[placement] = [loser];
-            // }
             return acc;
         }, {});
 
         setPlacements(placementsWithPlayers);
         setWinsAndLosses(normalizedWinsAndLosses);
 
-    }, [tournamentGames]);
+    }, [fetchedTournamentsData, tournamentGames, fetchedGames, fetchedPlayersData, fetchedPlayersData.length]);
 
+    if (fetchedPlayersData.length === 0 || !fetchedTournamentsData) {
+        return null;
+    }
+    const normalizedPlayers = getNormalizedParticipants(fetchedPlayersData);
+    
     return (
-
         <Paper elevation={3} className={classes.paper} id='print-section'>
             <div className={classes.header}>
                 <EliminationIcon fill='#8ebd5e' width='90px' height='90px' />
                 <div className={classes.tournamentType}>{t('Elimination')}</div>
-                <div className={classes.tournamentTitle}>{fetchedTournamentsData[tournamentId].name}</div>
+                <div className={classes.tournamentTitle}>{fetchedTournamentsData[tournamentId]?.name}</div>
             </div>
-
 
             <div className={classes.container}>
                 {placements && winsAndLosses && Object.keys(placements).map((place: string) => {
@@ -156,7 +144,6 @@ const EliminationResult = () => {
                     return (
                         <>
                             {Number(place) === 1 && <WinnerBadge className={classes.winnerBadge} />}
-                            {/* {Number(place) > 1 && <div className={classes.bottomLine}></div>} */}
                             <div className={clsx(classes.row, {
                                 // [classes.rowWithBorder]: Number(place) > 1
                             })}>

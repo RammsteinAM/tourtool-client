@@ -127,7 +127,7 @@ code {
 }
 
 @media print {
-     header, .MuiDrawer-root, .MuiTooltip-popper {
+     header, .MuiDrawer-root, .MuiAppBar-root, .MuiTooltip-popper, .MuiSnackbarContent-root, .MuiLinearProgress-root {
           display: none !important;
       }
      main { 
@@ -135,12 +135,12 @@ code {
      }
      #print-section, #print-section * {
        visibility: visible;
+       box-shadow: none;
      }
      #print-section {
           position: absolute;
           left: 0;
           top: 0;
-          bottom: 0;
           margin: auto;
      }
    }

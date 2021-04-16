@@ -8,14 +8,16 @@ import { playerServices } from "../../services/player";
 import {
     GET_GAMES_REQUEST, GET_GAMES_SUCCESS, GET_GAMES_FAILURE,
     CREATE_GAMES_REQUEST, CREATE_GAMES_SUCCESS, CREATE_GAMES_FAILURE,
+    UPDATE_GAME_REQUEST, UPDATE_GAME_SUCCESS, UPDATE_GAME_FAILURE,
     UPDATE_GAMES_REQUEST, UPDATE_GAMES_SUCCESS, UPDATE_GAMES_FAILURE,
     GetGamesRequestActionParams, GetGamesSuccessActionParams, GetGamesFailureActionParams,
     CreateGamesRequestActionParams, CreateGamesSuccessActionParams, CreateGamesFailureActionParams,
     UpdateGameRequestActionParams, UpdateGameSuccessActionParams, UpdateGameFailureActionParams,
+    UpdateGamesRequestActionParams, UpdateGamesSuccessActionParams, UpdateGamesFailureActionParams,
     UserActionParams,
 } from "./types"
 import { ResponseData } from "../../types/main";
-import { BaseDatabaseEntity, FetchedCreatedGames, FetchedGameData, FetchedGames, FetchedPlayer, FetchedPlayers, FetchedTournament, FetchedTournaments, GamesCreationReqData, GameUpdateReqData } from "../../types/entities";
+import { BaseDatabaseEntity, FetchedCreatedGames, FetchedGameData, FetchedGames, FetchedGamesData, FetchedPlayer, FetchedPlayers, FetchedTournament, FetchedTournaments, GamesCreationReqData, GameUpdateReqData } from "../../types/entities";
 import { gameServices } from "../../services/game";
 
 export const getGamesRequest = actionCreator<GetGamesRequestActionParams>(GET_GAMES_REQUEST);
@@ -26,9 +28,13 @@ export const createGamesRequest = actionCreator<CreateGamesRequestActionParams>(
 export const createGamesSuccess = payloadedActionCreator<CreateGamesSuccessActionParams>(CREATE_GAMES_SUCCESS);
 export const createGamesFailure = payloadedActionCreator<CreateGamesFailureActionParams>(CREATE_GAMES_FAILURE);
 
-export const updateGameRequest = actionCreator<UpdateGameRequestActionParams>(UPDATE_GAMES_REQUEST);
-export const updateGameSuccess = payloadedActionCreator<UpdateGameSuccessActionParams>(UPDATE_GAMES_SUCCESS);
-export const updateGameFailure = payloadedActionCreator<UpdateGameFailureActionParams>(UPDATE_GAMES_FAILURE);
+export const updateGameRequest = actionCreator<UpdateGameRequestActionParams>(UPDATE_GAME_REQUEST);
+export const updateGameSuccess = payloadedActionCreator<UpdateGameSuccessActionParams>(UPDATE_GAME_SUCCESS);
+export const updateGameFailure = payloadedActionCreator<UpdateGameFailureActionParams>(UPDATE_GAME_FAILURE);
+
+export const updateGamesRequest = actionCreator<UpdateGamesRequestActionParams>(UPDATE_GAMES_REQUEST);
+export const updateGamesSuccess = payloadedActionCreator<UpdateGamesSuccessActionParams>(UPDATE_GAMES_SUCCESS);
+export const updateGamesFailure = payloadedActionCreator<UpdateGamesFailureActionParams>(UPDATE_GAMES_FAILURE);
 
 const getTournamentGames = (tournamentId: number) => {
     return (dispatch: Dispatch) => {
@@ -75,6 +81,22 @@ const editGame = (data: GameUpdateReqData) => {
     };
 }
 
+const editGameAndNextGames = (data: GameUpdateReqData) => {
+    return (dispatch: Dispatch) => {
+        dispatch(updateGamesRequest());
+        gameServices.updateGameAndNextGames(data)
+            .then(
+                (res: AxiosResponse<ResponseData<FetchedGamesData>>) => {
+                    debugger
+                    res?.data?.data && dispatch(updateGamesSuccess(res.data.data));
+                },
+                (error: AxiosError) => {
+                    dispatch(updateGamesFailure({ error: error.name, message: error.message }));
+                }
+            );
+    };
+}
+
 const deleteGame = (id: number) => {
     // return (dispatch: Dispatch) => {
     //     dispatch(deleteGameRequest());
@@ -94,5 +116,6 @@ export const gameActions = {
     getTournamentGames,
     createGames,
     editGame,
+    editGameAndNextGames,
     deleteGame,
 };

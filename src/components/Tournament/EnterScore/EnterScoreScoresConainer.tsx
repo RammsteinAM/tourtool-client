@@ -27,7 +27,7 @@ const EnterScoreScoresConainer = ({ score1, score2, onScoreSelect1, onScoreSelec
         if (disallowTie && score1 === score) return;
         onScoreSelect2(score);
     }
-debugger
+    
     return (
         <div className={classes.pointsContainer}>
             <EnterScoreSelector
