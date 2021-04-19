@@ -18,9 +18,10 @@ interface Props {
     tournament: FetchedTournament;
     getNumberOfAdditionalGames?: (n: number) => void;
     forwardedRef?: any;
+    visibleScores?: number;
 }
 
-const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getNumberOfAdditionalGames, forwardedRef }: Props) => {
+const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getNumberOfAdditionalGames, forwardedRef, visibleScores }: Props) => {
     const classes = enterScoreDialogStyles();
     const [score1, setScore1] = useState<StateScore>([]);
     const [score2, setScore2] = useState<StateScore>([]);
@@ -212,7 +213,7 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getN
                         score2={score2[key]}
                         onScoreSelect1={(score) => handleScoreSelectLeft(score, key)}
                         onScoreSelect2={(score) => handleScoreSelectRight(score, key)}
-                        visibleScores={numberOfGoals < 9 ? numberOfGoals + 1 : 9}
+                        visibleScores={visibleScores || (numberOfGoals < 9 ? numberOfGoals + 1 : 9)}
                         numberOfGoals={numberOfGoals}
                         disallowTie={!tournament.draw}
                     />
@@ -236,6 +237,7 @@ export default React.memo(EnterScoreContent, (props: Props, nextProps: Props) =>
         props.gameKey === nextProps.gameKey &&
         props.game === nextProps.game &&
         props.tournament === nextProps.tournament &&
+        props.visibleScores === nextProps.visibleScores &&
         props.tournament.numberOfGoals === nextProps.tournament.numberOfGoals
     )
 })

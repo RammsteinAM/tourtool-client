@@ -139,6 +139,7 @@ const GameListRow = ({ tournamentId, gameKey, tabIndex, normalizedPlayers, maxSc
                         gameKey={gameKey}
                         game={normalizedGames[gameKey]}
                         tournament={fetchedTournamentsData[tournamentId]}
+                        visibleScores={visibleScores}
                         getNumberOfAdditionalGames={handleAdditionalGameCount}
                     />
                 </div>

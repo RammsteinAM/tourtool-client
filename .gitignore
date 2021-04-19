@@ -3,9 +3,7 @@
 # dependencies
 /node_modules
 /.pnp
-/.VSCodeCounter
 .pnp.js
-.eslintcache
 
 # testing
 /coverage
@@ -23,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+.eslintcache
+/.VSCodeCounter
