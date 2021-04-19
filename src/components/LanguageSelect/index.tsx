@@ -16,7 +16,7 @@ const LanguageSelect = () => {
     };
 
     const { t } = useTranslation();
-    const currentLanguage: string = getFullLocale();
+    const currentLanguage: string = getFullLocale().toLowerCase();
     return (
         <div>
             <InputLabel id="demo-simple-select-label">{t('Language')}</InputLabel>

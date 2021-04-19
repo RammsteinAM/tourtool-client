@@ -28,6 +28,7 @@ const EliminationBracket = () => {
 
     useEffect(() => {
         if (entityState.fetchedTournaments.createdTournamentId && entityState.fetchedTournaments.status == ActionStatus.Success) {
+            history.replace('/');
             history.push(`/elimination/${entityState.fetchedTournaments.createdTournamentId}`);
         }
     }, [entityState.fetchedTournaments.status, entityState.fetchedTournaments.createdTournamentId])

@@ -45,7 +45,8 @@ const LastManStanding = (props: Props) => {
     const dispatch = useDispatch();
     const classes = lastManStandingStyles();
     const { tournamentId: tournamentIdString } = useParams<{ tournamentId: string }>();
-    const tournamentId = parseInt(tournamentIdString, 10)
+    const tournamentId = parseInt(tournamentIdString, 10);
+    const fetchedTournamentData = entityState.fetchedTournaments.data[tournamentId]
     const { t } = useTranslation();
 
     const normalizedParticipants = getNormalizedParticipants(entityState.participants);
@@ -58,8 +59,6 @@ const LastManStanding = (props: Props) => {
         dispatch(entityActions.getPlayers());
         dispatch(gameActions.getTournamentGames(tournamentId));
     }, [])
-
-
 
     useEffect(() => {
         const playerData = getPlayersDataWithStats();
@@ -84,7 +83,7 @@ const LastManStanding = (props: Props) => {
     const getPlayersDataWithStats = (): Players => {
         const gamesArr = Object.values(storeGames);
 
-        const { numberOfLives, pointsForWin, pointsForDraw } = entityState.tournament;
+        const { numberOfLives, pointsForWin, pointsForDraw } = fetchedTournamentData;
 
         if (typeof numberOfLives !== 'number' || typeof pointsForWin !== 'number' || typeof pointsForDraw !== 'number') return {};
 

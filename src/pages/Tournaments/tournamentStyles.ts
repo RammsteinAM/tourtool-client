@@ -124,6 +124,9 @@ const styles = makeStyles((theme) => ({
         display: 'flex',
         paddingLeft: '274px',
     },
+    eliminationContainer: {
+        height: 'calc(100vh - 74px)',
+    },
     eliminationCardsContainer: {
         display: 'flex',
         padding: '12px 12px 12px 26px',

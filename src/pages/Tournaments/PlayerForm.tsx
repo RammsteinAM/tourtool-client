@@ -75,7 +75,7 @@ const PlayerForm = () => {
 
     const delayedSubmitParticipantsToStore = useCallback(debounce(newPlayers => submitParticipantsToStore(newPlayers), 400), [entityState.participants]);
 
-    if (entityState.fetchedTournaments.status === ActionStatus.Request) {
+    if (entityState.fetchedPlayers.status === ActionStatus.Request) {
         return <div className={mainClasses.progress}>
             <CircularProgress />
         </div>

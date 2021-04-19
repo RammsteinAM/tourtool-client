@@ -3,7 +3,9 @@
 # dependencies
 /node_modules
 /.pnp
+/.VSCodeCounter
 .pnp.js
+.eslintcache
 
 # testing
 /coverage

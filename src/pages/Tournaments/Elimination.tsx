@@ -71,33 +71,35 @@ const Elimination = () => {
             <div className={classes.eliminationProgressContainer}>
                 <LinearProgress variant="determinate" color="secondary" value={progress} />
             </div>
-            <div
-                className={classes.eliminationCardsContainer}
-                style={{ transform: `scale(${settingsState.eliminationScale || '1'})` }}
-            >
-                {[...Array(Math.round(numberOfColumns)).keys()].map(key => {
-                    const colNumber = key + 1;
-                    let numberOfGames = firstRoundGameNumber / (2 ** (colNumber - 1));
-                    // if (games['thirdPlace']) {
-                    //     numberOfGames++
-                    // }
-                    return (
-                        <EliminationColumn
-                            key={key}
-                            numberOfColumns={numberOfColumns}
-                            firstRoundGameNumber={firstRoundGameNumber}
-                            colNumber={colNumber}
-                        >
-                            <EliminationCards
-                                games={games}
-                                columnNumber={colNumber}
-                                numberOfGames={numberOfGames}
-                                normalizedPlayers={normalizedPlayers}
-                            />
-                        </EliminationColumn>
-                    )
-                }
-                )}
+            <div className={classes.eliminationContainer}>
+                <div
+                    className={classes.eliminationCardsContainer}
+                    style={{ transform: `scale(${settingsState.eliminationScale || '1'})` }}
+                >
+                    {[...Array(Math.round(numberOfColumns)).keys()].map(key => {
+                        const colNumber = key + 1;
+                        let numberOfGames = firstRoundGameNumber / (2 ** (colNumber - 1));
+                        // if (games['thirdPlace']) {
+                        //     numberOfGames++
+                        // }
+                        return (
+                            <EliminationColumn
+                                key={key}
+                                numberOfColumns={numberOfColumns}
+                                firstRoundGameNumber={firstRoundGameNumber}
+                                colNumber={colNumber}
+                            >
+                                <EliminationCards
+                                    games={games}
+                                    columnNumber={colNumber}
+                                    numberOfGames={numberOfGames}
+                                    normalizedPlayers={normalizedPlayers}
+                                />
+                            </EliminationColumn>
+                        )
+                    }
+                    )}
+                </div>
             </div>
             {progress === 100 && <div className={classes.eliminationSnackbarContainer}>
                 <SnackbarContent

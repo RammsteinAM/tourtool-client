@@ -102,7 +102,7 @@ const styles = makeStyles((theme) => ({
         textAlign: 'center',
     },
     lmsStatsHeaderTd: {
-        fontWeight: 800,
+        fontWeight: 700,
         width: '33px',
         paddingLeft: '7px',
         whiteSpace: 'nowrap',
