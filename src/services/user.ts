@@ -7,33 +7,33 @@ import { updateAxiosLocale } from '../utils/i18n';
 
 updateAxiosLocale();
 
-const login = asyncWrapper<AxiosResponse>(async (data: UserLoginReqData): Promise<AxiosResponse> => {
+const login = /* asyncWrapper<AxiosResponse>( */async (data: UserLoginReqData): Promise<AxiosResponse> => {
     const { email, password } = data;
     const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/login`, { email, password });
     return response;
-})
+}/* ) */
 
-const loginCheck = /* asyncWrapper<AxiosResponse>( */async (data: UserLoginCheckReqData): Promise<AxiosResponse> => {
+const loginCheck = async (data: UserLoginCheckReqData): Promise<AxiosResponse> => {
     const { refreshToken } = data;
     const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/login-check`, { refreshToken }, { withCredentials: true });
     return response;
-}/* ) */
+}
 
-const register = /* asyncWrapper<AxiosResponse>( */async (data: UserRegisterReqData): Promise<AxiosResponse> => {
+const register = async (data: UserRegisterReqData): Promise<AxiosResponse> => {
     const { email, password, displayName } = data;
     const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/register`, { email, password, displayName });
     return response;
-}/* ) */
+}
 
 const emailCheck = async (email: string): Promise<AxiosResponse> => {
     const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/auth/email-check`, { email });
     return response;
 }
 
-const verifyUser = /* asyncWrapper<AxiosResponse>( */async (token: string): Promise<AxiosResponse> => {
+const verifyUser = async (token: string): Promise<AxiosResponse> => {
     const response: AxiosResponse<AxiosRequestConfig> = await axios.get(`${endpoint}/auth/verify/${token}`);
     return response;
-}/* ) */
+}
 
 const resendVerificationEmail = asyncWrapper<AxiosResponse>(async (data: UserLoginReqData): Promise<AxiosResponse> => {
     const { email, password } = data;
@@ -93,9 +93,4 @@ export const userServices = {
     deleteAccountEmailRequest,
     deleteAccount,
     emailCheck,
-}
-
-export async function axiosPost<TBody>(url: string, body: TBody, config: AxiosRequestConfig = {}): Promise<object> {
-    //const config = generateConfigHeaderWithToken();
-    return axios.post(url, body, config);
 }

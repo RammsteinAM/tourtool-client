@@ -39,16 +39,16 @@ const Login = (props: Props) => {
     const mainClasses = mainStyles();
     const dispatch = useDispatch();
     const [submitting, setSubmitting] = useState<boolean>(false);
-    const authState = useSelector((state: RootState) => state.auth);
+    const authStatus = useSelector((state: RootState) => state.auth.status);
     const history = useHistory();
     const { t } = useTranslation();
 
     useEffect(() => {
-        setSubmitting(authState.status === ActionStatus.Request);
-        if (authState.status === ActionStatus.Failure) {
-            //authState.error && toast.error(t(`ERROR_${authState.error}`))
+        debugger
+        if (authStatus === ActionStatus.Success) {
+            history.push('/');
         }
-    }, [authState.status]);
+    }, [authStatus])
 
     const handleFormSubmit = (values: FormikValues): void => {
         dispatch(authActions.login(values));
@@ -150,7 +150,7 @@ const Login = (props: Props) => {
                             type="submit"
                             variant="contained"
                             color="secondary"
-                            disabled={submitting}
+                            disabled={authStatus === ActionStatus.Request}
                             className={classes.button}
                         >
                             {t('Login')}
@@ -176,7 +176,7 @@ const Login = (props: Props) => {
                                 <FacebookButton onClick={renderProps.onClick} />
                             )}
                         />
-                        {authState.status === ActionStatus.Request &&
+                        {authStatus === ActionStatus.Request &&
                             <div className={mainClasses.progress}>
                                 <CircularProgress />
                             </div>

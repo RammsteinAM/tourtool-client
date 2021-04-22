@@ -1,5 +1,4 @@
 import { ActionStatus } from "../../types/main";
-import AppState from "../../types/redux";
 import { clearCookieAndStorage } from "../../utils/authUtils";
 import { AuthActionParams, AuthReducerState } from "./types";
 import {

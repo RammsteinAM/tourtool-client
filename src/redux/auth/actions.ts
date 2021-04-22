@@ -83,7 +83,7 @@ const login = (data: UserLoginReqData) => {
                         }
                         cookies.set('x-auth-token', res.data.data?.accessToken, { path: '/' });
                         localStorage.setItem('refreshToken', res.data.data?.refreshToken!);
-                        dispatch(loginSuccess(res?.data));
+                        dispatch(loginSuccess(res.data));
                     }
                 },
                 (error: AxiosError) => {
@@ -96,7 +96,6 @@ const login = (data: UserLoginReqData) => {
 const loginCheck = () => {
     const refreshToken = localStorage.getItem('refreshToken')
     return (dispatch: Dispatch<AuthActionParams>) => {
-        // dispatch(loginRequest(null));
         refreshToken && userServices.loginCheck({ refreshToken })
             .then(
                 (res: AxiosResponse<ResponseData<UserLoginCheckResData>>) => {

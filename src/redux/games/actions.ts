@@ -66,6 +66,21 @@ const createGames = (data: GamesCreationReqData) => {
     };
 }
 
+const createNextLMSRound = (tournamentId: number) => {
+    return (dispatch: Dispatch) => {
+        dispatch(createGamesRequest());
+        gameServices.createNextLMSRoundGames(tournamentId)
+            .then(
+                (res: AxiosResponse<ResponseData<FetchedGames>>) => {
+                    res?.data?.data && dispatch(createGamesSuccess(res.data.data));
+                },
+                (error: AxiosError) => {
+                    dispatch(createGamesFailure({ error: error.name, message: error.message }));
+                }
+            );
+    };
+}
+
 const editGame = (data: GameUpdateReqData) => {
     return (dispatch: Dispatch) => {
         dispatch(updateGameRequest());
@@ -115,6 +130,7 @@ const deleteGame = (id: number) => {
 export const gameActions = {
     getTournamentGames,
     createGames,
+    createNextLMSRound,
     editGame,
     editGameAndNextGames,
     deleteGame,

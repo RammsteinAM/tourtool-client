@@ -48,6 +48,14 @@ const styles = makeStyles((theme) => ({
         justifyContent: 'center',
         flexDirection: 'column',
     },
+    buttonContainer: {
+        margin: "auto",
+        display: "flex",
+        height: "calc(100vh - 100px)",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
     cardListContainer: {
         display: "flex",
         flexFlow: "column",

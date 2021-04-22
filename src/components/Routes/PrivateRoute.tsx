@@ -12,9 +12,17 @@ interface Props {
     exact?: boolean;
 }
 
+const generateFromValue = (path: string) => {
+    if (/(lms|elimination)\/[1-9]+/g.test(path)) {
+        return path;
+    }
+    return '/';
+}
+
 const PrivateRoute = ({ children, ...rest }: Props) => {
     const authState = useSelector((state: RootState) => state.auth);
     const history = useHistory();
+    const from = generateFromValue(history.location.pathname)
 
     return (
         <Route
@@ -22,7 +30,7 @@ const PrivateRoute = ({ children, ...rest }: Props) => {
             render={() =>
                 authState.status === ActionStatus.Success ?
                     children :
-                    <Redirect to={{ pathname: "/login", state: { from: history.location.pathname } }} />
+                    <Redirect to={{ pathname: "/login", state: { from } }} />
             }
         />
     )

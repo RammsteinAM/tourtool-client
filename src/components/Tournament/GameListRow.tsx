@@ -1,14 +1,14 @@
 import React, { useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { useTranslation } from "react-i18next";
-import { FetchedPlayer, StateScore } from '../../types/entities';
+import { FetchedPlayer, GameUpdateReqData, StateScore } from '../../types/entities';
 import { splitGameKey } from '../../utils/stringUtils';
 import EnterScoreContent from './EnterScore/EnterScoreContent';
 import gameListRowStyles from './gameListRowStyles';
 import { getMultipleSetScores } from '../../utils/scoreUtils';
 import GameListEnterScoreButton from './GameListEnterScoreButton';
 import { getNormalizedGames } from '../../utils/arrayUtils';
+import { gameActions } from '../../redux/games/actions';
 
 interface Props {
     tournamentId: number;
@@ -19,27 +19,21 @@ interface Props {
 }
 
 const GameListRow = ({ tournamentId, gameKey, tabIndex, normalizedPlayers, maxScores = 10 }: Props) => {
-    // const [games, setGames] = useState<Games>({});
     const [scoresOpen, setScoresOpen] = useState<boolean>(false);
     const [stateChanged, setStateChanged] = useState<boolean>(false);
     const [numberOfAdditionalGames, setNumberOfAdditionalGames] = useState<number>(0);
     const fetchedTournamentsData = useSelector((state: RootState) => state.entities.fetchedTournaments.data);
-    const stateGameData = useSelector((state: RootState) => state.games.data);
-    const settingsState = useSelector((state: RootState) => state.settings);
     const scoresRef = useRef<any>();
-    const enterScoreContentRef = useRef<any>(null);
-    const scoreToggleButtonRef = useRef<any>(null);
+    const enterScoreContentRef = useRef<any>(null);   
+    const fetchedGames = useSelector((state: RootState) => state.games.data);
+    const tournamentGames = fetchedGames[tournamentId];
+    const normalizedGames = getNormalizedGames(tournamentGames);
     const dispatch = useDispatch();
-    // const columns = Math.log(Object.keys(games).length + 1) / Math.log(2);
     const classes = gameListRowStyles();
-    const { t } = useTranslation();
-
-    const normalizedGames = getNormalizedGames(stateGameData[tournamentId])
 
     if (!normalizedGames || !fetchedTournamentsData[tournamentId]) {
         return null;
     }
-
 
     const player1 = normalizedGames[gameKey]?.player1;
     const player2 = normalizedGames[gameKey]?.player2;
@@ -82,10 +76,13 @@ const GameListRow = ({ tournamentId, gameKey, tabIndex, normalizedPlayers, maxSc
     }
 
     const handleScoreConfirm = (scores1: StateScore, scores2: StateScore) => {
-        const { score1, score2 } = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length)
-        const round = splitGameKey(gameKey).round;
+        const gameData: GameUpdateReqData = {
+            id: normalizedGames[gameKey].id,
+            scores1: Object.values(scores1),
+            scores2: Object.values(scores2),
+        }
 
-        // dispatch(updateGames({ [gameKey]: { ...normalizedGames[gameKey], score1, score2, scores1: Object.values(scores1), scores2: Object.values(scores2) } }));
+        dispatch(gameActions.editGame(gameData));
         closeScores();
     }
     const tournamentNumberOfGoals = fetchedTournamentsData[tournamentId] && fetchedTournamentsData[tournamentId].numberOfGoals;

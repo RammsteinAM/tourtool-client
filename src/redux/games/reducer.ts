@@ -106,12 +106,6 @@ const reducer = (state: AppState<FetchedGames> = initialState, action: UserActio
           data: { ...state.data }
         };
       }
-      // const newData = state.data[action.payload.tournamentId].map(game => {
-      //   if (game.id === action.payload.id) {
-      //     return action.payload;
-      //   }
-      //   return game;
-      // })
       return {
         ...state,
         status: ActionStatus.Success,

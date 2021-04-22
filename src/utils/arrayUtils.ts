@@ -77,3 +77,15 @@ export const getNormalizedGames = (fetchedGames: FetchedGameData[]): { [index: s
     return acc;
   }, {})
 }
+
+export const multiDimensionalUnique = <T>(arr: T[]) => {
+  var uniques = [];
+  var itemsFound: any = {};
+  for(var i = 0, l = arr.length; i < l; i++) {
+      var stringified = JSON.stringify(arr[i]);
+      if(itemsFound[stringified]) { continue; }
+      uniques.push(arr[i]);
+      itemsFound[stringified] = true;
+  }
+  return uniques;
+}

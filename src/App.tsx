@@ -26,15 +26,6 @@ import toast from './components/IndependentSnackbar';
 import i18n from "./utils/i18n";
 import { HttpError } from './utils/error';
 import TournamentResult from './components/Tournament/EliminationResult';
-// axios.interceptors.response.use(
-//   function(successRes) {
-//     ... modify response; 
-//     return successRes;
-//   }, 
-//   function(error) {
-//     ... return Promise.reject(error);
-//   }
-// );
 
 axios.interceptors.response.use(undefined, (err) => {
   if (err.response.status === 403 || err.response.data.error === 'InvalidTokenError') {
@@ -59,11 +50,10 @@ const App = () => {
   const authState = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (authState.status !== ActionStatus.Success) {
+    if (authState.status === ActionStatus.Initial) {
       dispatch(authActions.loginCheck());
     }
   }, [])
-
   return (
     <BrowserRouter>
       <Layout>
@@ -71,11 +61,11 @@ const App = () => {
           <PrivateRoute exact path="/tournament/new">
             <TournamentTypeSelect />
           </PrivateRoute>
-          <PrivateRoute exact path="/tournament-form/:tournamentType">
-            <TournamentForm />
-          </PrivateRoute>
           <PrivateRoute exact path="/tournament/elimination-bracket">
             <EliminationBracket />
+          </PrivateRoute>
+          <PrivateRoute exact path="/tournament-form/:tournamentType">
+            <TournamentForm />
           </PrivateRoute>
           <PrivateRoute exact path="/elimination/:tournamentId">
             <Elimination />
@@ -119,10 +109,6 @@ const App = () => {
         </Switch>
       </Layout>
     </BrowserRouter>
-    // <div className="App">
-    //   <LanguageSelect />
-    //   <Login />
-    // </div>
   );
 }
 

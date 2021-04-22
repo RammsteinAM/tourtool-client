@@ -17,23 +17,22 @@ interface Props extends LMSTableProps {
 
 const LastManStandingPlayerStatsRow = (props: Props) => {
     const classes = lastManStandingStyles();
-
     return (
         <tr className={classes.lmsStatsTr}>
             <td className={clsx(classes.lmsStatsTd, classes.lmsStatsTdPlacement)}>{props.placement}</td>
             {props.colOrderedKeys.map((key: LMSColOrderKeys) => {
                 if (key === 'lives' && props[key] === 0) {
-                    return <td className={classes.lmsStatsTd} style={{verticalAlign: 'bottom'}}>
+                    return <td className={classes.lmsStatsTd} style={{verticalAlign: 'bottom'}} key={key}>
                         {!props.easterEgg ? <DeadPlayerSkull width={21} height={21} /> : <img width={21} height={21} src={KEKW} title='Dead KEKW' />}
                     </td>
                 }
                 if (key === 'averagePoints') {
-                    return <td className={classes.lmsStatsTd}>
+                    return <td className={classes.lmsStatsTd} key={key}>
                         {props[key]?.toFixed(2)}
                     </td>
                 }
                 return (props[key] || typeof props[key] === 'number') &&
-                    <td className={clsx(classes.lmsStatsTd, { [classes.lmsStatsTdPlayer]: key === 'name' })}>
+                    <td className={clsx(classes.lmsStatsTd, { [classes.lmsStatsTdPlayer]: key === 'name' })} key={key}>
                         {props[key]}
                     </td>
             })}

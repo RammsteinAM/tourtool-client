@@ -1,8 +1,7 @@
-import { actionCreator, payloadedActionCreator, PayloadedAction } from "../helpers";
+import { actionCreator, payloadedActionCreator } from "../helpers";
 import { Dispatch } from "redux";
 import { AxiosError, AxiosResponse } from "axios";
 import { userServices } from "../../services/user";
-import { ForgotPasswordReqData } from "../auth/types";
 import {
     USER_UPDATE_REQUEST,
     USER_UPDATE_SUCCESS,
@@ -25,10 +24,9 @@ import {
     DeleteRequestActionParams,
     DeleteSuccessActionParams,
     DeleteFailureActionParams,
-    UserActionParams,
     UserResetActionParams
 } from "./types"
-import { UserDeleteReqData, UserRegisterResData, UserStateData, UserUpdateReqData } from "../../types/user";
+import { UserStateData, UserUpdateReqData } from "../../types/user";
 import { ResponseData } from "../../types/main";
 import toast from "../../components/IndependentSnackbar";
 import i18n from "../../utils/i18n";

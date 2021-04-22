@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
-import loginDialogStyles from './loginDialogStyles';
 import Login from '../../../pages/Login/Login';
 import ResetPassword from '../../../pages/PasswordReset/RequestPasswordReset';
 import Register from '../../../pages/Register/Register';
@@ -17,6 +16,7 @@ import { RootState } from '../../../redux/store';
 import { ErrorNames } from '../../../types/error';
 import NotVerified from '../../../pages/Register/NotVerified';
 import { ActionStatus } from '../../../types/main';
+import loginDialogStyles from './loginDialogStyles';
 
 interface Props {
     location?: any

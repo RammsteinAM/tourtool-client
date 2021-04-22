@@ -210,6 +210,8 @@ const localization = {
             'matches-won-num': '{{n}} Matches Won',
             'matches-lost-num': '{{n}} Matches Lost',
             'Print': 'Print',
+            'Export': 'Export',
+            'Error Exporting Tournament': 'Error Exporting Tournament',
         }
     },
     hy: {
@@ -423,6 +425,8 @@ const localization = {
             'matches-won-num': '{{n}} հաղթանակ',
             'matches-lost-num': '{{n}} պարտություն',
             'Print': 'Տպել',
+            'Export': 'Արտահանել',
+            'Error Exporting Tournament': 'Մրցաշարի արտահանման սխալ',
         }
     },
     ru: {
@@ -645,6 +649,8 @@ const localization = {
             'matches-won-num': 'Выиграно {{n}} игр',
             'matches-lost-num': 'Проиграно {{n}} игр',
             'Print': 'Распечатать',
+            'Export': 'Экспортировать',
+            'Error Exporting Tournament': 'Ошибка экспортирования турнира',
         }
     }
 }

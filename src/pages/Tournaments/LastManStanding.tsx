@@ -2,25 +2,25 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import { Games, StateLMSPlayer, StateLMSPlayers } from '../../types/entities';
+import { FetchedGameData } from '../../types/entities';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
-import { entityActions, resetGames, updateGames } from '../../redux/tournamentEntities/actions';
-import { debounce, differenceBy, shuffle } from 'lodash';
+import { entityActions } from '../../redux/tournamentEntities/actions';
 import { useResizeDetector } from 'react-resize-detector';
 import GameListRound from '../../components/Tournament/GameListRound';
 import LastManStandingPlayerStatsList from '../../components/Tournament/TournamentStats/LastManStandingPlayerStatsList';
-import { getNormalizedParticipants } from '../../utils/arrayUtils';
+import { getNormalizedParticipants, multiDimensionalUnique } from '../../utils/arrayUtils';
 import lastManStandingStyles from './lastManStandingStyles';
 import { splitGameKey } from '../../utils/stringUtils';
 import { useParams } from 'react-router-dom';
 import { gameActions } from '../../redux/games/actions';
+import { getMultipleSetScores } from '../../utils/scoreUtils';
 
 export interface Players {
     [key: string]: {
-        id: number;
+        id: number | [number, number];
         lives: number;
         numberOfGames: number;
         points: number;
@@ -34,42 +34,47 @@ interface Props {
 }
 
 const LastManStanding = (props: Props) => {
-    const [rounds, setRounds] = useState<number>(1);
     const [playerData, setPlayerData] = useState<Players>({});
     const [maxScores, setMaxScores] = useState<number>(7);
-    const { width, ref: resizeRef } = useResizeDetector();
+    const { width, ref: resizeRef } = useResizeDetector({ handleWidth: true, handleHeight: false, refreshMode: 'debounce', refreshRate: 300 });
     const entityState = useSelector((state: RootState) => state.entities);
     const settingsState = useSelector((state: RootState) => state.settings);
-    const storeGames = useSelector((state: RootState) => state.entities.games);
-    const lmsPlayers = useSelector((state: RootState) => state.entities.lmsPlayers);
+    const fetchedGames = useSelector((state: RootState) => state.games.data);
     const dispatch = useDispatch();
     const classes = lastManStandingStyles();
     const { tournamentId: tournamentIdString } = useParams<{ tournamentId: string }>();
     const tournamentId = parseInt(tournamentIdString, 10);
     const fetchedTournamentData = entityState.fetchedTournaments.data[tournamentId]
+    const tournamentGames = fetchedGames[tournamentId];
+    const tournamentPlayerIds = fetchedTournamentData?.players;
+    const fetchedPlayers = entityState.fetchedPlayers.data;
     const { t } = useTranslation();
 
-    const normalizedParticipants = getNormalizedParticipants(entityState.participants);
+    const isDYP = tournamentGames?.find(game => game.index === '1-1')?.player1?.length === 2;
 
-    // useEffect(() => {
-    //     submitInitialGamesToStore();
-    // }, [])
+    const normalizedPlayers = getNormalizedParticipants(fetchedPlayers);
 
-    useEffect(() => {        
-        dispatch(entityActions.getPlayers());
-        dispatch(gameActions.getTournamentGames(tournamentId));
+    const tournamentGameRounds = tournamentGames && [...new Set(tournamentGames.map(game => splitGameKey(game.index).round))]
+
+    useEffect(() => {
+        if (!fetchedTournamentData?.players) {
+            dispatch(entityActions.getTournament(tournamentId));
+        }
+        if (!fetchedPlayers || fetchedPlayers.length === 0) {
+            dispatch(entityActions.getPlayers());
+        }
     }, [])
 
     useEffect(() => {
-        const playerData = getPlayersDataWithStats();
+        const playerData = fetchedTournamentData && tournamentGames && getPlayersDataWithStats();
         setPlayerData(playerData);
-    }, [storeGames, entityState.tournament])
+    }, [tournamentGames, fetchedTournamentData, fetchedPlayers])
 
     useEffect(() => {
-        width && delayedUpdateMaxScores(width);
-    }, [width])
+        width && updateMaxScoresWithCallback(width);
+    })
 
-    const delayedUpdateMaxScores = useCallback(debounce(score => updateMaxScores(score), 300), [maxScores])
+    const updateMaxScoresWithCallback = useCallback(score => updateMaxScores(score), [])
 
     const updateMaxScores = (width: number) => {
         const score = Math.round((width - 391) / 71);
@@ -81,14 +86,24 @@ const LastManStanding = (props: Props) => {
     }
 
     const getPlayersDataWithStats = (): Players => {
-        const gamesArr = Object.values(storeGames);
-
-        const { numberOfLives, pointsForWin, pointsForDraw } = fetchedTournamentData;
-
+        const numberOfLives = fetchedTournamentData?.numberOfLives;
+        const pointsForWin = fetchedTournamentData?.pointsForWin;
+        const pointsForDraw = fetchedTournamentData?.pointsForDraw;
+        const tournamentPlayers = fetchedPlayers.filter(p => tournamentPlayerIds && tournamentPlayerIds?.indexOf(p.id) >= 0)
         if (typeof numberOfLives !== 'number' || typeof pointsForWin !== 'number' || typeof pointsForDraw !== 'number') return {};
 
-        const players: Players = lmsPlayers.reduce((acc: Players, val) => {
-            if (typeof val.id === 'number') {
+        const pairs = isDYP ? multiDimensionalUnique(tournamentGames.reduce((acc: [number, number][], val: FetchedGameData) => {
+            if (!val.index || !val.player1 || !val.player2) {
+                return acc;
+            }
+            acc.push([val.player1[0].id, val.player1[1].id], [val.player2[0].id, val.player2[1].id])
+            return acc;
+        }, [])) : null;
+
+        let players: Players = {}
+
+        if (!isDYP) {
+            players = tournamentPlayers.reduce((acc: Players, val) => {
                 acc[val.id] = {
                     id: val.id,
                     lives: numberOfLives,
@@ -99,10 +114,14 @@ const LastManStanding = (props: Props) => {
                     matchesWon: 0,
                     matchesLost: 0,
                 }
-            }
-            else if (val.id[0] && val.id[1]) {
-                acc[val.id[0]] = {
-                    id: val.id[0],
+                return acc;
+            }, {});
+        }
+        else if (pairs) {
+            players = pairs.reduce((acc: Players, val) => {
+                const pName = `${normalizedPlayers[val[0]].name} / ${normalizedPlayers[val[1]].name}`;
+                acc[pName] = {
+                    id: [val[0], val[1]],
                     lives: numberOfLives,
                     numberOfGames: 0,
                     points: 0,
@@ -111,103 +130,88 @@ const LastManStanding = (props: Props) => {
                     matchesWon: 0,
                     matchesLost: 0,
                 }
-                acc[val.id[1]] = {
-                    id: val.id[1],
-                    lives: numberOfLives,
-                    numberOfGames: 0,
-                    points: 0,
-                    goals: 0,
-                    goalsIn: 0,
-                    matchesWon: 0,
-                    matchesLost: 0,
-                }
-            }
-            return acc;
-        }, {});
+                return acc;
+            }, {});
+        }
 
-        const playersData = gamesArr.reduce((acc, val, i) => {
-            if (typeof val.score1 !== 'number' || typeof val.score2 !== 'number') {
+        const playersData = tournamentGames?.reduce((acc, val, i) => {
+            if (!val.scores1 || !val.scores2 || val.scores1.length === 0 || val.scores2.length === 0 || !normalizedPlayers) {
+                return acc;
+            }
+            const { score1, score2 } = getMultipleSetScores(val.scores1, val.scores2, val.scores1.length);
+            const scores1Sum = val.scores1.reduce((acc, val) => acc + val);
+            const scores2Sum = val.scores2.reduce((acc, val) => acc + val);
+
+            if (!val.player1 || !val.player2) {
                 return acc;
             }
 
+            const id1_0 = val.player1[0] && val.player1[0].id;
+            const id1_1 = val.player1[1] && val.player1[1].id;
+            const id2_0 = val.player2[0] && val.player2[0].id;
+            const id2_1 = val.player2[1] && val.player2[1].id;
+
             // SINGLE, TEAM
-            if (typeof val.player1Id === 'number' && typeof val.player2Id === 'number') {
+            if (id1_0 && id2_0 && acc[id1_0] && acc[id2_0] && !id1_1 && !id2_1) {
 
-                acc[val.player1Id].numberOfGames++;
-                acc[val.player2Id].numberOfGames++;
+                acc[id1_0].numberOfGames++;
+                acc[id2_0].numberOfGames++;
 
-                acc[val.player1Id].goals += val.score1;
-                acc[val.player2Id].goals += val.score2;
+                acc[id1_0].goals += scores1Sum;
+                acc[id2_0].goals += scores2Sum;
 
-                acc[val.player1Id].goalsIn += val.score2;
-                acc[val.player2Id].goalsIn += val.score1;
+                acc[id1_0].goalsIn += scores2Sum;
+                acc[id2_0].goalsIn += scores1Sum;
 
-                if (val.score1 > val.score2) {
-                    acc[val.player1Id].points += pointsForWin;
-                    acc[val.player1Id].matchesWon += 1;
-                    acc[val.player2Id].matchesLost += 1;
-                    acc[val.player2Id].lives--;
+                if (score1 > score2) {
+                    acc[id1_0].points += pointsForWin;
+                    acc[id1_0].matchesWon += 1;
+                    acc[id2_0].matchesLost += 1;
+                    acc[id2_0].lives--;
                 }
-                if (val.score1 < val.score2) {
-                    acc[val.player1Id].points += pointsForWin;
-                    acc[val.player1Id].matchesLost += 1;
-                    acc[val.player2Id].matchesWon += 1;
-                    acc[val.player1Id].lives--;
+                if (score1 < score2) {
+                    acc[id1_0].points += pointsForWin;
+                    acc[id1_0].matchesLost += 1;
+                    acc[id2_0].matchesWon += 1;
+                    acc[id1_0].lives--;
                 }
-                if (val.score1 === val.score2) {
-                    acc[val.player1Id].points += pointsForDraw;
-                    acc[val.player2Id].points += pointsForDraw;
+                if (score1 === score2) {
+                    acc[id1_0].points += pointsForDraw;
+                    acc[id2_0].points += pointsForDraw;
                 }
             }
-
             // DYP
-            else if (
-                typeof val.player1Id === 'object' &&
-                typeof val.player2Id === 'object' &&
-                val.player1Id[0] && val.player1Id[1] &&
-                val.player2Id[0] && val.player2Id[1]
-            ) {
-
-                acc[val.player1Id[0]].numberOfGames++;
-                acc[val.player1Id[1]].numberOfGames++;
-                acc[val.player2Id[0]].numberOfGames++;
-                acc[val.player2Id[1]].numberOfGames++;
-
-                acc[val.player1Id[0]].goals += val.score1;
-                acc[val.player1Id[1]].goals += val.score1;
-                acc[val.player2Id[0]].goals += val.score2;
-                acc[val.player2Id[1]].goals += val.score2;
-
-                acc[val.player1Id[0]].goalsIn += val.score2;
-                acc[val.player1Id[1]].goalsIn += val.score2;
-                acc[val.player2Id[0]].goalsIn += val.score1;
-                acc[val.player2Id[1]].goalsIn += val.score1;
-
-                if (val.score1 > val.score2) {
-                    acc[val.player1Id[0]].points += pointsForWin;
-                    acc[val.player1Id[1]].points += pointsForWin;
-                    acc[val.player1Id[0]].matchesWon += 1;
-                    acc[val.player1Id[1]].matchesWon += 1;
-                    acc[val.player2Id[0]].matchesLost += 1;
-                    acc[val.player2Id[1]].matchesLost += 1;
-                    acc[val.player2Id[0]].lives--;
-                    acc[val.player2Id[1]].lives--;
+            else if (id1_0 && id2_0 && id1_1 && id2_1) {
+                const participant1Name = `${normalizedPlayers[id1_0].name} / ${normalizedPlayers[id1_1].name}`;
+                const participant2Name = `${normalizedPlayers[id2_0].name} / ${normalizedPlayers[id2_1].name}`;
+                if (!acc[participant1Name] || !acc[participant2Name]) {
+                    return acc
                 }
-                if (val.score1 < val.score2) {
-                    acc[val.player2Id[0]].points += pointsForWin;
-                    acc[val.player2Id[0]].points += pointsForWin;
-                    acc[val.player1Id[0]].matchesLost += 1;
-                    acc[val.player1Id[1]].matchesLost += 1;
-                    acc[val.player2Id[0]].matchesWon += 1;
-                    acc[val.player2Id[1]].matchesWon += 1;
-                    acc[val.player1Id[0]].lives--;
-                    acc[val.player1Id[1]].lives--;
+
+                acc[participant1Name].numberOfGames++;
+                acc[participant2Name].numberOfGames++;
+
+                acc[participant1Name].goals += scores1Sum;
+                acc[participant2Name].goals += scores2Sum;
+
+                acc[participant1Name].goalsIn += scores2Sum;
+                acc[participant2Name].goalsIn += scores1Sum;
+
+                if (score1 > score2) {
+                    acc[participant1Name].points += pointsForWin;
+                    acc[participant1Name].matchesWon += 1;
+                    acc[participant2Name].matchesLost += 1;
+                    acc[participant2Name].lives--;
                 }
-                if (val.score1 === val.score2) {
-                    acc[val.player1Id[0]].points += pointsForDraw;
-                    acc[val.player1Id[1]].points += pointsForDraw;
-                    acc[val.player2Id[0]].points += pointsForDraw;
-                    acc[val.player2Id[1]].points += pointsForDraw;
+                if (score1 < score2) {
+                    acc[participant2Name].points += pointsForWin;
+                    acc[participant2Name].matchesWon += 1;
+                    acc[participant1Name].matchesLost += 1;
+                    acc[participant1Name].lives--;
+                }
+                if (score1 === score2) {
+                    acc[participant1Name].points += pointsForDraw;
+                    acc[participant2Name].points += pointsForDraw;
                 }
             }
 
@@ -222,17 +226,11 @@ const LastManStanding = (props: Props) => {
     }
 
     const validateRoundComplete = () => {
-        // return Object.values(entityState.games).filter(game => {
-        //     if (typeof game.score1 !== 'number' || typeof game.score2 !== 'number') {
-        //         return true;
-        //     }
-        //     return false;
-        // }).length > 0
-        const games = entityState.games;
+        const games = tournamentGames;
         for (const key in games) {
             if (Object.prototype.hasOwnProperty.call(games, key)) {
                 const game = games[key];
-                if (typeof game.score1 !== 'number' || typeof game.score2 !== 'number') {
+                if (!game.scores1 || !game.scores2 || game.scores1.length === 0 || game.scores2.length === 0) {
                     return false;
                 }
             }
@@ -240,7 +238,7 @@ const LastManStanding = (props: Props) => {
         return true;
     }
 
-    const alivePlayerCount = Object.values(playerData).reduce((acc, val) => {
+    const alivePlayerCount = playerData && Object.values(playerData).reduce((acc, val) => {
         if (val.lives > 0) {
             ++acc;
         }
@@ -248,119 +246,12 @@ const LastManStanding = (props: Props) => {
     }, 0);
 
     const handleNewRound = () => {
-        setRounds(rounds + 1);
-        submitNewRoundGamesToStore(rounds + 1, rounds);
+        dispatch(gameActions.createNextLMSRound(tournamentId));
     }
 
-    const submitInitialGamesToStore = () => {
-        const players = entityState.lmsPlayers;
-        const storeGames: Games = {};
-        let i = 0, j = 1;
-        while (players[i] && players[i + 1]) {
-            storeGames[`1-${j}`] = { player1Id: players[i].id || 0, player2Id: players[i + 1].id || 0, index: `1-${j}` }
-            i += 2
-            j++
-        }
 
-        dispatch(resetGames());
-        dispatch(updateGames(storeGames));
-    }
-
-    const aliveFilterCallback = (player: StateLMSPlayer) => {
-        let result: boolean = false;
-        switch (typeof player.id) {
-            case 'number':
-                result = playerData[player.id].lives > 0;
-                break;
-            case 'object':
-                result = playerData[player.id[0]].lives > 0;
-                break;
-            default:
-                break;
-        }
-        return result;
-    }
-
-    const submitNewRoundGamesToStore = (nextRound: number, currentRound: number) => {
-        const storeLmsPlayers = entityState.lmsPlayers;
-        const storeCurrentGames = entityState.games;
-        // const lastRoundPlayers: StateLMSPlayers = []
-        // let nextRoundPlayers: StateLMSPlayers = [];
-        // const numberOfGames = Math.floor(storeLmsPlayers.length / 2);
-
-        // for (let i = 1; i <= numberOfGames; i++) {
-        //     lastRoundPlayers.push({ id: storeCurrentGames[`${currentRound}-${i}`].player1Id });
-        //     lastRoundPlayers.push({ id: storeCurrentGames[`${currentRound}-${i}`].player2Id });
-        // }
-
-
-        // const waitingPlayer = differenceBy(storeLmsPlayers, lastRoundPlayers, 'name');
-        // const shuffledLastRoundPlayers = shuffle(lastRoundPlayers);
-        // if (waitingPlayer.length > 0) {
-        //     shuffledLastRoundPlayers.pop();
-        //     shuffledLastRoundPlayers.push(waitingPlayer[0])
-        // }
-
-        // nextRoundPlayers = shuffledLastRoundPlayers;
-
-        // const storeNextGames: Games = {};
-        // let i = 0, j = 1;
-        // while (storeLmsPlayers[i] && storeLmsPlayers[i + 1]) {
-        //     storeNextGames[`${nextRound}-${j}`] = {
-        //         // player1: nextRoundPlayers[i].name,
-        //         // player2: nextRoundPlayers[i + 1].name,
-        //         player1Id: nextRoundPlayers[i].id || 0,
-        //         player2Id: nextRoundPlayers[i + 1].id || 0,
-        //         index: `${nextRound}-${j}`
-        //     }
-        //     i += 2
-        //     j++
-        // }
-
-
-        const lastRoundPlayers: StateLMSPlayers = Object.values(storeCurrentGames).reduce(
-            (acc: StateLMSPlayers, val) => {
-                if (splitGameKey(val.index).round === currentRound) {
-                    acc.push({ id: val.player1Id }, { id: val.player2Id });
-                }
-                return acc;
-            },
-            []
-        )
-
-        const alivePlayers = storeLmsPlayers.filter(aliveFilterCallback)
-
-        const waitingPlayer = differenceBy(alivePlayers, lastRoundPlayers, 'id')[0];
-
-        // const shuffledLastRoundPlayers = shuffle(lastRoundPlayers);
-
-
-        const nextRoundPlayers: StateLMSPlayers = lastRoundPlayers.filter(aliveFilterCallback)
-
-        if (waitingPlayer) {
-            nextRoundPlayers.unshift(waitingPlayer)
-        }
-        // if (waitingPlayer) {
-        //     shuffledLastRoundPlayers.pop();
-        //     shuffledLastRoundPlayers.push(waitingPlayer)
-        // }
-
-        const shuffledNextRoundPlayers = shuffle(nextRoundPlayers);
-
-        const storeNextGames: Games = shuffledNextRoundPlayers.reduce((acc: Games, val: StateLMSPlayer, i: number, arr: StateLMSPlayers) => {
-            if (!arr[i + 1] || i % 2 === 1) {
-                return acc;
-            }
-            acc[`${nextRound}-${Math.ceil((i + 1) / 2)}`] = {
-                player1Id: val.id,
-                player2Id: arr[i + 1].id,
-                index: `${nextRound}-${Math.ceil((i + 1) / 2)}`
-            }
-
-            return acc;
-        }, {});
-        
-        dispatch(updateGames(storeNextGames));
+    if (!fetchedTournamentData) {
+        return null;
     }
 
     return (
@@ -373,15 +264,14 @@ const LastManStanding = (props: Props) => {
                 <div className={classes.tournamentGameContainerHeader}>
                 </div>
                 <CardContent className={classes.cardContent}>
-                    {[...Array(rounds).keys()].map((i) => {
+                    {tournamentGameRounds?.sort().map(round => {
                         return (
                             <GameListRound
-                                key={`gameListRound_${i}`}
+                                key={`gameListRound_${round}`}
                                 tournamentId={tournamentId}
-                                roundNubmer={i + 1}
+                                roundNubmer={round}
                                 maxScores={maxScores}
-                                normalizedPlayers={entityState.fetchedPlayers.data}
-
+                                normalizedPlayers={normalizedPlayers}
                             />
                         )
                     })}
@@ -399,13 +289,13 @@ const LastManStanding = (props: Props) => {
             </Card>
             {settingsState.tournamentSidebar && <div className={classes.tournamentGameSidebar}>
                 <Card className={classes.cardRootSideTop}>
-                    <LastManStandingPlayerStatsList playersData={playerData} />
+                    <LastManStandingPlayerStatsList playerData={playerData} />
                 </Card>
-                <Card className={classes.cardRootSideBottom}>
+                {/* <Card className={classes.cardRootSideBottom}>
                     <CardContent className={classes.cardContent}>
                         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iste, dolorem quos cumque dolores ducimus
                     </CardContent>
-                </Card>
+                </Card> */}
             </div>
             }
         </div>

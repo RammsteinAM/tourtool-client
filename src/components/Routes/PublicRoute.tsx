@@ -12,14 +12,14 @@ interface Props {
 }
 
 const PublicRoute = ({ children, ...rest }: Props) => {
-    const login = useSelector((state: RootState) => state.auth);
+    const authStatus = useSelector((state: RootState) => state.auth.status);
     return (
         <Route
             {...rest}
             render={() =>
-                login.status !== ActionStatus.Success ?
+                authStatus !== ActionStatus.Success ?
                     children :
-                    <Redirect to={rest.location.state.from || "/"} />
+                    <Redirect to={rest.location.state?.from || "/"} />
             }
         />
     )

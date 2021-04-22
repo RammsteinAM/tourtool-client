@@ -56,6 +56,12 @@ const styles = makeStyles((theme) => ({
         color: '#bdbdbd',
         fontSize: 13,
         cursor: 'default',
+    },
+    progressContainer: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 }));
 

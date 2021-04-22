@@ -14,17 +14,18 @@ interface Props {
     normalizedPlayers?: { [id: number]: FetchedPlayer }
 }
 
-const GameListRound = ({ tournamentId, roundNubmer, maxScores, normalizedPlayers }: Props) => {    
+const GameListRound = ({ tournamentId, roundNubmer: roundNumber, maxScores, normalizedPlayers }: Props) => {
     const storeGameData = useSelector((state: RootState) => state.games.data);
+    const tournamentGamesData = storeGameData[tournamentId];
     const classes = gameListRowStyles();
     const { t } = useTranslation();
-    // const numberOfGames = Object.keys(storeGameData[tournamentId]).filter(key => splitGameKey(key).round === roundNubmer).length;
 
     return (
         <>
-            <div className={classes.tournamentGameRound}>{t('Round', { round: roundNubmer })}</div>
-            {storeGameData[tournamentId]?.map((game) =>
-                <GameListRow
+            <div className={classes.tournamentGameRound}>{t('Round', { round: roundNumber })}</div>
+            {tournamentGamesData?.map((game) => {
+                const round = splitGameKey(game.index).round;
+                return round === roundNumber && <GameListRow
                     key={game.id}
                     tournamentId={tournamentId}
                     tabIndex={10}
@@ -32,6 +33,7 @@ const GameListRound = ({ tournamentId, roundNubmer, maxScores, normalizedPlayers
                     maxScores={maxScores}
                     normalizedPlayers={normalizedPlayers}
                 />
+            }
             )}
         </>
     )

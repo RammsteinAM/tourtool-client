@@ -37,10 +37,16 @@ const createGames = async (data: GamesCreationReqData): Promise<AxiosResponse> =
     return response;
 }
 
+const createNextLMSRoundGames = async (tournamentId: number): Promise<AxiosResponse> => {
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${endpoint}/tournament/create-round`, { tournamentId }, { withCredentials: true });
+    return response;
+}
+
 export const gameServices = {
     getTournamentGames,
     createGame,
     createGames,
+    createNextLMSRoundGames,
     updateGame,
     updateGameAndNextGames,
     deleteGame,

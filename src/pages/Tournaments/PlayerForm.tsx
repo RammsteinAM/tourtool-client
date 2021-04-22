@@ -73,6 +73,12 @@ const PlayerForm = () => {
         setParticipants([...storeParticipants, { ...initialParticipants }]);
     }, [entityState.participants]);
 
+    useEffect(() => {        
+        if (entityState.fetchedTournaments.status === ActionStatus.Success && entityState.fetchedTournaments.createdTournamentId) {
+            history.push(`/${tournamentType}/${playerType}/${entityState.fetchedTournaments.createdTournamentId}`)
+        }
+    }, [entityState.fetchedTournaments]);
+
     const delayedSubmitParticipantsToStore = useCallback(debounce(newPlayers => submitParticipantsToStore(newPlayers), 400), [entityState.participants]);
 
     if (entityState.fetchedPlayers.status === ActionStatus.Request) {
@@ -118,6 +124,14 @@ const PlayerForm = () => {
             return acc;
         }, [])
 
+        const participantIds = participants.reduce((acc: number[], val) => {
+            const id = fetchedPlayers?.find(fp => fp.name === val.name)?.id
+            if (id) {
+                acc.push(id);
+            }
+            return acc;
+        }, [])
+
         const { draw, numberOfGoals, numberOfLives, numberOfTables, pointsForDraw, pointsForWin, sets } = entityState.tournament;
         dispatch(entityActions.createTournament({
             name,
@@ -130,10 +144,8 @@ const PlayerForm = () => {
             pointsForDraw,
             pointsForWin,
             games: dbGames,
+            players: participantIds
         }));
-        if (entityState.fetchedTournaments.status === ActionStatus.Success && entityState.fetchedTournaments.createdTournamentId) {
-            history.push(`/${tournamentType}/${playerType}/${entityState.fetchedTournaments.createdTournamentId}`)
-        }
     };
 
     const handleSubmit = (e: React.FormEvent): void => {

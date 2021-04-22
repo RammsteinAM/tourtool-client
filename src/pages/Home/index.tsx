@@ -35,7 +35,7 @@ const Home = (props: Props) => {
     }, [loggedIn])
 
     const handleCreateTournament = () => {
-        history.push('/tournament/new');
+        history.push(loggedIn ? '/tournament/new' : '/login');
     }
 
     const compareFunction = (a: FetchedTournament, b: FetchedTournament) => {
@@ -101,15 +101,18 @@ const Home = (props: Props) => {
                         })}
                 </div>
             }
-            {(!loggedIn || tournamentsData.length === 0) && <Button
-                type="button"
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                onClick={handleCreateTournament}
-            >
-                {loggedIn ? t('Create New Tournament') : t('Login to Create a Tournament')}
-            </Button>}
+            {(!loggedIn || tournamentsData.length === 0) && <div className={classes.buttonContainer}>
+                <Button
+                    type="button"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={handleCreateTournament}
+                >
+                    {loggedIn ? t('Create New Tournament') : t('Login to Create a Tournament')}
+                </Button>
+            </div>
+            }
         </div>
     )
 }

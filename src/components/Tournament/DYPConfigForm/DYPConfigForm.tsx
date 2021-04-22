@@ -6,9 +6,9 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import FormSubheader from '../../FormComponents/FormSubheader';
 import { ReactComponent as DrawYourPartner } from '../../../resources/icons/drawYourPartner.svg';
-import { StateEliminationPlayers, StateParticipant, StateParticipants, TournamentTypes } from '../../../types/entities';
+import { DBGameData, StateEliminationPlayers, StateLMSPlayer, StateLMSPlayers, StateParticipant, StateParticipants, TournamentTypes } from '../../../types/entities';
 import toast from '../../IndependentSnackbar';
-import { updateEliminationPlayers, updateLMSPlayers, updateTournament } from '../../../redux/tournamentEntities/actions';
+import { entityActions, updateEliminationPlayers, updateLMSPlayers, updateTournament } from '../../../redux/tournamentEntities/actions';
 import DYPConfigFormItem from './DYPConfigFormItem';
 import { difference } from 'lodash';
 import dypFormStyles from './dypFormStyles';
@@ -30,6 +30,7 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
     const [initialPlayers, setInitialPlayers] = useState<number[]>([]);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     // const fetchedPlayers = useSelector((state: RootState) => state.entities.fetchedPlayers.data);
+    const entityState = useSelector((state: RootState) => state.entities);
     const storeParticipants = useSelector((state: RootState) => state.entities.participants);
     const classes = dypFormStyles();
     const dispatch = useDispatch();
@@ -189,7 +190,53 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
     const handleStartTournament = (e: React.FormEvent, name: string) => {
         e.preventDefault();
         //submitGamesToStore();
-        dispatch(updateTournament({ name }));
+        // dispatch(updateTournament({ name }));
+        const teamPlayerIds = teams.flat()/* .reduce((acc: number[], val) => {
+            const id = entityState.fetchedPlayers?.data?.find(fp => fp.name === val.name)?.id
+            if (id) {
+                acc.push(id);
+            }
+            return acc;
+        }, []) */
+
+        if (teamPlayerIds.includes(undefined)) {
+            return;
+        }
+
+        const teamsWithPlayerIds = teams as InitialTeams
+
+        const dbGames: DBGameData[] = teamsWithPlayerIds.reduce((acc: DBGameData[], val: InitialTeam, i, arr: InitialTeams) => {
+            if (i % 2 === 1) {
+                return acc;
+            }
+            const id1 = arr[i];
+            const id2 = arr[i + 1];
+            if (!id1 || !id2) {
+                return acc;
+            }
+            acc.push({
+                index: `1-${Math.ceil((i + 1) / 2)}`,
+                player1: [{ id: id1[0] }, { id: id1[1] }],
+                player2: [{ id: id2[0] }, { id: id2[1] }],
+            })
+            return acc;
+        }, [])
+
+        const { draw, numberOfGoals, numberOfLives, numberOfTables, pointsForDraw, pointsForWin, sets } = entityState.tournament;
+        debugger
+        dispatch(entityActions.createTournament({
+            name,
+            sets: sets || 1,
+            tournamentTypeId: 2,
+            draw,
+            numberOfGoals,
+            numberOfLives,
+            numberOfTables,
+            pointsForDraw,
+            pointsForWin,
+            games: dbGames,
+            players: teamPlayerIds as number[]
+        }));
         history.push(`/${tournamentType}/dyp`)
     };
 

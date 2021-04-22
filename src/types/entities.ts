@@ -67,6 +67,7 @@ export interface FetchedTournament extends BaseDatabaseEntity {
     numberOfTables?: number,
     goals?: boolean,
     games?: FetchedGameData[];
+    players?: number[];
     numberOfGoals?: number,
     draw?: boolean,
     sets: number;
@@ -180,6 +181,7 @@ export interface TournamentCreationReqData {
     pointsForWin?: number,
     pointsForDraw?: number;
     games?: DBGameData[];
+    players?: number[];
 }
 
 export interface GamesCreationReqData {
@@ -235,3 +237,10 @@ export interface MultipleDBGameData {
 // export type GamesResData = { [tournamentId: number]: GamesData }
 
 export type TournamentTypes = 'elimination' | 'lms' | 'roundRobin';
+
+export type TournamentDownloadData =
+    Omit<FetchedTournament, "id" | "userId" | "updatedAt"> &
+    {
+        games: Omit<DBGameData, 'id' | 'tournamentId'>,
+        playersWithNames: { id: number, name: string }[]
+    }
