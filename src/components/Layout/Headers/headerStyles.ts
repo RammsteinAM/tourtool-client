@@ -56,32 +56,6 @@ const styles = makeStyles((theme) =>
       width: '28px',
       height: '28px',
     },
-    searchContainer: {
-      overflow: 'hidden',
-      marginLeft: 'auto',
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        marginLeft: 'auto',
-        width: 'auto',
-      },
-    },
-    search: {
-      position: 'relative',
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.15),
-      display: 'flex',
-      flexDirection: 'row',
-      marginRight: '8px',
-      transition: "transform .3s cubic-bezier(.165,.84,.44,1)",
-      transform: "translateX(222px)",
-      width: '240px',
-      '&:hover': {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
-      },
-    },
-    searchOpen: {      
-      transform: "translateX(0px)",
-    },
     title: {
       fontSize: '24px',
       fontWeight: 400,
@@ -178,11 +152,6 @@ const styles = makeStyles((theme) =>
     },
     icon: {
       cursor: 'pointer'
-    },
-    searchIcon: {
-      cursor: 'pointer',
-      color: '#727272',
-      fontSize: 27,
     },
   }),
 );

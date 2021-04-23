@@ -22,6 +22,7 @@ import { updateSettings } from '../../../redux/settings/actions';
 import { debounce } from 'lodash';
 import clsx from 'clsx';
 import headerStyles from './headerStyles';
+import SearchField from '../../SearchField';
 
 
 interface Props {
@@ -65,28 +66,11 @@ const Header = (props: Props) => {
         dispatch(updateSettings({ tournamentsSortOrder: settingsState.tournamentsSortOrder === 1 ? -1 : 1 }));
     };
 
-    const delayedDispatchSearchKeyword = /* useCallback( */debounce((value: string) => dispatch(updateSettings({ tournamentsSearchKeyword: value })), 500)/* , [searchKeyword]) */
+    const delayedDispatchSearchKeyword = debounce((value: string) => dispatch(updateSettings({ tournamentsSearchKeyword: value })), 500)
 
-    const handleSearchChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setSearchKeyword(event.target.value as string)
-        delayedDispatchSearchKeyword(event.target.value as string);
-        // debounce(score => dispatch(updateSettings({ tournamentsSearchKeyword: event.target.value as string })), 500), [searchKeyword])
-        //dispatch(updateSettings({ tournamentsSearchKeyword: event.target.value as string }));
-    };
-
-    const handleSearchOpen = () => {
-        dispatch(updateSettings({ tournamentsSearchKeyword: '' }));
-        setSearchOpen(true);
-        setTimeout(() => {
-            searchFieldRef?.current?.focus();
-        }, 300);
-    };
-
-    const handleSearchClose = () => {
-        dispatch(updateSettings({ tournamentsSearchKeyword: '' }));
-        setSearchKeyword('');
-        setSearchOpen(false);
-    };
+    const searchActionCallback = (value: string) => {
+        dispatch(updateSettings({ tournamentsSearchKeyword: value }))
+    }
 
     return (
         <Toolbar className={classes.headerHomeRoot}>
@@ -156,23 +140,7 @@ const Header = (props: Props) => {
                             })}
                         </Select>
                     </div>
-                    <div className={classes.searchContainer}>
-                        <div className={clsx(classes.search, {[classes.searchOpen]: searchOpen })}>
-                            <SearchIcon onClick={handleSearchOpen} className={classes.searchIcon} />
-                            <Input
-                                type='text'
-                                value={searchKeyword}
-                                inputRef={searchFieldRef}
-                                // value={settingsState.tournamentsSearchKeyword}
-                                onChange={handleSearchChange}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <CloseIcon onClick={handleSearchClose} className={classes.icon} />
-                                    </InputAdornment>
-                                }
-                            />
-                        </div>
-                    </div>
+                    <SearchField actionCallback={searchActionCallback} />
                 </div>
             }
         </Toolbar>

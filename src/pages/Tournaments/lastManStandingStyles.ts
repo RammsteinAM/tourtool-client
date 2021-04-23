@@ -15,6 +15,7 @@ const styles = makeStyles((theme) => ({
         padding: "0 24px",
         display: 'flex',
         justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     tournamentSidebarHeaderContainer: {
         width: "100%",

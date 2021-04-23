@@ -31,7 +31,6 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getN
     let pressedKeys: string[] = [];
 
     useEffect(() => {
-        forwardedRef?.current?.focus()
         if (tournament.sets === 1) {
             forwardedRef?.current?.addEventListener('keydown', handleKeyDown);
         }

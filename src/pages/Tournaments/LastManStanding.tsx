@@ -17,6 +17,7 @@ import { splitGameKey } from '../../utils/stringUtils';
 import { useParams } from 'react-router-dom';
 import { gameActions } from '../../redux/games/actions';
 import { getMultipleSetScores } from '../../utils/scoreUtils';
+import SearchField from '../../components/SearchField';
 
 export interface Players {
     [key: string]: {
@@ -36,6 +37,7 @@ interface Props {
 const LastManStanding = (props: Props) => {
     const [playerData, setPlayerData] = useState<Players>({});
     const [maxScores, setMaxScores] = useState<number>(7);
+    const [searchValue, setSearchValue] = useState<string>('');
     const { width, ref: resizeRef } = useResizeDetector({ handleWidth: true, handleHeight: false, refreshMode: 'debounce', refreshRate: 300 });
     const entityState = useSelector((state: RootState) => state.entities);
     const settingsState = useSelector((state: RootState) => state.settings);
@@ -249,6 +251,9 @@ const LastManStanding = (props: Props) => {
         dispatch(gameActions.createNextLMSRound(tournamentId));
     }
 
+    const searchActionCallback = (value: string) => {
+        setSearchValue(value)
+    }
 
     if (!fetchedTournamentData) {
         return null;
@@ -262,6 +267,18 @@ const LastManStanding = (props: Props) => {
                 style={{ width: `calc(100% - ${settingsState.tournamentSidebar ? 362 : 0}px)`, marginRight: settingsState.tournamentSidebar ? '12px' : '0px' }}
             >
                 <div className={classes.tournamentGameContainerHeader}>
+                    <SearchField
+                        actionCallback={searchActionCallback}
+                        styles={{
+                            inputStyle: {
+                                color: '#c5c8cb',
+                                fontWeight: 200
+
+                            },
+                            searchIconStyle: { color: '#c5c8cb', fontSize: 26 },
+                            closeIconStyle: { color: '#c5c8cb' }
+                        }}
+                    />
                 </div>
                 <CardContent className={classes.cardContent}>
                     {tournamentGameRounds?.sort().map(round => {
@@ -272,6 +289,7 @@ const LastManStanding = (props: Props) => {
                                 roundNubmer={round}
                                 maxScores={maxScores}
                                 normalizedPlayers={normalizedPlayers}
+                                searchFilterValue={searchValue}
                             />
                         )
                     })}

@@ -78,6 +78,18 @@ const PlayerForm = () => {
             history.push(`/${tournamentType}/${playerType}/${entityState.fetchedTournaments.createdTournamentId}`)
         }
     }, [entityState.fetchedTournaments]);
+    
+    const submitParticipantsToStore = (newPlayers: StateParticipants) => {
+        const storeParticipants: StateParticipants = newPlayers
+            .filter(player => !!player.name)
+            .map((player, i) => {
+                return checkboxSetPlayers ?
+                    { id: player.id, name: player.name, category: player.category } :
+                    { id: player.id, name: player.name, category: null };
+            })
+        dispatch(updateParticipants(storeParticipants));
+        // dispatch(updateEliminationPlayers(storeParticipants));
+    }
 
     const delayedSubmitParticipantsToStore = useCallback(debounce(newPlayers => submitParticipantsToStore(newPlayers), 400), [entityState.participants]);
 
@@ -284,18 +296,6 @@ const PlayerForm = () => {
 
         setParticipants([...newPlayers]);
         submitParticipantsToStore([...newPlayers]);
-    }
-
-    const submitParticipantsToStore = (newPlayers: StateParticipants) => {
-        const storeParticipants: StateParticipants = newPlayers
-            .filter(player => !!player.name)
-            .map((player, i) => {
-                return checkboxSetPlayers ?
-                    { id: player.id, name: player.name, category: player.category } :
-                    { id: player.id, name: player.name, category: null };
-            })
-        dispatch(updateParticipants(storeParticipants));
-        // dispatch(updateEliminationPlayers(storeParticipants));
     }
 
     const renderHeader = () => {
