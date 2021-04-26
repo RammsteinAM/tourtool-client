@@ -65,7 +65,6 @@ export interface FetchedPlayer extends BaseDatabaseEntity {
 export interface FetchedTournament extends BaseDatabaseEntity {
     name: string,
     numberOfTables?: number,
-    goals?: boolean,
     games?: FetchedGameData[];
     players?: number[];
     numberOfGoals?: number,

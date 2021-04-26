@@ -24,7 +24,7 @@ const GameListRow = ({ tournamentId, gameKey, tabIndex, normalizedPlayers, maxSc
     const [numberOfAdditionalGames, setNumberOfAdditionalGames] = useState<number>(0);
     const fetchedTournamentsData = useSelector((state: RootState) => state.entities.fetchedTournaments.data);
     const scoresRef = useRef<any>();
-    const enterScoreContentRef = useRef<any>(null);   
+    const enterScoreContentRef = useRef<any>(null);
     const fetchedGames = useSelector((state: RootState) => state.games.data);
     const tournamentGames = fetchedGames[tournamentId];
     const normalizedGames = getNormalizedGames(tournamentGames);
@@ -137,6 +137,7 @@ const GameListRow = ({ tournamentId, gameKey, tabIndex, normalizedPlayers, maxSc
                         game={normalizedGames[gameKey]}
                         tournament={fetchedTournamentsData[tournamentId]}
                         visibleScores={visibleScores}
+                        playerNames={{ left: player1Name, right: player2Name }}
                         getNumberOfAdditionalGames={handleAdditionalGameCount}
                     />
                 </div>

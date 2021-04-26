@@ -9,6 +9,7 @@ import toast from '../../IndependentSnackbar';
 import { getMultipleSetScores } from '../../../utils/scoreUtils';
 import clsx from 'clsx';
 import enterScoreDialogStyles from './enterScoresStyles';
+import SelectWinnerConainer from './SelectWinnerConainer';
 
 interface Props {
     onClose: () => void;
@@ -18,10 +19,11 @@ interface Props {
     tournament: FetchedTournament;
     getNumberOfAdditionalGames?: (n: number) => void;
     forwardedRef?: any;
+    playerNames?: { left: string, right: string };
     visibleScores?: number;
 }
 
-const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getNumberOfAdditionalGames, forwardedRef, visibleScores }: Props) => {
+const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getNumberOfAdditionalGames, forwardedRef, visibleScores, playerNames }: Props) => {
     const classes = enterScoreDialogStyles();
     const [score1, setScore1] = useState<StateScore>([]);
     const [score2, setScore2] = useState<StateScore>([]);
@@ -60,7 +62,7 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getN
         setNumberOfGames(numberOfPlayedGames);
     }, [game]);
 
-    if (!numberOfGoals) {
+    if (typeof numberOfGoals !== 'number') {
         return null;
     }
 
@@ -190,8 +192,71 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getN
         setScore2(stateScore2);
     }
 
+    const handleWinnerSelectLeft = (setNumber: number): void => {
+        if (tournament.sets === 1) {
+            setScore1([1]);
+            setScore2([0]);            
+            return;
+        }
+        const newScore1: StateScore = [...score1];
+        const newScore2: StateScore = [...score2];
+        newScore1[setNumber] = 1;
+        newScore2[setNumber] = 0;
+        const newNumberOfGames = getNewNumberOfGames(newScore1, newScore2);
+        const { score1: stateScore1, score2: stateScore2 } = getNewScores(newScore1, newScore2, newNumberOfGames);
+        getNumberOfAdditionalGames && getNumberOfAdditionalGames(newNumberOfGames - tournament.sets);
+        numberOfGames !== newNumberOfGames && setNumberOfGames(newNumberOfGames);
+        setScore1(stateScore1);
+        setScore2(stateScore2);
+    }
+
+    const handleWinnerSelectRight = (setNumber: number): void => {
+        if (tournament.sets === 1) {
+            setScore2([1]);
+            setScore1([0]);
+            return;
+        }
+        const newScore1: StateScore = [...score1];
+        const newScore2: StateScore = [...score2];
+        newScore2[setNumber] = 1;
+        newScore1[setNumber] = 0;
+        const newNumberOfGames = getNewNumberOfGames(newScore1, newScore2);
+        const { score1: stateScore1, score2: stateScore2 } = getNewScores(newScore1, newScore2, newNumberOfGames);
+        getNumberOfAdditionalGames && getNumberOfAdditionalGames(newNumberOfGames - tournament.sets);
+        numberOfGames !== newNumberOfGames && setNumberOfGames(newNumberOfGames);
+        setScore1(stateScore1);
+        setScore2(stateScore2);
+    }
+
+    const handleTieSelect = (setNumber: number): void => {
+        if (tournament.sets === 1) {
+            setScore1([1]);
+            setScore2([1]);
+            return;
+        }
+
+        const newScore1: StateScore = [...score1];
+        const newScore2: StateScore = [...score2];
+        newScore1[setNumber] = 1;
+        newScore2[setNumber] = 1;
+        const newNumberOfGames = getNewNumberOfGames(newScore1, newScore2);
+        const { score1: stateScore1, score2: stateScore2 } = getNewScores(newScore1, newScore2, newNumberOfGames);
+        getNumberOfAdditionalGames && getNumberOfAdditionalGames(newNumberOfGames - tournament.sets);
+        numberOfGames !== newNumberOfGames && setNumberOfGames(newNumberOfGames);
+        setScore1(stateScore1);
+        setScore2(stateScore2);
+    }
+
     const handleClose = () => {
         onClose()
+    }
+
+    const getVisibleScoreNumber = () => {
+        let value = 9;
+        if (visibleScores) value = visibleScores;
+        if (numberOfGoals < 9) value = numberOfGoals + 1;
+        // if (value === 1) return 2;
+        return value;
     }
 
     return (
@@ -203,8 +268,8 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getN
             ref={forwardedRef}
             tabIndex={0}
         >
-            {tournament.sets === 1 && <div className={classes.hint}>{t('enter-score-hint-text')}</div>}
-            {[...Array(numberOfGames).keys()].map(key => {
+            {(tournament.sets === 1 && numberOfGoals > 0) && <div className={classes.hint}>{t('enter-score-hint-text')}</div>}
+            {numberOfGoals > 0 && [...Array(numberOfGames).keys()].map(key => {
                 return (
                     <EnterScoreScoresConainer
                         key={key}
@@ -212,8 +277,24 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getN
                         score2={score2[key]}
                         onScoreSelect1={(score) => handleScoreSelectLeft(score, key)}
                         onScoreSelect2={(score) => handleScoreSelectRight(score, key)}
-                        visibleScores={visibleScores || (numberOfGoals < 9 ? numberOfGoals + 1 : 9)}
+                        visibleScores={getVisibleScoreNumber()}
                         numberOfGoals={numberOfGoals}
+                        disallowTie={!tournament.draw}
+                    />
+                )
+            })
+            }
+            {(numberOfGoals === 0 && playerNames) && [...Array(numberOfGames).keys()].map(key => {
+                return (
+                    <SelectWinnerConainer
+                        key={key}
+                        score1={score1[key]}
+                        score2={score2[key]}
+                        onWinnerSelect1={() => handleWinnerSelectLeft(key)}
+                        onWinnerSelect2={() => handleWinnerSelectRight(key)}
+                        onTieSelect={() => handleTieSelect(key)}
+                        player1Name={playerNames.left}
+                        player2Name={playerNames.right}
                         disallowTie={!tournament.draw}
                     />
                 )
