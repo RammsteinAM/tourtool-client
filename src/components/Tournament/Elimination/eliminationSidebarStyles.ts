@@ -96,6 +96,7 @@ const styles = makeStyles((theme) => ({
         alignItems: "center",
         opacity: 0,
         transition: 'opacity 200ms',
+        zIndex: 2,
     },
     gameCardEnterResultBtn: {
         backgroundColor: "#e16f3d",
@@ -120,6 +121,17 @@ const styles = makeStyles((theme) => ({
         color: "#767d84",
         textDecoration: "line-through",
     },
+    gameCardActiveTable: {
+        position: "absolute",
+        width: "46px",
+        backgroundColor: "#8EBD5E",
+        height: "100%",
+        top: "0px",
+        right: "0",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+    }
 }));
 
 export default styles;

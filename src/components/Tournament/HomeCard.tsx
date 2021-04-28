@@ -77,15 +77,15 @@ const TournamentTypeSelect = (props: Props) => {
         setDeleteDialogOpen(true);
     }
 
-    const downloadFile = async (tournament: TournamentDownloadData) => {
+    const downloadFile = (tournament: TournamentDownloadData) => {
         if (!tournament) {
-            toast.error('Error Exporting Tournament');
+            toast.error(t('Error Exporting Tournament'));
             return;
         }
         const fileName = tournament.name || 'file';
         const json = JSON.stringify(tournament);
         const blob = new Blob([json], { type: 'application/json' });
-        const href = await URL.createObjectURL(blob);
+        const href = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = href;
         link.download = fileName + ".json";
@@ -101,7 +101,7 @@ const TournamentTypeSelect = (props: Props) => {
                 downloadFile(tournament)
             })
             .catch(() => {
-                toast.error('Error Exporting Tournament');
+                toast.error(t('Error Exporting Tournament'));
             })
     }
 

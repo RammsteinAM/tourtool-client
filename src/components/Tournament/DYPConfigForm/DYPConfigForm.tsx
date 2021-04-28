@@ -222,8 +222,7 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
             return acc;
         }, [])
 
-        const { draw, numberOfGoals, numberOfLives, numberOfTables, pointsForDraw, pointsForWin, sets, goals } = entityState.tournament;
-        debugger
+        const { draw, numberOfGoals, numberOfLives, numberOfTables, pointsForDraw, pointsForWin, sets, goals } = entityState.tournament;    
         dispatch(entityActions.createTournament({
             name,
             sets: sets || 1,

@@ -14,3 +14,5 @@ export const tournamentTypeIds: Record<TournamentTypes, number> = {
     lms: 2,
     roundRobin: 3,
 }
+
+export const thirdPlaceIndex = 'thirdPlace';

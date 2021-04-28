@@ -16,6 +16,7 @@ interface Props {
     player2Id?: number | [number, number];
     normalizedPlayers?: { [id: number]: FetchedPlayer }
     gameKey: string;
+    gameIndexesForActiveTables: { [index: string]: number };
 }
 
 const EliminationCard = (props: Props) => {
@@ -67,7 +68,7 @@ const EliminationCard = (props: Props) => {
             break;
     }
 
-    const isBye = props.games[props.gameKey]?.hasByePlayer;
+    const isBye = props.games && props.games[props.gameKey]?.hasByePlayer;
 
     let score1, score2;
     if (game.scores1 && game.scores2) {
@@ -127,10 +128,15 @@ const EliminationCard = (props: Props) => {
                 </div> :
                 <div className={classes.gameCardScore}>{t('vs')}</div>
             }
-            {player1Name && player2Name &&
+            {(player1Name && player2Name) ?
                 <div className={classes.gameCardEnterResult} onClick={handleScoreDialogOpen}>
                     <div className={classes.gameCardEnterResultBtn}>{t('Enter Result')}</div>
-                </div>
+                </div> : null
+            }
+            {(props.gameIndexesForActiveTables && props.gameIndexesForActiveTables[props.gameKey]) ?
+                <div className={classes.gameCardActiveTable} >
+                    {props.gameIndexesForActiveTables[props.gameKey]}
+                </div> : null
             }
             <EnterScoreDialog
                 open={scoreDialogOpen}

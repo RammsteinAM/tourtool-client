@@ -20,6 +20,7 @@ import {
   CREATE_PLAYER_REQUEST, CREATE_PLAYER_SUCCESS, CREATE_PLAYER_FAILURE,
   CREATE_PLAYERS_REQUEST, CREATE_PLAYERS_SUCCESS, CREATE_PLAYERS_FAILURE,
   UPDATE_PLAYERS_REQUEST, UPDATE_PLAYERS_SUCCESS, UPDATE_PLAYERS_FAILURE,
+  UPDATE_TOURNAMENT_TABLES,
   EntitiesReducerState,
 } from "./types"
 
@@ -262,6 +263,21 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
           status: ActionStatus.Failure,
           data: { ...state.fetchedTournaments.data },
           error: action.payload?.error,
+        }
+      };
+    }
+    case UPDATE_TOURNAMENT_TABLES: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          ...state.fetchedTournaments,
+          data: {
+            ...state.fetchedTournaments.data,
+            [action.payload.id]: { 
+              ...state.fetchedTournaments.data[action.payload.id],
+              tablesByGameIndex: action.payload.tablesByGameIndex
+            }
+          },
         }
       };
     }

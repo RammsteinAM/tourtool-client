@@ -102,11 +102,6 @@ const RequestPasswordReset = (props: Props) => {
                                 <CircularProgress />
                             </div>
                         }
-                        {/* {authState.forgotPassword.status === ActionStatus.Failure &&
-                            <div className={mainClasses.errorMessage}>
-                                {t(`ERROR_${authState.forgotPassword.error}`)}
-                            </div>
-                        } */}
                     </form>
                 )}
             </Formik>

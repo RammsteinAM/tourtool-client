@@ -1,6 +1,5 @@
-import React, { useEffect, useState, FC } from 'react';
+import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { CircularProgress, Link } from '@material-ui/core';
@@ -38,21 +37,18 @@ const Login = (props: Props) => {
     const classes = loginStyles();
     const mainClasses = mainStyles();
     const dispatch = useDispatch();
-    const [submitting, setSubmitting] = useState<boolean>(false);
     const authStatus = useSelector((state: RootState) => state.auth.status);
     const history = useHistory();
     const { t } = useTranslation();
 
     useEffect(() => {
-        debugger
         if (authStatus === ActionStatus.Success) {
             history.push('/');
         }
     }, [authStatus])
 
     const handleFormSubmit = (values: FormikValues): void => {
-        dispatch(authActions.login(values));
-        setSubmitting(true);
+        dispatch(authActions.login(values))
     }
 
     const handleForgotPassword = (e: React.MouseEvent): void => {

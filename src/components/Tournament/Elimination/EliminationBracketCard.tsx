@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useTranslation } from "react-i18next";
 import { FetchedPlayer, StateEliminationGame, StateScore } from '../../../types/entities';
@@ -15,11 +15,8 @@ interface Props {
 const EliminationBracketCard = (props: Props) => {
     const [game, setGame] = useState<StateEliminationGame>();
     const gamesState = useSelector((state: RootState) => state.entities.eliminationGames);
-    const dispatch = useDispatch();
     const classes = eliminationSidebarStyles();
-    const { t } = useTranslation();
     
-    // debugger
     const { player1Id, player2Id } = props.gameKey && game ? game : props;
     const player1Name: string = props.normalizedPlayers && player1Id ?
         (typeof player1Id === 'number' ?

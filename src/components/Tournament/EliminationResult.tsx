@@ -13,6 +13,7 @@ import Paper from '@material-ui/core/Paper';
 import { useTranslation } from "react-i18next";
 import { ReactComponent as EliminationIcon } from '../../resources/icons/elimination.svg';
 import { ReactComponent as WinnerBadge } from '../../resources/images/winner.svg';
+import { thirdPlaceIndex } from '../../utils/constants';
 import clsx from 'clsx';
 import eliminationResultStyles from './eliminationResultStyles';
 
@@ -69,7 +70,7 @@ const EliminationResult = () => {
             if (val.hasByePlayer || !winner || !loser) {
                 return acc;
             }
-            if (val.index === 'thirdPlace') {
+            if (val.index === thirdPlaceIndex) {
                 acc[3] = [winner];
                 acc[4] = [loser];
                 return acc;

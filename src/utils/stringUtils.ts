@@ -1,4 +1,5 @@
 import { Nullable } from "../types/main";
+import { thirdPlaceIndex } from "./constants";
 
 interface GameKeyParts {
   round: number;
@@ -6,7 +7,7 @@ interface GameKeyParts {
 }
 
 export const splitGameKey = (gameKey: string): GameKeyParts => {
-  if (gameKey === 'thirdPlace') {
+  if (gameKey === thirdPlaceIndex) {
     return { round: -1, gameNumber: -1 };
   }
   return { round: parseInt(gameKey.split('-')[0]), gameNumber: parseInt(gameKey.split('-')[1]) };

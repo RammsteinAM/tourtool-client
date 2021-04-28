@@ -114,25 +114,30 @@ const PlayerForm = () => {
     const handleStartTournament = (e: React.FormEvent, name: string) => {
         e.preventDefault();
         const dbGames: DBGameData[] = entityState.lmsPlayers.reduce((acc: DBGameData[], val: StateLMSPlayer, i, arr: StateLMSPlayers) => {
-            if (i % 2 === 1) {
-                return acc;
-            }
             const id1 = arr[i]?.id;
             const id2 = arr[i + 1]?.id;
-            if (typeof id1 === 'number' && typeof id2 === 'number') {
-                acc.push({
-                    index: `1-${Math.ceil((i + 1) / 2)}`,
-                    player1: [{ id: id1 }],
-                    player2: [{ id: id2 }],
-                })
+            if (i % 2 === 1 || typeof id1 !== 'number' || typeof id2 !== 'number') {
+                return acc;
             }
-            if (typeof id1 === 'object' && typeof id2 === 'object') {
-                acc.push({
-                    index: `1-${Math.ceil((i + 1) / 2)}`,
-                    player1: [{ id: id1[0] }, { id: id1[1] }],
-                    player2: [{ id: id2[0] }, { id: id2[1] }],
-                })
+            acc.push({
+                index: `1-${Math.ceil((i + 1) / 2)}`,
+                player1: [{ id: id1 }],
+                player2: [{ id: id2 }],
+            })
+            return acc;
+        }, [])
+
+        const dbMonsterDYPGames: DBGameData[] = entityState.lmsPlayers.reduce((acc: DBGameData[], val: StateLMSPlayer, i, arr: StateLMSPlayers) => {
+            const id1 = arr[i]?.id;
+            const id2 = arr[i + 1]?.id;
+            if (i % 2 === 1 || typeof id1 !== 'number' || typeof id2 !== 'number') {
+                return acc;
             }
+            acc.push({
+                index: `1-${Math.ceil((i + 1) / 2)}`,
+                player1: [{ id: id1 }],
+                player2: [{ id: id2 }],
+            })
             return acc;
         }, [])
 
@@ -150,6 +155,7 @@ const PlayerForm = () => {
             sets: sets || 1,
             tournamentTypeId: 2,
             draw,
+            monsterDYP: playerType === 'monster-dyp',
             numberOfGoals: goals ? numberOfGoals : 0,
             numberOfLives,
             numberOfTables,

@@ -3,6 +3,7 @@ import { Nullable, ResponseData, ResponseError } from "../../types/main";
 import { StateEliminationPlayers, StateTournament, EliminationGames, StateParticipants, Games, StateLMSPlayers, FetchedPlayers, FetchedPlayer, FetchedTournaments, FetchedTournament, BaseDatabaseEntity, FetchedGames, FetchedCreatedGames, FetchedGameData } from "../../types/entities";
 import AppState, { DatalessState } from "../../types/redux";
 import { PayloadedAction } from "../helpers";
+import { UpdateGamesSuccessActionParams } from "../games/types";
 
 const UPDATE_TOURNAMENT = "UPDATE_TOURNAMENT";
 const UPDATE_PARTICIPANTS = "UPDATE_PARTICIPANTS";
@@ -30,6 +31,7 @@ const CREATE_TOURNAMENT_FAILURE = "CREATE_TOURNAMENT_FAILURE";
 const UPDATE_TOURNAMENT_REQUEST = "UPDATE_TOURNAMENT_REQUEST";
 const UPDATE_TOURNAMENT_SUCCESS = "UPDATE_TOURNAMENT_SUCCESS";
 const UPDATE_TOURNAMENT_FAILURE = "UPDATE_TOURNAMENT_FAILURE";
+const UPDATE_TOURNAMENT_TABLES = "UPDATE_TOURNAMENT_TABLES";
 const UPDATE_TOURNAMENT_GAMES_REQUEST = "UPDATE_TOURNAMENT_GAMES_REQUEST";
 const UPDATE_TOURNAMENT_GAMES_SUCCESS = "UPDATE_TOURNAMENT_GAMES_SUCCESS";
 const UPDATE_TOURNAMENT_GAMES_FAILURE = "UPDATE_TOURNAMENT_GAMES_FAILURE";
@@ -57,6 +59,7 @@ export {
     GET_PLAYERS_REQUEST, GET_PLAYERS_SUCCESS, GET_PLAYERS_FAILURE,
     CREATE_TOURNAMENT_REQUEST, CREATE_TOURNAMENT_SUCCESS, CREATE_TOURNAMENT_FAILURE,
     UPDATE_TOURNAMENT_REQUEST, UPDATE_TOURNAMENT_SUCCESS, UPDATE_TOURNAMENT_FAILURE,
+    UPDATE_TOURNAMENT_TABLES,
     UPDATE_TOURNAMENT_GAMES_REQUEST, UPDATE_TOURNAMENT_GAMES_SUCCESS, UPDATE_TOURNAMENT_GAMES_FAILURE,
     DELETE_TOURNAMENT_REQUEST, DELETE_TOURNAMENT_SUCCESS, DELETE_TOURNAMENT_FAILURE,
     CREATE_PLAYER_REQUEST, CREATE_PLAYER_SUCCESS, CREATE_PLAYER_FAILURE,
@@ -109,6 +112,8 @@ export type UpdateTournamentRequestActionParams = Action<typeof UPDATE_TOURNAMEN
 export type UpdateTournamentSuccessActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_SUCCESS, FetchedTournament>;
 export type UpdateTournamentFailureActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_FAILURE, ResponseError | null>;
 
+export type UpdateTournamentTablesActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_TABLES, { id: number, tablesByGameIndex?: { [index: string]: number } }>;
+
 export type UpdateTournamentGamesRequestActionParams = Action<typeof UPDATE_TOURNAMENT_GAMES_REQUEST>;
 export type UpdateTournamentGamesSuccessActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_GAMES_SUCCESS, FetchedTournament>;
 export type UpdateTournamentGamesFailureActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_GAMES_FAILURE, ResponseError | null>;
@@ -149,6 +154,7 @@ export type UserActionParams =
     UpdateTournamentRequestActionParams |
     UpdateTournamentSuccessActionParams |
     UpdateTournamentFailureActionParams |
+    UpdateTournamentTablesActionParams |
     UpdateTournamentGamesRequestActionParams |
     UpdateTournamentGamesSuccessActionParams |
     UpdateTournamentGamesFailureActionParams |
@@ -163,4 +169,5 @@ export type UserActionParams =
     CreatePlayersFailureActionParams |
     UpdatePlayersRequestActionParams |
     UpdatePlayersSuccessActionParams |
-    UpdatePlayersFailureActionParams
+    UpdatePlayersFailureActionParams |
+    UpdateGamesSuccessActionParams

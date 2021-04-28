@@ -18,6 +18,7 @@ import {
     GET_TOURNAMENTS_REQUEST, GET_TOURNAMENTS_SUCCESS, GET_TOURNAMENTS_FAILURE,
     CREATE_TOURNAMENT_REQUEST, CREATE_TOURNAMENT_SUCCESS, CREATE_TOURNAMENT_FAILURE,
     UPDATE_TOURNAMENT_REQUEST, UPDATE_TOURNAMENT_SUCCESS, UPDATE_TOURNAMENT_FAILURE,
+    UPDATE_TOURNAMENT_TABLES,
     UPDATE_TOURNAMENT_GAMES_REQUEST, UPDATE_TOURNAMENT_GAMES_SUCCESS, UPDATE_TOURNAMENT_GAMES_FAILURE,
     DELETE_TOURNAMENT_REQUEST, DELETE_TOURNAMENT_SUCCESS, DELETE_TOURNAMENT_FAILURE,
     CREATE_PLAYER_REQUEST, CREATE_PLAYER_SUCCESS, CREATE_PLAYER_FAILURE,
@@ -40,7 +41,7 @@ import {
     UpdateTournamentGamesRequestActionParams, UpdateTournamentGamesSuccessActionParams, UpdateTournamentGamesFailureActionParams,
     DeleteTournamentRequestActionParams, DeleteTournamentSuccessActionParams, DeleteTournamentFailureActionParams,
     CreatePlayersRequestActionParams, CreatePlayersSuccessActionParams, CreatePlayersFailureActionParams,
-    UpdatePlayersRequestActionParams, UpdatePlayersSuccessActionParams, UpdatePlayersFailureActionParams,
+    UpdatePlayersRequestActionParams, UpdatePlayersSuccessActionParams, UpdatePlayersFailureActionParams, UpdateTournamentTablesActionParams,
 } from "./types"
 import { UserStateData, UserUpdateReqData } from "../../types/user";
 import { loginSuccess } from "../auth/actions";
@@ -84,6 +85,7 @@ export const createTournamentFailure = payloadedActionCreator<CreateTournamentFa
 export const updateTournamentRequest = actionCreator<UpdateTournamentRequestActionParams>(UPDATE_TOURNAMENT_REQUEST);
 export const updateTournamentSuccess = payloadedActionCreator<UpdateTournamentSuccessActionParams>(UPDATE_TOURNAMENT_SUCCESS);
 export const updateTournamentFailure = payloadedActionCreator<UpdateTournamentFailureActionParams>(UPDATE_TOURNAMENT_FAILURE);
+export const updateTournamentTables = payloadedActionCreator<UpdateTournamentTablesActionParams>(UPDATE_TOURNAMENT_TABLES);
 
 export const updateTournamentGamesRequest = actionCreator<UpdateTournamentGamesRequestActionParams>(UPDATE_TOURNAMENT_GAMES_REQUEST);
 export const updateTournamentGamesSuccess = payloadedActionCreator<UpdateTournamentGamesSuccessActionParams>(UPDATE_TOURNAMENT_GAMES_SUCCESS);

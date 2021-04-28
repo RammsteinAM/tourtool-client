@@ -85,12 +85,14 @@ const App = () => {
           <PrivateRoute exact path="/tournament/player-form/:tournamentType/:playerType/:config?">
             <PlayerForm />
           </PrivateRoute>
-          <PrivateRoute exact path="/tournaments/">
-            <div>KEKW</div>
-          </PrivateRoute>
           <PublicRoute exact path="/login">
             <LoginDialog />
           </PublicRoute>
+          {/* <PublicRoute exact path="/view-tournament/:tournamentId">
+            {
+              <div>KEKW</div>
+              }
+          </PublicRoute> */}
           <PublicRoute exact path="/reset-password/:token">
             <ResetPasswordForm />
           </PublicRoute>

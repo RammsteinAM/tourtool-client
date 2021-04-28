@@ -8,7 +8,6 @@ const styles = makeStyles((theme) => ({
     },
     button: {
         margin: theme.spacing(1, 2, 0),
-        //height: '35px',
         minWidth: '250px',
         '&:active': {
             boxShadow: 'none',

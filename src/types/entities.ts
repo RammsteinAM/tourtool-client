@@ -1,5 +1,3 @@
-import { Nullable } from "./main";
-
 interface BaseEntity {
     id?: number;
 }
@@ -20,8 +18,6 @@ export interface EntityStateData<E> {
 }
 
 export interface StateGame extends BaseEntity {
-    // player1?: string | [string, string],
-    // player2?: string | [string, string],
     player1Id: number | [number, number],
     player2Id: number | [number, number],
     score1?: number,
@@ -29,18 +25,12 @@ export interface StateGame extends BaseEntity {
     scores1?: number[],
     scores2?: number[],
     index: string,
-    // round: number;
-    // gameNumber: number;
 }
 
 export interface StateEliminationGame extends StateGame {
     hasByePlayer?: boolean,
-    isPredetermined?: boolean,
+    numberOfParticipants?: number,
 }
-
-// export interface StateLMSGame extends StateGame {
-//     round: string,
-// }
 
 export type Games = {
     [key: string]: StateGame
@@ -63,15 +53,17 @@ export interface FetchedPlayer extends BaseDatabaseEntity {
 }
 
 export interface FetchedTournament extends BaseDatabaseEntity {
-    name: string,
-    numberOfTables?: number,
+    name: string;
+    numberOfTables?: number;
+    tablesByGameIndex?: { [index: string]: number };
     games?: FetchedGameData[];
     players?: number[];
-    numberOfGoals?: number,
-    draw?: boolean,
+    numberOfGoals?: number;
     sets: number;
+    draw?: boolean;
+    monsterDYP?: boolean;
     numberOfLives?: number;
-    pointsForWin?: number,
+    pointsForWin?: number;
     pointsForDraw?: number;
     tournamentTypeId: number;
     createdAt: Date;
@@ -81,7 +73,6 @@ export interface FetchedTournament extends BaseDatabaseEntity {
 export interface FetchedCreatedGames extends BaseDatabaseEntity {
     games?: FetchedGameData[];
 }
-
 export interface DBGameData extends BaseEntity {
     index: string;
     player1?: Player,
@@ -94,17 +85,7 @@ export interface DBGameData extends BaseEntity {
 
 export type FetchedGameData = DBGameData & Required<BaseEntity> & { tournamentId?: number }
 
-export type FetchedGamesData = { tournamentId: number, games: MultipleDBGameData[] }
-
-// export interface FetchedGameData extends BaseDatabaseEntity {
-//     index: string;
-//     tournamentId: number;
-//     player1?: { id: number }[],
-//     player2?: { id: number }[],
-//     scores1?: StateScore;
-//     scores2?: StateScore;
-//     hasByePlayer?: boolean;
-// }
+export type FetchedGamesData = { tournamentId: number, games: MultipleDBGameData[], tablesByGameIndex: { [index: string]: number } }
 
 export interface StateEliminationPlayer {
     id: number | [number, number],
@@ -118,15 +99,15 @@ export interface StateLMSPlayer {
 }
 
 export interface StateTournament extends BaseEntity {
-    name?: string,
+    name?: string;
     sets?: number;
-    numberOfTables?: number,
-    goals?: boolean,
-    numberOfGoals?: number,
-    draw?: boolean,
+    numberOfTables?: number;
+    goals?: boolean;
+    numberOfGoals?: number;
+    draw?: boolean;
     numberOfLives?: number;
-    thirdPlace?: boolean,
-    pointsForWin?: number,
+    thirdPlace?: boolean;
+    pointsForWin?: number;
     pointsForDraw?: number;
 }
 
@@ -137,18 +118,11 @@ export type FetchedPlayers = FetchedPlayer[];
 export type FetchedGames = { [tournamentId: number]: FetchedGameData[] };
 export type StateEliminationPlayers = StateEliminationPlayer[];
 export type StateLMSPlayers = StateLMSPlayer[];
-// export type StateGames = StateEliminationGame[];
-
-export type EliminationPlayers = {
-    [col: number]: StateEliminationPlayers
-}
 
 export type EliminationGames = {
     [key: string]: StateEliminationGame
 }
-export type StateScore = number[]/* {
-    [set: number]: number;
-} */
+export type StateScore = number[];
 
 export interface LMSTableProps {
     name?: string;
@@ -176,6 +150,7 @@ export interface TournamentCreationReqData {
     numberOfLives?: number;
     numberOfTables?: number;
     draw?: boolean;
+    monsterDYP?: boolean;
     thirdPlace?: boolean;
     pointsForWin?: number,
     pointsForDraw?: number;
@@ -230,10 +205,6 @@ export interface MultipleDBGameData {
     hasByePlayer?: boolean;
     tournamentId?: number;
 }
-
-// export type GamesData = DBGameData[];
-
-// export type GamesResData = { [tournamentId: number]: GamesData }
 
 export type TournamentTypes = 'elimination' | 'lms' | 'roundRobin';
 

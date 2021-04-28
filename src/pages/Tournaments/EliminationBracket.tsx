@@ -5,12 +5,13 @@ import { DBGameData, EliminationGames, StateEliminationPlayers } from '../../typ
 import EliminationSidebar from '../../components/Tournament/Elimination/EliminationSidebar';
 import { entityActions, resetEliminationGames, updateEliminationGames } from '../../redux/tournamentEntities/actions';
 import CreateTournamentDialog from '../../components/Tournament/CreateTournamentDialog';
-import { Redirect, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import EliminationColumn from '../../components/Tournament/Elimination/EliminationColumn';
 import EliminationBracketCards from '../../components/Tournament/Elimination/EliminationBracketCards';
-import tournamentStyles from './tournamentStyles';
 import { getNormalizedParticipants } from '../../utils/arrayUtils';
 import { ActionStatus } from '../../types/main';
+import { thirdPlaceIndex } from '../../utils/constants';
+import tournamentStyles from './tournamentStyles';
 
 const EliminationBracket = () => {
     const [players, setPlayers] = useState<StateEliminationPlayers>([]);
@@ -101,7 +102,6 @@ const EliminationBracket = () => {
     };
 
     const getByeIndexes = (n: number) => {
-        // if (Math.log(32) / Math.log(2) % 1 !== 0) return null;
         return [
             2, n,
             n / 2, n / 2 + 2,
@@ -118,12 +118,14 @@ const EliminationBracket = () => {
             const prevCol = col - 1;
             for (let i = 0, j = 1; i < players.length / (2 ** prevCol); i = i + 2, j++) {
                 const gameKey: string = `${col}-${j}`;
+                const { id: player1Id } = players[i];
+                const { id: player2Id } = players[i + 1];
+                const numberOfParticipants: number = (!!player1Id ? 1 : 0) + (!!player2Id ? 1 : 0);
                 storeGames[gameKey] = { player1Id: 0, player2Id: 0, index: gameKey }
                 if (col === 1) {
-                    const { id: player1Id } = players[i];
-                    const { id: player2Id } = players[i + 1];
                     storeGames[gameKey].player1Id = player1Id || 0;
                     storeGames[gameKey].player2Id = player2Id || 0;
+                    storeGames[gameKey].numberOfParticipants = numberOfParticipants;
                     if (players[i].bye || players[i + 1].bye) {
                         storeGames[gameKey].hasByePlayer = true;
                     }
@@ -137,51 +139,38 @@ const EliminationBracket = () => {
                 const {
                     p1p1,
                     p1p2, // 1st parent's 2nd player
-                    p2p1,
+                    p2p1, // 2nd parent's 1st player
                     p2p2,
-                    parent1HasByePlayer,
-                    parent1HasNoPlayer,
-                    parent1HasOnePlayer,
-                    parent2HasByePlayer,
-                    parent2HasNoPlayer,
-                    parent2HasOnePlayer,
+                    parent1NumOfParticipants,
+                    parent2NumOfParticipants,
                 } = {
                     p1p1: p1Game?.player1Id,
                     p1p2: p1Game?.player2Id,
-                    parent1HasByePlayer: p1Game?.hasByePlayer,
-                    parent1HasOnePlayer: (p1Game?.player1Id && !p1Game?.player2Id) || (p1Game?.player2Id && !p1Game?.player1Id),
-                    parent1HasNoPlayer: !p1Game?.player1Id && !p1Game?.player2Id,
+                    parent1NumOfParticipants: p1Game.numberOfParticipants!,
                     p2p1: p2Game?.player1Id,
                     p2p2: p2Game?.player2Id,
-                    parent2HasByePlayer: p2Game?.hasByePlayer,
-                    parent2HasOnePlayer: (p2Game?.player1Id && !p2Game?.player2Id) || (p2Game?.player2Id && !p2Game?.player1Id),
-                    parent2HasNoPlayer: !p2Game?.player1Id && !p2Game?.player2Id,
+                    parent2NumOfParticipants: p2Game.numberOfParticipants!,
                 };
-
-                if ((parent2HasNoPlayer || parent1HasNoPlayer) && ((parent1HasByePlayer && parent2HasOnePlayer) || (parent2HasByePlayer && parent1HasOnePlayer))) {
+                storeGames[gameKey].numberOfParticipants = (parent1NumOfParticipants > 0 ? 1 : 0) + (parent2NumOfParticipants > 0 ? 1 : 0)
+                if (parent1NumOfParticipants === 0 || parent2NumOfParticipants === 0) {
                     storeGames[gameKey].hasByePlayer = true;
                 }
-                if (parent2HasNoPlayer && parent1HasNoPlayer) {
-                    storeGames[gameKey].hasByePlayer = true;
-                }
-                if (!parent1HasByePlayer && !parent2HasByePlayer) {
+                if (parent1NumOfParticipants === 2 && parent2NumOfParticipants === 2) {
                     continue;
                 }
-                if (parent1HasOnePlayer && parent1HasByePlayer) {
+                if (parent1NumOfParticipants === 1) {
                     storeGames[gameKey].player1Id = p1p1 || p1p2;
                 }
-                if (parent2HasOnePlayer && parent2HasByePlayer) {
+                if (parent2NumOfParticipants === 1) {
                     storeGames[gameKey].player2Id = p2p1 || p2p2;
                 }
             }
 
         }
         if (entityState.tournament.thirdPlace) {
-            storeGames['thirdPlace'] = { player1Id: 0, player2Id: 0, index: 'thirdPlace' }
+            storeGames[thirdPlaceIndex] = { player1Id: 0, player2Id: 0, index: thirdPlaceIndex }
         }
-        // players.forEach(player => {
-        //     storeGame
-        // })
+
         return storeGames;
     }
 
@@ -221,7 +210,6 @@ const EliminationBracket = () => {
                 <div className={classes.eliminationBracketCardsContainer}>
                     {[...Array(numberOfColumns).keys()].map(key => {
                         const colNumber = key + 1;
-                        // const roundNumberDenominator: number = 2 ** (numberOfColumns - colNumber);
                         const numberOfGames = firstRoundGameNumber / (2 ** (colNumber - 1));
                         return (
                             <EliminationColumn

@@ -46,7 +46,12 @@ const GameListRound = ({ tournamentId, roundNubmer: roundNumber, maxScores, norm
                     if (player1Name.toLowerCase().indexOf(filter) >= 0 || player2Name.toLowerCase().indexOf(filter) >= 0) {
                         return game;
                     }
-
+                })
+                .sort((a, b) => {
+                    if (splitGameKey(a.index).gameNumber > splitGameKey(b.index).gameNumber) {
+                        return 1;
+                    }
+                    return -1;
                 })
                 .map(game => {
                     const round = splitGameKey(game.index).round;

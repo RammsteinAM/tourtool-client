@@ -1,10 +1,6 @@
-import { actionCreator, payloadedActionCreator, PayloadedAction } from "../helpers";
-import history from '../../history';
+import { actionCreator, payloadedActionCreator } from "../helpers";
 import { Dispatch } from "redux";
 import { AxiosError, AxiosResponse } from "axios";
-import { userServices } from "../../services/user";
-import { tournamentServices } from "../../services/tournament";
-import { playerServices } from "../../services/player";
 import {
     GET_GAMES_REQUEST, GET_GAMES_SUCCESS, GET_GAMES_FAILURE,
     CREATE_GAMES_REQUEST, CREATE_GAMES_SUCCESS, CREATE_GAMES_FAILURE,
@@ -17,8 +13,9 @@ import {
     UserActionParams,
 } from "./types"
 import { ResponseData } from "../../types/main";
-import { BaseDatabaseEntity, FetchedCreatedGames, FetchedGameData, FetchedGames, FetchedGamesData, FetchedPlayer, FetchedPlayers, FetchedTournament, FetchedTournaments, GamesCreationReqData, GameUpdateReqData } from "../../types/entities";
+import { FetchedGameData, FetchedGames, FetchedGamesData, GamesCreationReqData, GameUpdateReqData } from "../../types/entities";
 import { gameServices } from "../../services/game";
+import { updateTournamentTables } from "../tournamentEntities/actions";
 
 export const getGamesRequest = actionCreator<GetGamesRequestActionParams>(GET_GAMES_REQUEST);
 export const getGamesSuccess = payloadedActionCreator<GetGamesSuccessActionParams>(GET_GAMES_SUCCESS);
@@ -102,8 +99,13 @@ const editGameAndNextGames = (data: GameUpdateReqData) => {
         gameServices.updateGameAndNextGames(data)
             .then(
                 (res: AxiosResponse<ResponseData<FetchedGamesData>>) => {
-                    debugger
-                    res?.data?.data && dispatch(updateGamesSuccess(res.data.data));
+                    if (res?.data?.data) {
+                        dispatch(updateGamesSuccess(res.data.data));
+                        const data = res.data.data;
+                        if (data.tournamentId && data.tablesByGameIndex) {
+                            dispatch(updateTournamentTables({id: data.tournamentId, tablesByGameIndex: data.tablesByGameIndex}))
+                        }
+                    }                    
                 },
                 (error: AxiosError) => {
                     dispatch(updateGamesFailure({ error: error.name, message: error.message }));

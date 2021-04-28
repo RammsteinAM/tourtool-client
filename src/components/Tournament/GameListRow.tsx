@@ -97,7 +97,6 @@ const GameListRow = ({ tournamentId, gameKey, tabIndex, normalizedPlayers, maxSc
     }
     const scores1 = normalizedGames[gameKey]?.scores1, scores2 = normalizedGames[gameKey]?.scores2
     let score1, score2;
-    // const { score1, score2 } = (game.scores1 && game.scores2) && getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length);
     if (scores1 && scores2) {
         score1 = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length).score1;
         score2 = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length).score2;
