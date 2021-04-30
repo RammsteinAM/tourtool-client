@@ -65,7 +65,7 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getN
     if (typeof numberOfGoals !== 'number') {
         return null;
     }
-
+    
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.ctrlKey) {
             return;
@@ -254,8 +254,7 @@ const EnterScoreContent = ({ onClose, onConfirm, game, tournament, gameKey, getN
     const getVisibleScoreNumber = () => {
         let value = 9;
         if (visibleScores) value = visibleScores;
-        if (numberOfGoals < 9) value = numberOfGoals + 1;
-        // if (value === 1) return 2;
+        if (numberOfGoals < value) value = numberOfGoals + 1;
         return value;
     }
 
