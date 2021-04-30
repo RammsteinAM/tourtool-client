@@ -12,6 +12,7 @@ const initialState: SettingsReducerState | null = {
   tournamentSidebarEnabledColumns: ['name', 'numberOfGames', 'lives'],
   tournamentsSortKey: 'createdAt',
   tournamentsSortOrder: 1,
+  lmsRoundSortOrder: 1,
   tournamentsFilterKey: 'all',
   tournamentsSearchKeyword: '',
 };

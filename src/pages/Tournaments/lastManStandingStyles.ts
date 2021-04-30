@@ -17,6 +17,9 @@ const styles = makeStyles((theme) => ({
         justifyContent: 'flex-end',
         alignItems: 'center',
     },
+    tournamentGameContainerBody: {
+        display: 'flex',
+    },
     tournamentSidebarHeaderContainer: {
         width: "100%",
         height: "56px",
@@ -161,7 +164,15 @@ const styles = makeStyles((theme) => ({
     lmsStatsTdPlayer: {
         textAlign: 'left',
         width: 'auto',
-    }
+    },
+    sortIconButton: {
+        padding: 4,
+        margin: 0,
+        color: '#c5c8cb'
+    },
+    icon: {
+        cursor: 'pointer'
+    },
 }));
 
 export default styles;

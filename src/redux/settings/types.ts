@@ -19,6 +19,7 @@ export type SettingsReducerState = {
     tournamentSidebarEnabledColumns?: LMSColOrderKeys[],
     tournamentsSortKey?: TournamentSortingKeys,
     tournamentsSortOrder?: 1 | -1,
+    lmsRoundSortOrder?: 1 | -1,
     tournamentsFilterKey?: TournamentFilterKeys,
     tournamentsSearchKeyword?: string,
 }

@@ -55,7 +55,6 @@ const GameListRound = ({ tournamentId, roundNubmer: roundNumber, maxScores, norm
                 })
                 .map(game => {
                     const round = splitGameKey(game.index).round;
-
                     return round === roundNumber && <GameListRow
                         key={game.id}
                         tournamentId={tournamentId}

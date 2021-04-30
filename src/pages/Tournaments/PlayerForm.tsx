@@ -130,17 +130,19 @@ const PlayerForm = () => {
         const dbMonsterDYPGames: DBGameData[] = entityState.lmsPlayers.reduce((acc: DBGameData[], val: StateLMSPlayer, i, arr: StateLMSPlayers) => {
             const id1 = arr[i]?.id;
             const id2 = arr[i + 1]?.id;
-            if (i % 2 === 1 || typeof id1 !== 'number' || typeof id2 !== 'number') {
+            const id3 = arr[i + 2]?.id;
+            const id4 = arr[i + 3]?.id;
+            if (i % 4 !== 0 || typeof id1 !== 'number' || typeof id2 !== 'number' || typeof id3 !== 'number' || typeof id4 !== 'number') {
                 return acc;
             }
             acc.push({
-                index: `1-${Math.ceil((i + 1) / 2)}`,
-                player1: [{ id: id1 }],
-                player2: [{ id: id2 }],
+                index: `1-${Math.ceil((i + 1) / 4)}`,
+                player1: [{ id: id1 }, { id: id2 }],
+                player2: [{ id: id3 }, { id: id4 }],
             })
             return acc;
         }, [])
-
+debugger
         const participantIds = participants.reduce((acc: number[], val) => {
             const id = fetchedPlayers?.find(fp => fp.name === val.name)?.id
             if (id) {
@@ -161,7 +163,7 @@ const PlayerForm = () => {
             numberOfTables,
             pointsForDraw,
             pointsForWin,
-            games: dbGames,
+            games: playerType === 'monster-dyp' ? dbMonsterDYPGames : dbGames,
             players: participantIds
         }));
     };

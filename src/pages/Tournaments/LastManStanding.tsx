@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import { FetchedGameData } from '../../types/entities';
+import { FetchedGameData, FetchedPlayers } from '../../types/entities';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -13,11 +13,17 @@ import GameListRound from '../../components/Tournament/GameListRound';
 import LastManStandingPlayerStatsList from '../../components/Tournament/TournamentStats/LastManStandingPlayerStatsList';
 import { getNormalizedParticipants, multiDimensionalUnique } from '../../utils/arrayUtils';
 import lastManStandingStyles from './lastManStandingStyles';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip'
+import SortIcon from '@material-ui/icons/Sort';
 import { splitGameKey } from '../../utils/stringUtils';
 import { useParams } from 'react-router-dom';
+import KEKWemote from '../../resources/icons/KEKW.png';
 import { gameActions } from '../../redux/games/actions';
 import { getMultipleSetScores } from '../../utils/scoreUtils';
 import SearchField from '../../components/SearchField';
+import useKonamiCode from '../../hooks/Konami';
+import { updateSettings } from '../../redux/settings/actions';
 
 export interface Players {
     [key: string]: {
@@ -38,6 +44,7 @@ const LastManStanding = (props: Props) => {
     const [playerData, setPlayerData] = useState<Players>({});
     const [maxScores, setMaxScores] = useState<number>(7);
     const [searchValue, setSearchValue] = useState<string>('');
+    const KEKW = useKonamiCode()
     const { width, ref: resizeRef } = useResizeDetector({ handleWidth: true, handleHeight: false, refreshMode: 'debounce', refreshRate: 300 });
     const entityState = useSelector((state: RootState) => state.entities);
     const settingsState = useSelector((state: RootState) => state.settings);
@@ -46,13 +53,13 @@ const LastManStanding = (props: Props) => {
     const classes = lastManStandingStyles();
     const { tournamentId: tournamentIdString } = useParams<{ tournamentId: string }>();
     const tournamentId = parseInt(tournamentIdString, 10);
-    const fetchedTournamentData = entityState.fetchedTournaments.data[tournamentId]
+    const fetchedTournamentData = entityState.fetchedTournaments.data[tournamentId];
     const tournamentGames = fetchedGames[tournamentId];
     const tournamentPlayerIds = fetchedTournamentData?.players;
     const fetchedPlayers = entityState.fetchedPlayers.data;
     const { t } = useTranslation();
 
-    const isDYP = tournamentGames?.find(game => game.index === '1-1')?.player1?.length === 2;
+    const isDYP = !fetchedTournamentData?.monsterDYP && tournamentGames?.find(game => game.index === '1-1')?.player1?.length === 2;
 
     const normalizedPlayers = getNormalizedParticipants(fetchedPlayers);
 
@@ -68,7 +75,7 @@ const LastManStanding = (props: Props) => {
     }, [])
 
     useEffect(() => {
-        const playerData = fetchedTournamentData && tournamentGames && getPlayersDataWithStats();
+        const playerData = fetchedTournamentData && tournamentGames && calculatePlayersDataWithStats();
         setPlayerData(playerData);
     }, [tournamentGames, fetchedTournamentData, fetchedPlayers])
 
@@ -87,12 +94,9 @@ const LastManStanding = (props: Props) => {
         score > 0 && setMaxScores(score);
     }
 
-    const getPlayersDataWithStats = (): Players => {
+    const getPlayersInitialData = (tournamentPlayers: FetchedPlayers): Players => {
         const numberOfLives = fetchedTournamentData?.numberOfLives;
-        const pointsForWin = fetchedTournamentData?.pointsForWin;
-        const pointsForDraw = fetchedTournamentData?.pointsForDraw;
-        const tournamentPlayers = fetchedPlayers.filter(p => tournamentPlayerIds && tournamentPlayerIds?.indexOf(p.id) >= 0)
-        if (typeof numberOfLives !== 'number' || typeof pointsForWin !== 'number' || typeof pointsForDraw !== 'number') return {};
+        if (typeof numberOfLives !== 'number') return {};
 
         const pairs = isDYP ? multiDimensionalUnique(tournamentGames.reduce((acc: [number, number][], val: FetchedGameData) => {
             if (!val.index || !val.player1 || !val.player2) {
@@ -102,10 +106,8 @@ const LastManStanding = (props: Props) => {
             return acc;
         }, [])) : null;
 
-        let players: Players = {}
-
         if (!isDYP) {
-            players = tournamentPlayers.reduce((acc: Players, val) => {
+            const players = tournamentPlayers.reduce((acc: Players, val) => {
                 acc[val.id] = {
                     id: val.id,
                     lives: numberOfLives,
@@ -118,10 +120,12 @@ const LastManStanding = (props: Props) => {
                 }
                 return acc;
             }, {});
+            return players;
         }
-        else if (pairs) {
-            players = pairs.reduce((acc: Players, val) => {
-                const pName = `${normalizedPlayers[val[0]].name} / ${normalizedPlayers[val[1]].name}`;
+        else {
+            if (!pairs) return {};
+            const players = pairs.reduce((acc: Players, val) => {
+                const pName = `${normalizedPlayers[val[0]]?.name} / ${normalizedPlayers[val[1]]?.name}`;
                 acc[pName] = {
                     id: [val[0], val[1]],
                     lives: numberOfLives,
@@ -134,7 +138,17 @@ const LastManStanding = (props: Props) => {
                 }
                 return acc;
             }, {});
+            return players;
         }
+    }
+
+    const calculatePlayersDataWithStats = (): Players => {
+        const pointsForWin = fetchedTournamentData?.pointsForWin;
+        const pointsForDraw = fetchedTournamentData?.pointsForDraw;
+        const tournamentPlayers = fetchedPlayers.filter(p => tournamentPlayerIds && tournamentPlayerIds?.indexOf(p.id) >= 0)
+        if (typeof pointsForWin !== 'number' || typeof pointsForDraw !== 'number') return {};
+
+        const initialPlayers = getPlayersInitialData(tournamentPlayers);
 
         const playersData = tournamentGames?.reduce((acc, val, i) => {
             if (!val.scores1 || !val.scores2 || val.scores1.length === 0 || val.scores2.length === 0 || !normalizedPlayers) {
@@ -153,15 +167,12 @@ const LastManStanding = (props: Props) => {
             const id2_0 = val.player2[0] && val.player2[0].id;
             const id2_1 = val.player2[1] && val.player2[1].id;
 
-            // SINGLE, TEAM
-            if (id1_0 && id2_0 && acc[id1_0] && acc[id2_0] && !id1_1 && !id2_1) {
-
+            // SINGLE, TEAM, MONSTER DYP
+            if (id1_0 && id2_0 && acc[id1_0] && acc[id2_0] && ((!id1_1 && !id2_1) || fetchedTournamentData?.monsterDYP)) {
                 acc[id1_0].numberOfGames++;
                 acc[id2_0].numberOfGames++;
-
                 acc[id1_0].goals += scores1Sum;
                 acc[id2_0].goals += scores2Sum;
-
                 acc[id1_0].goalsIn += scores2Sum;
                 acc[id2_0].goalsIn += scores1Sum;
 
@@ -181,11 +192,37 @@ const LastManStanding = (props: Props) => {
                     acc[id1_0].points += pointsForDraw;
                     acc[id2_0].points += pointsForDraw;
                 }
+
+                // MONSTER DYP ONLY
+                if (id1_1 && id2_1 && acc[id1_1] && acc[id2_1]) {
+                    acc[id1_1].numberOfGames++;
+                    acc[id2_1].numberOfGames++;
+                    acc[id1_1].goals += scores1Sum;
+                    acc[id2_1].goals += scores2Sum;
+                    acc[id1_1].goalsIn += scores2Sum;
+                    acc[id2_1].goalsIn += scores1Sum;
+                    if (score1 > score2) {
+                        acc[id1_1].points += pointsForWin;
+                        acc[id1_1].matchesWon += 1;
+                        acc[id2_1].matchesLost += 1;
+                        acc[id2_1].lives--;
+                    }
+                    if (score1 < score2) {
+                        acc[id1_1].points += pointsForWin;
+                        acc[id1_1].matchesLost += 1;
+                        acc[id2_1].matchesWon += 1;
+                        acc[id1_1].lives--;
+                    }
+                    if (score1 === score2) {
+                        acc[id1_1].points += pointsForDraw;
+                        acc[id2_1].points += pointsForDraw;
+                    }
+                }
             }
             // DYP
             else if (id1_0 && id2_0 && id1_1 && id2_1) {
-                const participant1Name = `${normalizedPlayers[id1_0].name} / ${normalizedPlayers[id1_1].name}`;
-                const participant2Name = `${normalizedPlayers[id2_0].name} / ${normalizedPlayers[id2_1].name}`;
+                const participant1Name = `${normalizedPlayers[id1_0]?.name} / ${normalizedPlayers[id1_1]?.name}`;
+                const participant2Name = `${normalizedPlayers[id2_0]?.name} / ${normalizedPlayers[id2_1]?.name}`;
                 if (!acc[participant1Name] || !acc[participant2Name]) {
                     return acc
                 }
@@ -218,7 +255,7 @@ const LastManStanding = (props: Props) => {
             }
 
             return acc;
-        }, players);
+        }, initialPlayers);
 
         return playersData;
     };
@@ -255,6 +292,10 @@ const LastManStanding = (props: Props) => {
         setSearchValue(value)
     }
 
+    const handleSortOrderChange = () => {
+        dispatch(updateSettings({ lmsRoundSortOrder: settingsState.lmsRoundSortOrder === 1 ? -1 : 1 }));
+    };
+
     if (!fetchedTournamentData) {
         return null;
     }
@@ -266,7 +307,20 @@ const LastManStanding = (props: Props) => {
                 className={classes.cardRoot}
                 style={{ width: `calc(100% - ${settingsState.tournamentSidebar ? 362 : 0}px)`, marginRight: settingsState.tournamentSidebar ? '12px' : '0px' }}
             >
-                <div className={classes.tournamentGameContainerHeader}>
+                <div
+                    className={classes.tournamentGameContainerHeader}
+                    style={!KEKW ? {} :
+                        {
+                            backgroundImage: `url("${KEKWemote}")`,
+                            backgroundSize: "contain",
+                            backgroundRepeat: "no-repeat",
+                            backgroundPositionX: "center"
+                        }}>
+                    <Tooltip title={settingsState.lmsRoundSortOrder === 1 ? `${t("Sort Descending")}` : `${t("Sort Ascending")}`}>
+                        <IconButton className={classes.sortIconButton} aria-label="toggle-sort-order" onClick={handleSortOrderChange}>
+                            <SortIcon className={classes.icon} style={settingsState.lmsRoundSortOrder === 1 ? { transform: 'rotateX(180deg)' } : {}} />
+                        </IconButton>
+                    </Tooltip>
                     <SearchField
                         actionCallback={searchActionCallback}
                         styles={{
@@ -280,34 +334,40 @@ const LastManStanding = (props: Props) => {
                         }}
                     />
                 </div>
-                <CardContent className={classes.cardContent}>
-                    {tournamentGameRounds?.sort().map(round => {
-                        return (
-                            <GameListRound
-                                key={`gameListRound_${round}`}
-                                tournamentId={tournamentId}
-                                roundNubmer={round}
-                                maxScores={maxScores}
-                                normalizedPlayers={normalizedPlayers}
-                                searchFilterValue={searchValue}
-                            />
-                        )
-                    })}
-                </CardContent>
-                <CardActions disableSpacing className={classes.cardActions}>
-                    <Button onClick={handleShowResult} color="default" size='small' type='button' className={classes.dialogButton}>
-                        {t('Show Result')}
-                    </Button>
-                    {validateRoundComplete() && alivePlayerCount > 1 &&
-                        <Button onClick={handleNewRound} color="default" size='small' type='button' className={classes.dialogButton}>
-                            {t('New Round')}
+                <div className={classes.tournamentGameContainerBody} style={settingsState.lmsRoundSortOrder === 1 ? { flexDirection: 'column' } : { flexDirection: 'column-reverse' }}>
+                    <CardContent className={classes.cardContent}>
+                        {tournamentGameRounds?.sort((a, b) => {
+                            return (a - b > 0) ?
+                                1 * (settingsState.lmsRoundSortOrder || 1) :
+                                -1 * (settingsState.lmsRoundSortOrder || 1);
+                        }).map(round => {
+                            return (
+                                <GameListRound
+                                    key={`gameListRound_${round}`}
+                                    tournamentId={tournamentId}
+                                    roundNubmer={round}
+                                    maxScores={maxScores}
+                                    normalizedPlayers={normalizedPlayers}
+                                    searchFilterValue={searchValue}
+                                />
+                            )
+                        })}
+                    </CardContent>
+                    <CardActions disableSpacing className={classes.cardActions}>
+                        <Button onClick={handleShowResult} color="default" size='small' type='button' className={classes.dialogButton}>
+                            {t('Show Result')}
                         </Button>
-                    }
-                </CardActions>
+                        {validateRoundComplete() && alivePlayerCount > 1 &&
+                            <Button onClick={handleNewRound} color="default" size='small' type='button' className={classes.dialogButton}>
+                                {t('New Round')}
+                            </Button>
+                        }
+                    </CardActions>
+                </div>
             </Card>
             {settingsState.tournamentSidebar && <div className={classes.tournamentGameSidebar}>
                 <Card className={classes.cardRootSideTop}>
-                    <LastManStandingPlayerStatsList playerData={playerData} />
+                    <LastManStandingPlayerStatsList playerData={playerData} kekw={KEKW} />
                 </Card>
                 {/* <Card className={classes.cardRootSideBottom}>
                     <CardContent className={classes.cardContent}>

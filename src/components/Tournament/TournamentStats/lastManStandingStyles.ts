@@ -84,11 +84,11 @@ const styles = makeStyles((theme) => ({
         fontSize: '13px',
     },
     lmsStatsThead: {
-        '& td': {
+        '& th': {
             paddingTop: '8px',
             paddingBottom: '4px',
         },
-        '& td:last-child': {
+        '& th:last-child': {
             paddingRight: '6px',
         }
     },

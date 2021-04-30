@@ -4,11 +4,12 @@ import { RootState } from '../../redux/store';
 import { FetchedPlayer, GameUpdateReqData, StateScore } from '../../types/entities';
 import { splitGameKey } from '../../utils/stringUtils';
 import EnterScoreContent from './EnterScore/EnterScoreContent';
-import gameListRowStyles from './gameListRowStyles';
 import { getMultipleSetScores } from '../../utils/scoreUtils';
 import GameListEnterScoreButton from './GameListEnterScoreButton';
 import { getNormalizedGames } from '../../utils/arrayUtils';
 import { gameActions } from '../../redux/games/actions';
+import { CircularProgress } from '@material-ui/core';
+import gameListRowStyles from './gameListRowStyles';
 
 interface Props {
     tournamentId: number;
@@ -37,16 +38,18 @@ const GameListRow = ({ tournamentId, gameKey, tabIndex, normalizedPlayers, maxSc
 
     const player1 = normalizedGames[gameKey]?.player1;
     const player2 = normalizedGames[gameKey]?.player2;
-    const player1Name: string = normalizedPlayers && player1 ?
+    const player1Name: string | null = normalizedPlayers && player1 ?
         (player1?.length === 1 ?
             normalizedPlayers[player1[0].id]?.name :
-            (player1?.length === 2 ? `${normalizedPlayers[player1[0].id]?.name} / ${normalizedPlayers[player1[1].id]?.name}` : '')) :
-        '';
-    const player2Name: string = normalizedPlayers && player1 ?
+            ((player1?.length === 2 && normalizedPlayers[player1[0].id]?.name && normalizedPlayers[player1[1].id]?.name) ?
+                `${normalizedPlayers[player1[0].id].name} / ${normalizedPlayers[player1[1].id].name}` : null)) :
+        null;
+    const player2Name: string | null = normalizedPlayers && player1 ?
         (player2?.length === 1 ?
             normalizedPlayers[player2[0].id]?.name :
-            (player2?.length === 2 ? `${normalizedPlayers[player2[0].id]?.name} / ${normalizedPlayers[player2[1].id]?.name}` : '')) :
-        '';
+            ((player2?.length === 2 && normalizedPlayers[player2[0].id]?.name && normalizedPlayers[player2[1].id]?.name) ?
+                `${normalizedPlayers[player2[0].id].name} / ${normalizedPlayers[player2[1].id].name}` : null)) :
+        null;
 
     const toggleScoresOpen = () => {
         if (scoresOpen) {
@@ -100,6 +103,20 @@ const GameListRow = ({ tournamentId, gameKey, tabIndex, normalizedPlayers, maxSc
     if (scores1 && scores2) {
         score1 = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length).score1;
         score2 = getMultipleSetScores(scores1, scores2, Object.keys(scores1).length).score2;
+    }
+
+    if (!player1Name || !player2Name) {
+        return (
+            <div className={classes.gameRowContainer}>
+                <div className={classes.gameRow}>
+                    <div></div>
+                    <div className={classes.loadingContainer}>
+                        <CircularProgress />
+                    </div>
+                    <div></div>
+                </div>
+            </div>
+        )
     }
 
     return (

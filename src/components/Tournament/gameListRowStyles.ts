@@ -148,6 +148,14 @@ const styles = makeStyles((theme) => ({
         },
 
     },
+    loadingContainer: {
+        textAlign: 'center',
+        margin: 'auto',
+        '& .MuiCircularProgress-root': {
+            width: '24px !important',
+            height: '24px !important',
+        }
+    },
 }));
 
 export default styles;
