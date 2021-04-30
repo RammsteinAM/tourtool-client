@@ -88,7 +88,7 @@ const styles = makeStyles((theme) =>
     icons: {
       color: '#c5c8cb',
     },
-    settingsHeader: {
+    panelHeader: {
       backgroundColor: '#333333',
       height: '66px',
       color: '#c5c8cb',
@@ -96,7 +96,7 @@ const styles = makeStyles((theme) =>
       alignItems: 'center',
       paddingLeft: '4px',
     },
-    settingsBody: {
+    panelBody: {
       height: '100%',
       backgroundColor: '#ffffff',
       padding: '20px',

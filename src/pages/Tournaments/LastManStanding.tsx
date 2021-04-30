@@ -18,7 +18,6 @@ import Tooltip from '@material-ui/core/Tooltip'
 import SortIcon from '@material-ui/icons/Sort';
 import { splitGameKey } from '../../utils/stringUtils';
 import { useParams } from 'react-router-dom';
-import KEKWemote from '../../resources/icons/KEKW.png';
 import { gameActions } from '../../redux/games/actions';
 import { getMultipleSetScores } from '../../utils/scoreUtils';
 import SearchField from '../../components/SearchField';
@@ -44,7 +43,7 @@ const LastManStanding = (props: Props) => {
     const [playerData, setPlayerData] = useState<Players>({});
     const [maxScores, setMaxScores] = useState<number>(7);
     const [searchValue, setSearchValue] = useState<string>('');
-    const KEKW = useKonamiCode()
+    const bttvMode = useKonamiCode()
     const { width, ref: resizeRef } = useResizeDetector({ handleWidth: true, handleHeight: false, refreshMode: 'debounce', refreshRate: 300 });
     const entityState = useSelector((state: RootState) => state.entities);
     const settingsState = useSelector((state: RootState) => state.settings);
@@ -58,7 +57,7 @@ const LastManStanding = (props: Props) => {
     const tournamentPlayerIds = fetchedTournamentData?.players;
     const fetchedPlayers = entityState.fetchedPlayers.data;
     const { t } = useTranslation();
-
+    
     const isDYP = !fetchedTournamentData?.monsterDYP && tournamentGames?.find(game => game.index === '1-1')?.player1?.length === 2;
 
     const normalizedPlayers = getNormalizedParticipants(fetchedPlayers);
@@ -307,15 +306,7 @@ const LastManStanding = (props: Props) => {
                 className={classes.cardRoot}
                 style={{ width: `calc(100% - ${settingsState.tournamentSidebar ? 362 : 0}px)`, marginRight: settingsState.tournamentSidebar ? '12px' : '0px' }}
             >
-                <div
-                    className={classes.tournamentGameContainerHeader}
-                    style={!KEKW ? {} :
-                        {
-                            backgroundImage: `url("${KEKWemote}")`,
-                            backgroundSize: "contain",
-                            backgroundRepeat: "no-repeat",
-                            backgroundPositionX: "center"
-                        }}>
+                <div className={classes.tournamentGameContainerHeader}>
                     <Tooltip title={settingsState.lmsRoundSortOrder === 1 ? `${t("Sort Descending")}` : `${t("Sort Ascending")}`}>
                         <IconButton className={classes.sortIconButton} aria-label="toggle-sort-order" onClick={handleSortOrderChange}>
                             <SortIcon className={classes.icon} style={settingsState.lmsRoundSortOrder === 1 ? { transform: 'rotateX(180deg)' } : {}} />
@@ -367,7 +358,7 @@ const LastManStanding = (props: Props) => {
             </Card>
             {settingsState.tournamentSidebar && <div className={classes.tournamentGameSidebar}>
                 <Card className={classes.cardRootSideTop}>
-                    <LastManStandingPlayerStatsList playerData={playerData} kekw={KEKW} />
+                    <LastManStandingPlayerStatsList playerData={playerData} bttvMode={bttvMode} />
                 </Card>
                 {/* <Card className={classes.cardRootSideBottom}>
                     <CardContent className={classes.cardContent}>

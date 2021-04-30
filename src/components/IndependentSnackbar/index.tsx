@@ -14,6 +14,9 @@ const Display = withSnackbar<{ message: string, variant: VariantType, enqueueSna
 
 
 const toast = {
+  default: function (msg: string) {
+    this.toast(msg, 'default');
+  },
   success: function (msg: string) {
     this.toast(msg, 'success');
   },

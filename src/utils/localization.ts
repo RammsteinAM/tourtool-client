@@ -212,6 +212,7 @@ const localization = {
             'Print': 'Print',
             'Export': 'Export',
             'Error Exporting Tournament': 'Error Exporting Tournament',
+            'Players': 'Players',
         }
     },
     hy: {
@@ -427,6 +428,7 @@ const localization = {
             'Print': 'Տպել',
             'Export': 'Արտահանել',
             'Error Exporting Tournament': 'Մրցաշարի արտահանման սխալ',
+            'Players': 'Խաղացողներ',
         }
     },
     ru: {
@@ -651,6 +653,7 @@ const localization = {
             'Print': 'Распечатать',
             'Export': 'Экспортировать',
             'Error Exporting Tournament': 'Ошибка экспортирования турнира',
+            'Players': 'Игроки',
         }
     }
 }

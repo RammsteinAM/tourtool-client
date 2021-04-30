@@ -8,7 +8,7 @@ const useKonamiCode = (): boolean => {
     const toggle = useCallback(
         () => {
             if (!konamiCode) {
-                toast.success('KEKW mode activated.');
+                toast.default('Pog');
             }
             setIsKonami(!konamiCode);
         },

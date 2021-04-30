@@ -18,7 +18,7 @@ import TournamentStatsSettingsList from './TournamentStatsSettingsList';
 
 interface Props {
     playerData: Players;
-    kekw?: boolean;
+    bttvMode?: boolean;
 }
 
 const LastManStandingPlayerStatsList = (props: Props) => {
@@ -92,7 +92,7 @@ const LastManStandingPlayerStatsList = (props: Props) => {
                     matchesLost={player.matchesLost}
                     matchesDraw={player.numberOfGames - player.matchesWon - player.matchesLost}
                     colOrderedKeys={visibleOrderedColumns}
-                    easterEgg={props.kekw}
+                    bttvMode={props.bttvMode}
                 />
             )
         });

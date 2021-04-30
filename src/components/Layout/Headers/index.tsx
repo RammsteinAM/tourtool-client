@@ -112,7 +112,7 @@ const Header = (props: Props) => {
                             fullScreenButton
                         />
                     </Route>
-                    <Route exact path="/lms/:playerType?/:tournamentId">
+                    <Route exact path="/lms/:tournamentId">
                         <HeaderGeneric
                             showIcon
                             tournamentSidebar
@@ -129,7 +129,7 @@ const Header = (props: Props) => {
                             printButton
                         />
                     </Route>
-                    <Route exact path="/lms/:playerType?/:tournamentId/result">
+                    <Route exact path="/lms/:tournamentId/result">
                         <HeaderGeneric
                             backButton
                             title={t('Result')}

@@ -13,6 +13,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import HomeIcon from '@material-ui/icons/Home';
 import SettingsIcon from '@material-ui/icons/Settings';
+import PeopleIcon from '@material-ui/icons/People';
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import CloseIcon from '@material-ui/icons/Close';
@@ -23,7 +24,9 @@ import Settings from '../Settings/Settings';
 import Profile from '../Profile/Profile';
 import { authActions } from '../../redux/auth/actions';
 import Main from './Main';
+import { Route, Switch } from 'react-router-dom';
 import layoutStyles from './layoutStyles';
+import Players from '../Tournament/Players';
 
 const initialRightClick = {
   mouseX: null,
@@ -34,6 +37,7 @@ enum SidePanelState {
   Initial,
   Settings,
   Profile,
+  Players,
 }
 
 interface Props {
@@ -70,15 +74,21 @@ const Layout = (props: Props) => {
     setShowSidePanel(true);
   };
 
-  const closeSidePanel = (e: React.MouseEvent) => {
+  const openPlayers = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setShowSidePanel(false);
+    setPanelContent(SidePanelState.Players);
+    setShowSidePanel(true);
   };
 
   const openAccount = (e: React.MouseEvent) => {
     e.stopPropagation();
     setPanelContent(SidePanelState.Profile);
     setShowSidePanel(true);
+  };
+
+  const closeSidePanel = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowSidePanel(false);
   };
 
   const handleLoginButtonClick = (e: React.MouseEvent) => {
@@ -111,7 +121,22 @@ const Layout = (props: Props) => {
   const renderSidePanel = (content: SidePanelState) => {
     switch (content) {
       case SidePanelState.Settings:
-        return <Settings />
+        return (
+          <Switch>
+            <Route exact path="/lms/:tournamentId">
+              <Settings test />
+            </Route>
+            <Route path="/">
+              <Settings />
+            </Route>
+          </Switch>
+        )
+      case SidePanelState.Players:
+        return (
+          <Route exact path="/lms/:tournamentId">
+            <Players />
+          </Route>
+        )
       case SidePanelState.Profile:
         return <Profile />
       default:
@@ -138,12 +163,12 @@ const Layout = (props: Props) => {
         }}
         onClose={closeSidePanel}
       >
-        <div className={classes.settingsHeader}>
+        <div className={classes.panelHeader}>
           <IconButton aria-label="close" onClick={closeSidePanel} className={classes.icons}>
             <CloseIcon />
           </IconButton>
         </div>
-        <div className={classes.settingsBody}>
+        <div className={classes.panelBody}>
           {
             renderSidePanel(panelContent)
           }
@@ -182,6 +207,16 @@ const Layout = (props: Props) => {
             </ListItemIcon>
             <ListItemText primary={t('Settings')} classes={{ primary: classes.listItemText }} />
           </ListItem>
+          <Switch>
+            <Route exact path="/lms/:tournamentId">
+              <ListItem button onClick={openPlayers} className={classes.listItems}>
+                <ListItemIcon>
+                  <PeopleIcon className={classes.icons} />
+                </ListItemIcon>
+                <ListItemText primary={t('Players')} classes={{ primary: classes.listItemText }} />
+              </ListItem>
+            </Route>
+          </Switch>
         </List>
         <List>
           {authState.status === ActionStatus.Success ?

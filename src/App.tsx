@@ -70,13 +70,13 @@ const App = () => {
           <PrivateRoute exact path="/elimination/:tournamentId">
             <Elimination />
           </PrivateRoute>
-          <PrivateRoute exact path="/lms/:playerType?/:tournamentId">
+          <PrivateRoute exact path="/lms/:tournamentId">
             <LastManStanding />
           </PrivateRoute>
           <PrivateRoute exact path="/elimination/:tournamentId/result">
             <TournamentResult />
           </PrivateRoute>
-          <PrivateRoute exact path="/lms/:playerType?/:tournamentId/result">
+          <PrivateRoute exact path="/lms/:tournamentId/result">
             <TournamentResult />
           </PrivateRoute>
           <PrivateRoute exact path="/tournament/player-type-select/:tournamentType">
