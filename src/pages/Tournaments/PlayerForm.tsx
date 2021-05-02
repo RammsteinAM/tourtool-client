@@ -75,7 +75,7 @@ const PlayerForm = () => {
 
     useEffect(() => {        
         if (entityState.fetchedTournaments.status === ActionStatus.Success && entityState.fetchedTournaments.createdTournamentId) {
-            history.push(`/${tournamentType}/${playerType}/${entityState.fetchedTournaments.createdTournamentId}`)
+            history.push(`/${tournamentType}/${entityState.fetchedTournaments.createdTournamentId}`)
         }
     }, [entityState.fetchedTournaments]);
     
@@ -142,7 +142,7 @@ const PlayerForm = () => {
             })
             return acc;
         }, [])
-debugger
+
         const participantIds = participants.reduce((acc: number[], val) => {
             const id = fetchedPlayers?.find(fp => fp.name === val.name)?.id
             if (id) {

@@ -7,6 +7,7 @@ import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
 import { entityActions } from '../../redux/tournamentEntities/actions';
 import HomeCard from '../../components/Tournament/HomeCard';
+import { ReactComponent as Logo } from '../../resources/icons/logo.svg';
 import homeStyles from './homeStyles';
 import { FetchedTournament } from '../../types/entities';
 import { tournamentTypeIds } from '../../utils/constants';
@@ -101,17 +102,20 @@ const Home = (props: Props) => {
                         })}
                 </div>
             }
-            {(!loggedIn || tournamentsData.length === 0) && <div className={classes.buttonContainer}>
-                <Button
-                    type="button"
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={handleCreateTournament}
-                >
-                    {loggedIn ? t('Create New Tournament') : t('Login to Create a Tournament')}
-                </Button>
-            </div>
+            {(!loggedIn || tournamentsData.length === 0) && <>
+                <div className={classes.buttonContainer}>
+                    <Logo width='160px' height='160px' fill='#9c9c9c' />
+                    <Button
+                        type="button"
+                        variant="contained"
+                        color="secondary"
+                        className={classes.button}
+                        onClick={handleCreateTournament}
+                    >
+                        {loggedIn ? t('Create New Tournament') : t('Login to Create a Tournament')}
+                    </Button>
+                </div>
+            </>
             }
         </div>
     )

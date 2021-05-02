@@ -20,6 +20,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
+import { ReactComponent as Logo } from '../../resources/icons/logo.svg';
 import Settings from '../Settings/Settings';
 import Profile from '../Profile/Profile';
 import { authActions } from '../../redux/auth/actions';
@@ -195,6 +196,11 @@ const Layout = (props: Props) => {
         }}
       >
         <List>
+          <ListItem button onClick={handleHomeButtonClick} className={classes.listItems}>
+            <ListItemIcon>
+              <Logo fill="#8EBD5E" />
+            </ListItemIcon>
+          </ListItem>
           <ListItem button onClick={handleHomeButtonClick} className={classes.listItems}>
             <ListItemIcon>
               <HomeIcon className={classes.icons} />

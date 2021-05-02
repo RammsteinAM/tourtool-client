@@ -51,6 +51,7 @@ const styles = makeStyles((theme) => ({
     buttonContainer: {
         margin: "auto",
         display: "flex",
+        flexDirection: 'column',
         height: "calc(100vh - 100px)",
         width: "100%",
         justifyContent: "center",
