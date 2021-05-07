@@ -26,6 +26,7 @@ import toast from './components/IndependentSnackbar';
 import i18n from "./utils/i18n";
 import { HttpError } from './utils/error';
 import TournamentResult from './components/Tournament/EliminationResult';
+import WatchTournament from './pages/Tournaments/WatchTournament';
 
 axios.interceptors.response.use(undefined, (err) => {
   if (err.response.status === 403 || err.response.data.error === 'InvalidTokenError') {
@@ -88,11 +89,6 @@ const App = () => {
           <PublicRoute exact path="/login">
             <LoginDialog />
           </PublicRoute>
-          {/* <PublicRoute exact path="/view-tournament/:tournamentId">
-            {
-              <div>KEKW</div>
-              }
-          </PublicRoute> */}
           <PublicRoute exact path="/reset-password/:token">
             <ResetPasswordForm />
           </PublicRoute>
@@ -102,12 +98,12 @@ const App = () => {
           <PublicRoute exact path="/delete-account/:token">
             <DeleteAccountResult />
           </PublicRoute>
+          <Route exact path="/view-tournament/:tournamentShareId">
+            <WatchTournament />
+          </Route>
           <Route path="/">
             <Home />
           </Route>
-          {/* <Route path="/">
-            <Redirect to="/tournaments" />
-          </Route> */}
         </Switch>
       </Layout>
     </BrowserRouter>

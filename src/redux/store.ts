@@ -6,6 +6,7 @@ import registerReducer from './register/reducer';
 import entitiesReducer from './tournamentEntities/reducer';
 import gamesReducer from './games/reducer';
 import settingsReducer from './settings/reducer';
+import watchTournamentReducer from './watchTournament/reducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 export const rootReducer = combineReducers({
@@ -15,6 +16,7 @@ export const rootReducer = combineReducers({
     user: userReducer,
     register: registerReducer,
     settings: settingsReducer,
+    watchTournament: watchTournamentReducer,
 });
 
 const configureStore = () => {

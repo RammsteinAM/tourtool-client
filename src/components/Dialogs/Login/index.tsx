@@ -44,7 +44,7 @@ const LoginDialog = (props: Props) => {
     };
 
     useEffect(() => {
-        if(authState.status === ActionStatus.Failure && authState.error === ErrorNames.UserNotVerified) {
+        if (authState.status === ActionStatus.Failure && authState.error === ErrorNames.UserNotVerified) {
             setContent(LoginDialogState.NotVerified)
         }
     }, [authState])
@@ -118,8 +118,9 @@ const LoginDialog = (props: Props) => {
             >
                 <div className={classes.content}>
                     <div className={classes.leftPart}>
-                        (Lorem Ipsum)
-                        </div>
+                        <div className='reg-title'>{t('registration-dialog-title')}</div>
+                        <div className='reg-body'>{t('registration-dialog-body')}</div>
+                    </div>
                     <div className={classes.mainPart}>
 
                         <div className={classes.mainContent}>

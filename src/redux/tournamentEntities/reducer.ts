@@ -21,6 +21,7 @@ import {
   CREATE_PLAYERS_REQUEST, CREATE_PLAYERS_SUCCESS, CREATE_PLAYERS_FAILURE,
   UPDATE_PLAYERS_REQUEST, UPDATE_PLAYERS_SUCCESS, UPDATE_PLAYERS_FAILURE,
   UPDATE_TOURNAMENT_TABLES,
+  TOGGLE_TOURNAMENT_SHARE,
   EntitiesReducerState,
 } from "./types"
 
@@ -276,6 +277,21 @@ const reducer = (state: EntitiesReducerState = initialState, action: UserActionP
             [action.payload.id]: { 
               ...state.fetchedTournaments.data[action.payload.id],
               tablesByGameIndex: action.payload.tablesByGameIndex
+            }
+          },
+        }
+      };
+    }
+    case TOGGLE_TOURNAMENT_SHARE: {
+      return {
+        ...state,
+        fetchedTournaments: {
+          ...state.fetchedTournaments,
+          data: {
+            ...state.fetchedTournaments.data,
+            [action.payload.id]: { 
+              ...state.fetchedTournaments.data[action.payload.id],
+              shareId: action.payload.shareId
             }
           },
         }

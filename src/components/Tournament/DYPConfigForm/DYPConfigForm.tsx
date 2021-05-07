@@ -13,6 +13,7 @@ import DYPConfigFormItem from './DYPConfigFormItem';
 import { difference } from 'lodash';
 import dypFormStyles from './dypFormStyles';
 import CreateTournamentDialog from '../CreateTournamentDialog';
+import { ActionStatus } from '../../../types/main';
 
 type Team = [number | undefined, number | undefined];
 type InitialTeam = [number, number];
@@ -29,7 +30,6 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
     const [teams, setTeams] = useState<Teams>([]);
     const [initialPlayers, setInitialPlayers] = useState<number[]>([]);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-    // const fetchedPlayers = useSelector((state: RootState) => state.entities.fetchedPlayers.data);
     const entityState = useSelector((state: RootState) => state.entities);
     const storeParticipants = useSelector((state: RootState) => state.entities.participants);
     const classes = dypFormStyles();
@@ -45,24 +45,18 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
         return acc;
     }, {})
 
-    // useEffect(() => {
-    //     const storePlayers = entityState.players;
-    //     setPlayers([...storePlayers, { ...initialPlayer }])
-    // }, [entityState.players]);
-
-    // useEffect(() => {
-    //     const storePlayers = entityState.players;
-    //     if (storePlayers.length === players.length - 1) {
-    //         setPlayers([...storePlayers, { ...initialPlayer }])
-    //     }
-    // }, [entityState.players]);
-
     useEffect(() => {
         const initialTeams = getInitialTeams();
         const players = initialTeams.flat();
         setTeams([...initialTeams]);
         setInitialPlayers(players);
     }, [])
+    
+    useEffect(() => {        
+        if (entityState.fetchedTournaments.status === ActionStatus.Success && entityState.fetchedTournaments.createdTournamentId) {
+            history.push(`/${tournamentType}/${entityState.fetchedTournaments.createdTournamentId}`)
+        }
+    }, [entityState.fetchedTournaments]);
 
     const getInitialTeams = (): InitialTeams => {
         const playersA: StateParticipants = storeParticipants.filter(player => player.category === 'A');
@@ -236,7 +230,6 @@ const DYPConfigForm = ({ tournamentType }: Props) => {
             games: dbGames,
             players: teamPlayerIds as number[]
         }));
-        history.push(`/${tournamentType}/dyp`)
     };
 
     return (

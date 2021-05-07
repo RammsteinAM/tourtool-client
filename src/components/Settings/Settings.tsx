@@ -1,17 +1,18 @@
 import React from 'react';
 import LanguageSelect from '../LanguageSelect';
-interface Props {
-  test?: boolean;
-}
+import InputLabel from '@material-ui/core/InputLabel';
+import { useTranslation } from "react-i18next";
+import settingsStyles from './settingsStyles';
 
-const Settings = (props: Props) => {
+const Settings = () => {
+  const classes = settingsStyles();
 
+
+  const { t } = useTranslation();
   return (
     <>
+      <InputLabel className={classes.label}>{t('Language')}</InputLabel>
       <LanguageSelect />
-      {props.test && <div>
-        LMS TOURNAMENT OPTIONS
-        </div>}
     </>
   );
 }

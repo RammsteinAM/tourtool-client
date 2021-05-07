@@ -31,6 +31,7 @@ import Dialog from '../Dialogs/Generic/Dialog';
 import { tournamentTypeIds } from '../../utils/constants';
 import { getKeyByValue } from '../../utils/objectUtils';
 import { CircularProgress } from '@material-ui/core';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { tournamentServices } from '../../services/tournament';
 import toast from '../IndependentSnackbar';
 
@@ -153,9 +154,7 @@ const TournamentTypeSelect = (props: Props) => {
     if (!props.data.tournamentTypeId || !props.data.name || !props.data.createdAt) {
         return (
             <Card className={classes.cardRoot}>
-                <div className={classes.progressContainer}>
-                    <CircularProgress />
-                </div>
+                <Skeleton variant="rect" width={450} height={123} animation='wave' />
             </Card>
         )
     }

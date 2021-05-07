@@ -17,6 +17,7 @@ import { ReactComponent as LastManStandingIcon } from '../../../resources/icons/
 import { ReactComponent as EliminationIcon } from '../../../resources/icons/elimination.svg';
 import { updateSettings } from '../../../redux/settings/actions';
 import headerStyles from './headerStyles';
+import HeaderWatchTournament from './HeaderWatchTournament';
 
 interface Props {
     menuOpen: boolean,
@@ -136,6 +137,9 @@ const Header = (props: Props) => {
                             fullScreenButton
                             printButton
                         />
+                    </Route>
+                    <Route exact path="/view-tournament/:tournamentShareId">
+                        <HeaderWatchTournament />
                     </Route>
                     <Route path="/">
                         <HeaderHome />

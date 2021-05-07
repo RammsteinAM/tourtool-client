@@ -15,7 +15,14 @@ const styles = makeStyles((theme) => ({
         backgroundColor: '#333333',
         width: '40%',
         color: '#ffffff',
-        padding: '90px 38px'
+        padding: '90px 38px',
+        '& .reg-title': {
+            fontSize: 20,
+            marginBottom: 16,
+        },
+        '& .reg-body': {
+            lineHeight: '24px'
+        },
     },
     mainPart: {
         display: 'flex',

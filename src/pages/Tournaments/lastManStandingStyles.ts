@@ -14,8 +14,13 @@ const styles = makeStyles((theme) => ({
         borderRadius: "2px 2px 0 0",
         padding: "0 24px",
         display: 'flex',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         alignItems: 'center',
+    },
+    tournamentGameContainerHeaderLeftPart: {
+        display: 'flex',
+        alignItems: 'center',
+        flexGrow: 1,
     },
     tournamentGameContainerBody: {
         display: 'flex',
@@ -173,6 +178,34 @@ const styles = makeStyles((theme) => ({
     icon: {
         cursor: 'pointer'
     },
+    shareContainer: {
+        display: "flex",
+        marginLeft: "14px",
+        alignItems: "center",
+    },
+    shareIconContainer: {
+        display: "flex",
+    },
+    shareLinkInputContainer: {
+        width: 'calc(100% - 300px)',
+    },
+    shareLinkTextField: {
+        height: '30px',
+        minWidth: '100px',
+        maxWidth: '400px',
+        borderRadius: 15,
+        fontSize: 11,
+        paddingLeft: 10,
+        paddingRight: 5,
+        color: '#ffffff',
+        backgroundColor: '#000000',
+        '&:before': {
+            content: 'none'
+        },
+        '&:after': {
+            content: 'none'
+        }
+    }
 }));
 
 export default styles;

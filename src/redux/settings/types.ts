@@ -2,11 +2,7 @@ import { Action } from "redux";
 import { PayloadedAction } from "../helpers";
 import { FetchedTournament, FetchedTournaments, LMSColOrderKeys, TournamentTypes } from "../../types/entities";
 
-const UPDATE_SETTINGS = "UPDATE_SETTINGS";
-
-export {
-    UPDATE_SETTINGS,
-}
+export const UPDATE_SETTINGS = "UPDATE_SETTINGS";
 
 export type TournamentSortingKeys = keyof Pick<FetchedTournament, 'createdAt' | 'updatedAt' | 'name' | 'sets'>
 export type TournamentFilterKeys = TournamentTypes | 'all';

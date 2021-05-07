@@ -8,7 +8,7 @@ const styles = makeStyles((theme) => ({
         textTransform: 'uppercase',
         gridTemplateColumns: "calc(50% - 60px) 120px calc(50% - 60px)",
         paddingTop: "20px",
-        userSelect: 'none',
+        // userSelect: 'none',
     },
     winnerSelectButton: {
         cursor: "pointer",

@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import { FetchedGameData, FetchedPlayers } from '../../types/entities';
+import { FetchedTournament } from '../../types/entities';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -12,17 +12,26 @@ import { useResizeDetector } from 'react-resize-detector';
 import GameListRound from '../../components/Tournament/GameListRound';
 import LastManStandingPlayerStatsList from '../../components/Tournament/TournamentStats/LastManStandingPlayerStatsList';
 import { getNormalizedParticipants, multiDimensionalUnique } from '../../utils/arrayUtils';
-import lastManStandingStyles from './lastManStandingStyles';
 import IconButton from '@material-ui/core/IconButton';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControl from '@material-ui/core/FormControl';
+import Switch from '@material-ui/core/Switch';
 import Tooltip from '@material-ui/core/Tooltip'
 import SortIcon from '@material-ui/icons/Sort';
+import ShareIcon from '@material-ui/icons/Share';
 import { splitGameKey } from '../../utils/stringUtils';
 import { useParams } from 'react-router-dom';
 import { gameActions } from '../../redux/games/actions';
-import { getMultipleSetScores } from '../../utils/scoreUtils';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import SearchField from '../../components/SearchField';
 import useKonamiCode from '../../hooks/Konami';
 import { updateSettings } from '../../redux/settings/actions';
+import { calculatePlayersDataWithStats } from '../../helpers/tournamentHelpers';
+import lastManStandingStyles from './lastManStandingStyles';
+import { watchTournamentActions } from '../../redux/watchTournament/actions';
+import toast from '../../components/IndependentSnackbar';
 
 export interface Players {
     [key: string]: {
@@ -48,16 +57,17 @@ const LastManStanding = (props: Props) => {
     const entityState = useSelector((state: RootState) => state.entities);
     const settingsState = useSelector((state: RootState) => state.settings);
     const fetchedGames = useSelector((state: RootState) => state.games.data);
+    const shareLinkRef = useRef<HTMLInputElement>(null);
+    // const tournamentShareId = useSelector((state: RootState) => state.watchTournament.data.shareId);
     const dispatch = useDispatch();
     const classes = lastManStandingStyles();
     const { tournamentId: tournamentIdString } = useParams<{ tournamentId: string }>();
     const tournamentId = parseInt(tournamentIdString, 10);
-    const fetchedTournamentData = entityState.fetchedTournaments.data[tournamentId];
+    const fetchedTournamentData: FetchedTournament = entityState.fetchedTournaments.data[tournamentId];
     const tournamentGames = fetchedGames[tournamentId];
-    const tournamentPlayerIds = fetchedTournamentData?.players;
     const fetchedPlayers = entityState.fetchedPlayers.data;
     const { t } = useTranslation();
-    
+    const origin = window.location.origin;
     const isDYP = !fetchedTournamentData?.monsterDYP && tournamentGames?.find(game => game.index === '1-1')?.player1?.length === 2;
 
     const normalizedPlayers = getNormalizedParticipants(fetchedPlayers);
@@ -74,7 +84,13 @@ const LastManStanding = (props: Props) => {
     }, [])
 
     useEffect(() => {
-        const playerData = fetchedTournamentData && tournamentGames && calculatePlayersDataWithStats();
+        if (!tournamentGames || tournamentGames.length === 0) {
+            dispatch(gameActions.getTournamentGames(tournamentId));
+        }
+    }, [tournamentGames])
+
+    useEffect(() => {
+        const playerData = fetchedTournamentData && tournamentGames && calculatePlayersDataWithStats(fetchedTournamentData, tournamentGames, fetchedPlayers, normalizedPlayers, isDYP);
         setPlayerData(playerData);
     }, [tournamentGames, fetchedTournamentData, fetchedPlayers])
 
@@ -92,172 +108,6 @@ const LastManStanding = (props: Props) => {
         }
         score > 0 && setMaxScores(score);
     }
-
-    const getPlayersInitialData = (tournamentPlayers: FetchedPlayers): Players => {
-        const numberOfLives = fetchedTournamentData?.numberOfLives;
-        if (typeof numberOfLives !== 'number') return {};
-
-        const pairs = isDYP ? multiDimensionalUnique(tournamentGames.reduce((acc: [number, number][], val: FetchedGameData) => {
-            if (!val.index || !val.player1 || !val.player2) {
-                return acc;
-            }
-            acc.push([val.player1[0].id, val.player1[1].id], [val.player2[0].id, val.player2[1].id])
-            return acc;
-        }, [])) : null;
-
-        if (!isDYP) {
-            const players = tournamentPlayers.reduce((acc: Players, val) => {
-                acc[val.id] = {
-                    id: val.id,
-                    lives: numberOfLives,
-                    numberOfGames: 0,
-                    points: 0,
-                    goals: 0,
-                    goalsIn: 0,
-                    matchesWon: 0,
-                    matchesLost: 0,
-                }
-                return acc;
-            }, {});
-            return players;
-        }
-        else {
-            if (!pairs) return {};
-            const players = pairs.reduce((acc: Players, val) => {
-                const pName = `${normalizedPlayers[val[0]]?.name} / ${normalizedPlayers[val[1]]?.name}`;
-                acc[pName] = {
-                    id: [val[0], val[1]],
-                    lives: numberOfLives,
-                    numberOfGames: 0,
-                    points: 0,
-                    goals: 0,
-                    goalsIn: 0,
-                    matchesWon: 0,
-                    matchesLost: 0,
-                }
-                return acc;
-            }, {});
-            return players;
-        }
-    }
-
-    const calculatePlayersDataWithStats = (): Players => {
-        const pointsForWin = fetchedTournamentData?.pointsForWin;
-        const pointsForDraw = fetchedTournamentData?.pointsForDraw;
-        const tournamentPlayers = fetchedPlayers.filter(p => tournamentPlayerIds && tournamentPlayerIds?.indexOf(p.id) >= 0)
-        if (typeof pointsForWin !== 'number' || typeof pointsForDraw !== 'number') return {};
-
-        const initialPlayers = getPlayersInitialData(tournamentPlayers);
-
-        const playersData = tournamentGames?.reduce((acc, val, i) => {
-            if (!val.scores1 || !val.scores2 || val.scores1.length === 0 || val.scores2.length === 0 || !normalizedPlayers) {
-                return acc;
-            }
-            const { score1, score2 } = getMultipleSetScores(val.scores1, val.scores2, val.scores1.length);
-            const scores1Sum = val.scores1.reduce((acc, val) => acc + val);
-            const scores2Sum = val.scores2.reduce((acc, val) => acc + val);
-
-            if (!val.player1 || !val.player2) {
-                return acc;
-            }
-
-            const id1_0 = val.player1[0] && val.player1[0].id;
-            const id1_1 = val.player1[1] && val.player1[1].id;
-            const id2_0 = val.player2[0] && val.player2[0].id;
-            const id2_1 = val.player2[1] && val.player2[1].id;
-
-            // SINGLE, TEAM, MONSTER DYP
-            if (id1_0 && id2_0 && acc[id1_0] && acc[id2_0] && ((!id1_1 && !id2_1) || fetchedTournamentData?.monsterDYP)) {
-                acc[id1_0].numberOfGames++;
-                acc[id2_0].numberOfGames++;
-                acc[id1_0].goals += scores1Sum;
-                acc[id2_0].goals += scores2Sum;
-                acc[id1_0].goalsIn += scores2Sum;
-                acc[id2_0].goalsIn += scores1Sum;
-
-                if (score1 > score2) {
-                    acc[id1_0].points += pointsForWin;
-                    acc[id1_0].matchesWon += 1;
-                    acc[id2_0].matchesLost += 1;
-                    acc[id2_0].lives--;
-                }
-                if (score1 < score2) {
-                    acc[id1_0].points += pointsForWin;
-                    acc[id1_0].matchesLost += 1;
-                    acc[id2_0].matchesWon += 1;
-                    acc[id1_0].lives--;
-                }
-                if (score1 === score2) {
-                    acc[id1_0].points += pointsForDraw;
-                    acc[id2_0].points += pointsForDraw;
-                }
-
-                // MONSTER DYP ONLY
-                if (id1_1 && id2_1 && acc[id1_1] && acc[id2_1]) {
-                    acc[id1_1].numberOfGames++;
-                    acc[id2_1].numberOfGames++;
-                    acc[id1_1].goals += scores1Sum;
-                    acc[id2_1].goals += scores2Sum;
-                    acc[id1_1].goalsIn += scores2Sum;
-                    acc[id2_1].goalsIn += scores1Sum;
-                    if (score1 > score2) {
-                        acc[id1_1].points += pointsForWin;
-                        acc[id1_1].matchesWon += 1;
-                        acc[id2_1].matchesLost += 1;
-                        acc[id2_1].lives--;
-                    }
-                    if (score1 < score2) {
-                        acc[id1_1].points += pointsForWin;
-                        acc[id1_1].matchesLost += 1;
-                        acc[id2_1].matchesWon += 1;
-                        acc[id1_1].lives--;
-                    }
-                    if (score1 === score2) {
-                        acc[id1_1].points += pointsForDraw;
-                        acc[id2_1].points += pointsForDraw;
-                    }
-                }
-            }
-            // DYP
-            else if (id1_0 && id2_0 && id1_1 && id2_1) {
-                const participant1Name = `${normalizedPlayers[id1_0]?.name} / ${normalizedPlayers[id1_1]?.name}`;
-                const participant2Name = `${normalizedPlayers[id2_0]?.name} / ${normalizedPlayers[id2_1]?.name}`;
-                if (!acc[participant1Name] || !acc[participant2Name]) {
-                    return acc
-                }
-
-                acc[participant1Name].numberOfGames++;
-                acc[participant2Name].numberOfGames++;
-
-                acc[participant1Name].goals += scores1Sum;
-                acc[participant2Name].goals += scores2Sum;
-
-                acc[participant1Name].goalsIn += scores2Sum;
-                acc[participant2Name].goalsIn += scores1Sum;
-
-                if (score1 > score2) {
-                    acc[participant1Name].points += pointsForWin;
-                    acc[participant1Name].matchesWon += 1;
-                    acc[participant2Name].matchesLost += 1;
-                    acc[participant2Name].lives--;
-                }
-                if (score1 < score2) {
-                    acc[participant2Name].points += pointsForWin;
-                    acc[participant2Name].matchesWon += 1;
-                    acc[participant1Name].matchesLost += 1;
-                    acc[participant1Name].lives--;
-                }
-                if (score1 === score2) {
-                    acc[participant1Name].points += pointsForDraw;
-                    acc[participant2Name].points += pointsForDraw;
-                }
-            }
-
-            return acc;
-        }, initialPlayers);
-
-        return playersData;
-    };
 
     const handleShowResult = () => {
 
@@ -295,6 +145,23 @@ const LastManStanding = (props: Props) => {
         dispatch(updateSettings({ lmsRoundSortOrder: settingsState.lmsRoundSortOrder === 1 ? -1 : 1 }));
     };
 
+    const handleToggleShareTournament = (event: React.ChangeEvent<HTMLInputElement>) => {
+        debugger
+        if (!fetchedTournamentData.shareId) {
+            dispatch(watchTournamentActions.giveTournamentShareAccess(fetchedTournamentData.id));
+            return;
+        }
+        dispatch(watchTournamentActions.revokeTournamentShareAccess(fetchedTournamentData.id));
+    };
+
+    const handleClickCopyLink = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (shareLinkRef.current) {
+            navigator.clipboard.writeText(shareLinkRef.current.value);
+            toast.success(t('Link Copied'));
+        }
+    }
+
     if (!fetchedTournamentData) {
         return null;
     }
@@ -307,23 +174,70 @@ const LastManStanding = (props: Props) => {
                 style={{ width: `calc(100% - ${settingsState.tournamentSidebar ? 362 : 0}px)`, marginRight: settingsState.tournamentSidebar ? '12px' : '0px' }}
             >
                 <div className={classes.tournamentGameContainerHeader}>
-                    <Tooltip title={settingsState.lmsRoundSortOrder === 1 ? `${t("Sort Descending")}` : `${t("Sort Ascending")}`}>
-                        <IconButton className={classes.sortIconButton} aria-label="toggle-sort-order" onClick={handleSortOrderChange}>
-                            <SortIcon className={classes.icon} style={settingsState.lmsRoundSortOrder === 1 ? { transform: 'rotateX(180deg)' } : {}} />
-                        </IconButton>
-                    </Tooltip>
-                    <SearchField
-                        actionCallback={searchActionCallback}
-                        styles={{
-                            inputStyle: {
-                                color: '#c5c8cb',
-                                fontWeight: 200
+                    <div className={classes.tournamentGameContainerHeaderLeftPart}>
+                        <Tooltip title={settingsState.lmsRoundSortOrder === 1 ? `${t("Sort Descending")}` : `${t("Sort Ascending")}`}>
+                            <IconButton className={classes.sortIconButton} aria-label="toggle-sort-order" onClick={handleSortOrderChange}>
+                                <SortIcon className={classes.icon} style={settingsState.lmsRoundSortOrder === 1 ? { transform: 'rotateX(180deg)' } : {}} />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title={`${t("Share Tournament Watch Link")}`}>
+                            <div className={classes.shareContainer}>
+                                <div className={classes.shareIconContainer}>
+                                    <ShareIcon className={classes.icon} />
+                                </div>
+                                <Switch
+                                    checked={!!fetchedTournamentData.shareId}
+                                    onChange={handleToggleShareTournament}
+                                    name="checkedB"
+                                    color="primary"
+                                />
+                            </div>
+                        </Tooltip>
+                        {fetchedTournamentData.shareId &&
+                            <FormControl className={classes.shareLinkInputContainer}>
+                                <Input
+                                    id="standard-adornment-password"
+                                    className={classes.shareLinkTextField}
+                                    fullWidth
+                                    value={`${origin}/view-tournament/${fetchedTournamentData.shareId}`}
+                                    inputRef={shareLinkRef}
+                                    onClick={() => {
+                                        if (shareLinkRef && shareLinkRef.current) {
+                                            shareLinkRef.current.select();
+                                            navigator.clipboard.writeText(shareLinkRef.current.value)
+                                        }
+                                    }}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                size="small"
+                                                onClick={handleClickCopyLink}
+                                            >
+                                                <FileCopyIcon style={{ fontSize: 20, color: '#c5c8cb' }} />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                />
+                            </FormControl>
+                        }
+                    </div>
 
-                            },
-                            searchIconStyle: { color: '#c5c8cb', fontSize: 26 },
-                            closeIconStyle: { color: '#c5c8cb' }
-                        }}
-                    />
+                    <div>
+
+                        <SearchField
+                            actionCallback={searchActionCallback}
+                            styles={{
+                                inputStyle: {
+                                    color: '#c5c8cb',
+                                    fontWeight: 200
+
+                                },
+                                searchIconStyle: { color: '#c5c8cb', fontSize: 26 },
+                                closeIconStyle: { color: '#c5c8cb' }
+                            }}
+                        />
+                    </div>
                 </div>
                 <div className={classes.tournamentGameContainerBody} style={settingsState.lmsRoundSortOrder === 1 ? { flexDirection: 'column' } : { flexDirection: 'column-reverse' }}>
                     <CardContent className={classes.cardContent}>

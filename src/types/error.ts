@@ -15,7 +15,9 @@ export enum ErrorNames {
     UserNotFound = 'UserNotFoundError',
     WrongPassword = 'WrongPasswordError',
     UserNotVerified = 'UserNotVerifiedError',
+    UnableToGetTournament = 'UnableToGetTournament',
     Validation = 'ValidationError',
     MailSend = 'MailSendError',
     SocialUserForgotPassword = 'SocialUserForgotPasswordError',
+    ImportTournamentFailed = 'ImportTournamentFailed',
 }

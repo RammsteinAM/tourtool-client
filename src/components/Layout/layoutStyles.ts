@@ -99,6 +99,7 @@ const styles = makeStyles((theme) =>
     panelBody: {
       height: '100%',
       backgroundColor: '#ffffff',
+      width: '362px',
       padding: '20px',
     },
     fullScreen: {
@@ -107,7 +108,46 @@ const styles = makeStyles((theme) =>
     backdrop: {
       zIndex: theme.zIndex.drawer - 1,
     },
-
+    logoContainer: {
+      overflow: 'hidden',
+      height: '26px',
+      transition: 'width 0.2s linear'
+      // '&:after': {
+      //   content: "' '",
+      //   position: "absolute",
+      //   width: "13px",
+      //   height: "26px",
+      //   backgroundColor: "#333333",
+      //   right: "17px",
+      //   zIndex: 324234,
+      //   top: "0",
+      // }
+    },
+    logoContainerClosed: {
+      width: '26px',
+    },
+    logoContainerOpen: {
+      width: '182px',
+    },
+    logoMain: {
+      
+      display: 'block',
+      position: 'relative',
+      opacity: 1,
+    },
+    logo: {
+      display: 'block',
+      position: 'relative',
+      opacity: 1,
+      transition:'opacity 200ms linear'
+    },
+    logoVisible: {
+      
+      display: 'block',
+      position: 'relative',
+      opacity: 1,
+      transition:'opacity 200ms linear'
+    }
   }),
 );
 

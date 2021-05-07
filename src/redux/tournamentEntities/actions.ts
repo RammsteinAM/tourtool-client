@@ -24,6 +24,7 @@ import {
     CREATE_PLAYER_REQUEST, CREATE_PLAYER_SUCCESS, CREATE_PLAYER_FAILURE,
     CREATE_PLAYERS_REQUEST, CREATE_PLAYERS_SUCCESS, CREATE_PLAYERS_FAILURE,
     UPDATE_PLAYERS_REQUEST, UPDATE_PLAYERS_SUCCESS, UPDATE_PLAYERS_FAILURE,
+    TOGGLE_TOURNAMENT_SHARE,
     UpdateTournamentActionParams,
     UpdateParticipantsActionParams,
     UpdateEliminationPlayersActionParams,
@@ -41,12 +42,14 @@ import {
     UpdateTournamentGamesRequestActionParams, UpdateTournamentGamesSuccessActionParams, UpdateTournamentGamesFailureActionParams,
     DeleteTournamentRequestActionParams, DeleteTournamentSuccessActionParams, DeleteTournamentFailureActionParams,
     CreatePlayersRequestActionParams, CreatePlayersSuccessActionParams, CreatePlayersFailureActionParams,
-    UpdatePlayersRequestActionParams, UpdatePlayersSuccessActionParams, UpdatePlayersFailureActionParams, UpdateTournamentTablesActionParams,
+    UpdatePlayersRequestActionParams, UpdatePlayersSuccessActionParams, UpdatePlayersFailureActionParams,
+    UpdateTournamentTablesActionParams,
+    ToggleTournamentShareActionParams,
 } from "./types"
 import { UserStateData, UserUpdateReqData } from "../../types/user";
 import { loginSuccess } from "../auth/actions";
 import { ResponseData } from "../../types/main";
-import { FetchedGameData, FetchedPlayer, FetchedPlayers, FetchedTournament, FetchedTournaments, GameUpdateReqData, TournamentCreationReqData, TournamentUpdateReqData } from "../../types/entities";
+import { FetchedGameData, FetchedPlayer, FetchedPlayers, FetchedTournament, FetchedTournaments, GameUpdateReqData, TournamentCreationReqData, TournamentImportReqData, TournamentUpdateReqData } from "../../types/entities";
 import { createGamesSuccess, getGamesSuccess } from "../games/actions";
 import { gameServices } from "../../services/game";
 
@@ -86,6 +89,7 @@ export const updateTournamentRequest = actionCreator<UpdateTournamentRequestActi
 export const updateTournamentSuccess = payloadedActionCreator<UpdateTournamentSuccessActionParams>(UPDATE_TOURNAMENT_SUCCESS);
 export const updateTournamentFailure = payloadedActionCreator<UpdateTournamentFailureActionParams>(UPDATE_TOURNAMENT_FAILURE);
 export const updateTournamentTables = payloadedActionCreator<UpdateTournamentTablesActionParams>(UPDATE_TOURNAMENT_TABLES);
+export const toggleTournamentShare = payloadedActionCreator<ToggleTournamentShareActionParams>(TOGGLE_TOURNAMENT_SHARE);
 
 export const updateTournamentGamesRequest = actionCreator<UpdateTournamentGamesRequestActionParams>(UPDATE_TOURNAMENT_GAMES_REQUEST);
 export const updateTournamentGamesSuccess = payloadedActionCreator<UpdateTournamentGamesSuccessActionParams>(UPDATE_TOURNAMENT_GAMES_SUCCESS);
@@ -126,7 +130,6 @@ const getTournaments = () => {
 const getPlayers = () => {
     return (dispatch: Dispatch) => {
         dispatch(getPlayersRequest());
-
         playerServices.getPlayers()
             .then(
                 (res: AxiosResponse<ResponseData<FetchedPlayers>>) => {
@@ -203,6 +206,25 @@ const deleteTournament = (id: number) => {
     };
 }
 
+const importTournament = (data: TournamentImportReqData) => {
+    return (dispatch: Dispatch) => {
+        dispatch(createTournamentRequest());
+        tournamentServices.importTournament(data)
+            .then(
+                (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
+                    const data = res?.data?.data;
+                    if (data) {
+                        dispatch(createTournamentSuccess(data));
+                        getPlayers()(dispatch);
+                    }
+                },
+                (error: AxiosError) => {
+                    dispatch(createTournamentFailure({ error: error.name, message: error.message }));
+                }
+            );
+    };
+}
+
 const createPlayer = (name: string) => {
     return (dispatch: Dispatch) => {
         dispatch(createPlayerRequest());
@@ -272,6 +294,7 @@ export const entityActions = {
     createTournament,
     editTournament,
     deleteTournament,
+    importTournament,
     createPlayer,
     createPlayers,
     editGameAndNextGames,

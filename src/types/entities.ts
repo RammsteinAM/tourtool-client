@@ -66,6 +66,25 @@ export interface FetchedTournament extends BaseDatabaseEntity {
     pointsForWin?: number;
     pointsForDraw?: number;
     tournamentTypeId: number;
+    shareId?: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface FetchedTournamentForView {
+    name: string;
+    numberOfTables?: number;
+    tablesByGameIndex?: { [index: string]: number };
+    games: DBGameData<PlayersWithName>[];
+    players?: PlayersWithName;
+    numberOfGoals?: number;
+    sets: number;
+    draw?: boolean;
+    monsterDYP?: boolean;
+    numberOfLives?: number;
+    pointsForWin?: number;
+    pointsForDraw?: number;
+    tournamentTypeId: number;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -73,17 +92,17 @@ export interface FetchedTournament extends BaseDatabaseEntity {
 export interface FetchedCreatedGames extends BaseDatabaseEntity {
     games?: FetchedGameData[];
 }
-export interface DBGameData extends BaseEntity {
+export interface DBGameData<P = Player> extends BaseEntity {
     index: string;
-    player1?: Player,
-    player2?: Player,
+    player1?: P,
+    player2?: P,
     scores1?: number[];
     scores2?: number[];
     tournamentId?: number;
     hasByePlayer?: boolean;
 }
 
-export type FetchedGameData = DBGameData & Required<BaseEntity> & { tournamentId?: number }
+export type FetchedGameData = DBGameData & BaseDatabaseEntity & { tournamentId?: number }
 
 export type FetchedGamesData = { tournamentId: number, games: MultipleDBGameData[], tablesByGameIndex: { [index: string]: number } }
 
@@ -141,6 +160,8 @@ export interface LMSTableProps {
 export type LMSColOrderKeys = (keyof LMSTableProps);
 
 export type Player = { id: number }[];
+export type PlayerWithName = { id: number, name: string };
+export type PlayersWithName = PlayerWithName[];
 
 export interface TournamentCreationReqData {
     name: string;
@@ -156,6 +177,23 @@ export interface TournamentCreationReqData {
     pointsForDraw?: number;
     games?: DBGameData[];
     players?: number[];
+}
+
+export interface TournamentImportReqData {
+    name: string;
+    sets: number;
+    numberOfLives?: number;
+    numberOfGoals?: number;
+    numberOfTables?: number;
+    tablesByGameIndex?: {};
+    draw?: boolean;
+    monsterDYP?: boolean;
+    pointsForWin?: number,
+    pointsForDraw?: number;
+    createdAt: Date;
+    tournamentTypeId?: number;
+    games?: Omit<DBGameData, 'id' | 'tournamentId'>[];
+    players?: { id: number, name: string }[];
 }
 
 export interface GamesCreationReqData {
@@ -209,8 +247,8 @@ export interface MultipleDBGameData {
 export type TournamentTypes = 'elimination' | 'lms' | 'roundRobin';
 
 export type TournamentDownloadData =
-    Omit<FetchedTournament, "id" | "userId" | "updatedAt"> &
+    Omit<FetchedTournament, "id" | "userId" | "createdAt" | "updatedAt"> &
     {
-        games: Omit<DBGameData, 'id' | 'tournamentId'>,
+        games: Omit<DBGameData, "id" | "tournamentId">,
         playersWithNames: { id: number, name: string }[]
     }

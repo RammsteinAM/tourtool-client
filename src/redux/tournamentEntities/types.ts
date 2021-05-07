@@ -44,6 +44,7 @@ const CREATE_PLAYERS_FAILURE = "CREATE_PLAYERS_FAILURE";
 const UPDATE_PLAYERS_REQUEST = "UPDATE_PLAYERS_REQUEST";
 const UPDATE_PLAYERS_SUCCESS = "UPDATE_PLAYERS_SUCCESS";
 const UPDATE_PLAYERS_FAILURE = "UPDATE_PLAYERS_FAILURE";
+const TOGGLE_TOURNAMENT_SHARE = "TOGGLE_TOURNAMENT_SHARE";
 
 export {
     UPDATE_TOURNAMENT,
@@ -60,6 +61,7 @@ export {
     CREATE_TOURNAMENT_REQUEST, CREATE_TOURNAMENT_SUCCESS, CREATE_TOURNAMENT_FAILURE,
     UPDATE_TOURNAMENT_REQUEST, UPDATE_TOURNAMENT_SUCCESS, UPDATE_TOURNAMENT_FAILURE,
     UPDATE_TOURNAMENT_TABLES,
+    TOGGLE_TOURNAMENT_SHARE,
     UPDATE_TOURNAMENT_GAMES_REQUEST, UPDATE_TOURNAMENT_GAMES_SUCCESS, UPDATE_TOURNAMENT_GAMES_FAILURE,
     DELETE_TOURNAMENT_REQUEST, DELETE_TOURNAMENT_SUCCESS, DELETE_TOURNAMENT_FAILURE,
     CREATE_PLAYER_REQUEST, CREATE_PLAYER_SUCCESS, CREATE_PLAYER_FAILURE,
@@ -113,6 +115,7 @@ export type UpdateTournamentSuccessActionParams = PayloadedAction<typeof UPDATE_
 export type UpdateTournamentFailureActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_FAILURE, ResponseError | null>;
 
 export type UpdateTournamentTablesActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_TABLES, { id: number, tablesByGameIndex?: { [index: string]: number } }>;
+export type ToggleTournamentShareActionParams = PayloadedAction<typeof TOGGLE_TOURNAMENT_SHARE, { id: number, shareId?: string }>;
 
 export type UpdateTournamentGamesRequestActionParams = Action<typeof UPDATE_TOURNAMENT_GAMES_REQUEST>;
 export type UpdateTournamentGamesSuccessActionParams = PayloadedAction<typeof UPDATE_TOURNAMENT_GAMES_SUCCESS, FetchedTournament>;
@@ -170,4 +173,5 @@ export type UserActionParams =
     UpdatePlayersRequestActionParams |
     UpdatePlayersSuccessActionParams |
     UpdatePlayersFailureActionParams |
-    UpdateGamesSuccessActionParams
+    UpdateGamesSuccessActionParams |
+    ToggleTournamentShareActionParams

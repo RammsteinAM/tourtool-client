@@ -12,9 +12,14 @@ import SnackbarContent from '@material-ui/core/SnackbarContent';
 import { entityActions } from '../../redux/tournamentEntities/actions';
 import { gameActions } from '../../redux/games/actions';
 import { useTranslation } from "react-i18next";
+import { FetchedTournamentForView } from '../../types/entities';
 import tournamentStyles from './tournamentStyles';
 
-const Elimination = () => {
+interface Props {
+    data: FetchedTournamentForView;
+}
+
+const WatchEliminationTournament = ({ data }: Props) => {
     const [progress, setProgress] = useState<number>(0);
     const [tablesByGameIndex, setTablesByGameIndex] = useState<{ [index: string]: number }>({});
     const dispatch = useDispatch();
@@ -116,4 +121,4 @@ const Elimination = () => {
     )
 }
 
-export default Elimination
+export default WatchEliminationTournament

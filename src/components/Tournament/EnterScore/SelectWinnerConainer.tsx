@@ -20,9 +20,13 @@ const SelectWinnerConainer = ({ score1, score2, onWinnerSelect1, onTieSelect, on
     const classes = selectWinnerStyles();
     const { t } = useTranslation();
 
+    const handleWinnerSelect1 = (e: React.MouseEvent) => {
+        onWinnerSelect1();
+    }
+
     return (
         <div className={classes.matchContainer}>
-            <div onClick={onWinnerSelect1} className={classes.winnerSelectButton}>
+            <div onClick={handleWinnerSelect1} className={classes.winnerSelectButton}>
                 <div className={clsx(classes.playerName, {
                     [classes.winnerSelected]: (score1 === 1 && score2 === 0),
                 })}>{player1Name}</div>

@@ -5,18 +5,19 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { entityActions } from '../../redux/tournamentEntities/actions';
 import HomeCard from '../../components/Tournament/HomeCard';
 import { ReactComponent as Logo } from '../../resources/icons/logo.svg';
 import homeStyles from './homeStyles';
 import { FetchedTournament } from '../../types/entities';
 import { tournamentTypeIds } from '../../utils/constants';
+import mainStyles from '../../styles/mainStyles';
 
 interface Props {
 }
 
 const Home = (props: Props) => {
-    const classes = homeStyles();
     const authState = useSelector((state: RootState) => state.auth);
     const entityState = useSelector((state: RootState) => state.entities);
     const tournamentsSortKey = useSelector((state: RootState) => state.settings.tournamentsSortKey) || 'createdAt';
@@ -27,7 +28,9 @@ const Home = (props: Props) => {
     const dispatch = useDispatch();
     const history = useHistory();
     const { t } = useTranslation();
-    const tournamentsData = entityState.fetchedTournaments?.data && Object.values(entityState.fetchedTournaments.data);
+    const tournamentsData = (entityState.fetchedTournaments.status === ActionStatus.Success && entityState.fetchedTournaments.data) ? Object.values(entityState.fetchedTournaments.data) : null;
+    const mainClasses = mainStyles();
+    const classes = homeStyles();
 
     useEffect(() => {
         if (loggedIn) {
@@ -87,22 +90,9 @@ const Home = (props: Props) => {
         return data.tournamentTypeId === tournamentTypeIds[tournamentsFilterKey]
     }
 
-    return (
-        <div className={classes.root}>
-            {loggedIn &&
-                <div className={classes.cardListContainer}>
-                    {tournamentsData
-                        .filter(filterFunction)
-                        .sort(compareFunction)
-                        .map(tournament => {
-                            return (tournament ? <HomeCard
-                                key={tournament?.id}
-                                data={tournament}
-                            /> : null)
-                        })}
-                </div>
-            }
-            {(!loggedIn || tournamentsData.length === 0) && <>
+    if (!loggedIn) {
+        return (
+            <div className={classes.root}>
                 <div className={classes.buttonContainer}>
                     <Logo width='160px' height='160px' fill='#9c9c9c' />
                     <Button
@@ -112,11 +102,51 @@ const Home = (props: Props) => {
                         className={classes.button}
                         onClick={handleCreateTournament}
                     >
-                        {loggedIn ? t('Create New Tournament') : t('Login to Create a Tournament')}
+                        {t('Login to Create a Tournament')}
                     </Button>
                 </div>
-            </>
-            }
+            </div>
+        )
+    }
+
+    if (!tournamentsData) {
+        return (
+            <div className={classes.root}>
+                <div className={classes.buttonContainer}>
+                    <div className={mainClasses.progress}>
+                        <CircularProgress />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    return (
+        <div className={classes.root}>
+            <div className={classes.cardListContainer}>
+                {tournamentsData.length > 0 ? tournamentsData
+                    .filter(filterFunction)
+                    .sort(compareFunction)
+                    .map(tournament => {
+                        return (tournament ? <HomeCard
+                            key={tournament?.id}
+                            data={tournament}
+                        /> : null)
+                    }) :
+                    <div className={classes.buttonContainer}>
+                        <Logo width='160px' height='160px' fill='#9c9c9c' />
+                        <Button
+                            type="button"
+                            variant="contained"
+                            color="secondary"
+                            className={classes.button}
+                            onClick={handleCreateTournament}
+                        >
+                            {loggedIn ? t('Create New Tournament') : t('Login to Create a Tournament')}
+                        </Button>
+                    </div>
+                }
+            </div>
         </div>
     )
 }

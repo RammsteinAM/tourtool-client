@@ -21,6 +21,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
 import { ReactComponent as Logo } from '../../resources/icons/logo.svg';
+import { ReactComponent as LogoBig1 } from '../../resources/icons/logoBig1.svg';
+import { ReactComponent as LogoBig2 } from '../../resources/icons/logoBig2.svg';
 import Settings from '../Settings/Settings';
 import Profile from '../Profile/Profile';
 import { authActions } from '../../redux/auth/actions';
@@ -28,6 +30,7 @@ import Main from './Main';
 import { Route, Switch } from 'react-router-dom';
 import layoutStyles from './layoutStyles';
 import Players from '../Tournament/Players';
+import LastManStandingSettings from '../Settings/LastManStandingSettings';
 
 const initialRightClick = {
   mouseX: null,
@@ -48,6 +51,7 @@ interface Props {
 const Layout = (props: Props) => {
   const classes = layoutStyles();
   const [open, setOpen] = React.useState<boolean>(false);
+  const [logoExpanded, setLogoExpanded] = React.useState<boolean>(false);
   const [rightClick, setRightClick] = React.useState<{
     mouseX: null | number;
     mouseY: null | number;
@@ -62,6 +66,14 @@ const Layout = (props: Props) => {
 
   const handleDrawerClick = () => {
     setOpen(!open);
+    if (!open) {
+      setLogoExpanded(true);
+    }
+    if (open) {
+      setTimeout(() => {
+        setLogoExpanded(false)
+      }, 250);
+    }
   };
 
   const handleHomeButtonClick = (e: React.MouseEvent) => {
@@ -125,7 +137,7 @@ const Layout = (props: Props) => {
         return (
           <Switch>
             <Route exact path="/lms/:tournamentId">
-              <Settings test />
+              <LastManStandingSettings />
             </Route>
             <Route path="/">
               <Settings />
@@ -196,9 +208,22 @@ const Layout = (props: Props) => {
         }}
       >
         <List>
-          <ListItem button onClick={handleHomeButtonClick} className={classes.listItems}>
+          <ListItem className={classes.listItems}>
             <ListItemIcon>
-              <Logo fill="#8EBD5E" />
+              <div className={clsx(classes.logoContainer, {
+                [classes.logoContainerClosed]: !open,
+                [classes.logoContainerOpen]: open,
+              })}>
+                <Logo
+                  className={classes.logoMain}
+                  style={logoExpanded ? { opacity: 0, marginTop: '-26px' } : {}}
+                  fill="#8EBD5E"
+                />
+                <LogoBig2
+                  className={classes.logo}
+                  fill="#8EBD5E"
+                />
+              </div>
             </ListItemIcon>
           </ListItem>
           <ListItem button onClick={handleHomeButtonClick} className={classes.listItems}>

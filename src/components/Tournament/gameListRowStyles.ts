@@ -113,6 +113,7 @@ const styles = makeStyles((theme) => ({
             content: "' '",
             outline: "2px dashed #e16f3d",
             position: "absolute",
+            pointerEvents: 'none'
         }
     },
 
