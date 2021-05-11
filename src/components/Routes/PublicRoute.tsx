@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom'
+import { DisconnectedActionStatus } from '../../redux/auth/types';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
 
@@ -17,7 +18,7 @@ const PublicRoute = ({ children, ...rest }: Props) => {
         <Route
             {...rest}
             render={() =>
-                authStatus !== ActionStatus.Success ?
+                (authStatus !== ActionStatus.Success && authStatus !== DisconnectedActionStatus.Disconnected) ?
                     children :
                     <Redirect to={rest.location.state?.from || "/"} />
             }

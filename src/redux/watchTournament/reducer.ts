@@ -1,10 +1,6 @@
 import { ActionStatus } from "../../types/main";
 import {
   SET_WATCH_DATA,
-  SET_SHARE_ID,
-  TOGGLE_TOURNAMENT_SHARE_REQUEST,
-  TOGGLE_TOURNAMENT_SHARE_SUCCESS,
-  TOGGLE_TOURNAMENT_SHARE_FAILURE,
   WatchTournamentReducerState,
   WatchTournamentActionParams,
 } from "./types";
@@ -29,39 +25,6 @@ const reducer = (state: WatchTournamentReducerState = initialState, action: Watc
         }
       };
     }
-    // case SET_SHARE_ID: {
-    //   return {
-    //     ...state,
-    //     data: {
-    //       ...state.data,
-    //       shareId: action.payload
-    //     }
-    //   };
-    // }
-    // case TOGGLE_TOURNAMENT_SHARE_REQUEST: {
-    //   return {
-    //     ...state,
-    //     status: ActionStatus.Request,
-    //   };
-    // }
-    // case TOGGLE_TOURNAMENT_SHARE_SUCCESS: {
-    //   debugger
-    //   return {
-    //     ...state,
-    //     status: ActionStatus.Success,
-    //     data: {
-    //       ...state.data,
-    //       shareId: action.payload
-    //     }
-    //   };
-    // }
-    // case TOGGLE_TOURNAMENT_SHARE_FAILURE: {
-    //   return {
-    //     ...state,
-    //     status: ActionStatus.Failure,
-    //     error: action.payload?.error
-    //   };
-    // }
     default:
       return state;
   }

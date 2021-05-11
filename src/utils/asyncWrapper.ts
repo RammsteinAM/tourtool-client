@@ -15,7 +15,7 @@ export function asyncWrapper<T>(func: (param: any) => Promise<T>) {
             // if (Object.values(ErrorNames).includes(res.data.error)) {
             //     toast.error(i18n.t(`ERROR_${res.data.error}`));
             // }
-
+            
             throw new HttpError(res?.status, res?.data?.error, res?.data?.message);
         }
     }

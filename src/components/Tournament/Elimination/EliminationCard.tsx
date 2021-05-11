@@ -32,6 +32,9 @@ const EliminationCard = (props: Props) => {
 
     useEffect(() => {
         let score1, score2;
+        if (!game) {
+            return;
+        }
         if (game.scores1 && game.scores2) {
             score1 = getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length).score1;
             score2 = getMultipleSetScores(game.scores1, game.scores2, Object.keys(game.scores1).length).score2;

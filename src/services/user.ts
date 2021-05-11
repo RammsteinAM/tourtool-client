@@ -19,6 +19,12 @@ const loginCheck = async (data: UserLoginCheckReqData): Promise<AxiosResponse> =
     return response;
 }
 
+const checkOrGetAccessToken = async (data: UserLoginCheckReqData): Promise<AxiosResponse> => {
+    const { refreshToken } = data;
+    const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${apiEndpoint}/auth/check-access-token`, { refreshToken }, { withCredentials: true });
+    return response;
+}
+
 const register = async (data: UserRegisterReqData): Promise<AxiosResponse> => {
     const { email, password, displayName } = data;
     const response: AxiosResponse<AxiosRequestConfig> = await axios.post(`${apiEndpoint}/auth/register`, { email, password, displayName });
@@ -82,6 +88,7 @@ const deleteAccount = asyncWrapper<AxiosResponse>(async (token: string): Promise
 export const userServices = {
     login,
     loginCheck,
+    checkOrGetAccessToken,
     register,
     googleLogin,
     facebookLogin,

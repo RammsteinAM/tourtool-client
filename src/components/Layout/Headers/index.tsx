@@ -138,7 +138,7 @@ const Header = (props: Props) => {
                             printButton
                         />
                     </Route>
-                    <Route exact path="/view-tournament/:tournamentShareId">
+                    <Route exact path="/watch/:tournamentShareId">
                         <HeaderWatchTournament />
                     </Route>
                     <Route path="/">

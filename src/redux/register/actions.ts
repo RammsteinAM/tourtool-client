@@ -52,8 +52,10 @@ const register = (data: UserRegisterReqData) => {
                 (res: AxiosResponse) => {
                     dispatch(registerSuccess());
                 },
-                (error: AxiosError) => {
-                    dispatch(registerFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(registerFailure({ error, message }));
                 }
             );
     };
@@ -68,8 +70,10 @@ const verifyEmail = (token: string) => {
                 (user: AxiosResponse) => {
                     dispatch(verifyEmailSuccess(user.data.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(verifyEmailFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(verifyEmailFailure({ error, message }));
                 }
             );
     };
@@ -84,8 +88,10 @@ const resendVerificationEmail = (data: UserLoginReqData) => {
                 (user: AxiosResponse) => {
                     dispatch(resendVericationEmailSuccess(user.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(resendVericationEmailFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(resendVericationEmailFailure({ error, message }));
                 }
             );
     };

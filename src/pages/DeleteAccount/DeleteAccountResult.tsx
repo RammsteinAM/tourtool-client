@@ -9,6 +9,7 @@ import { CircularProgress } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
+import Button from '@material-ui/core/Button';
 import deleteAccountStyles from './deleteAccountStyles';
 import mainStyles from '../../styles/mainStyles';
 import { userActions } from '../../redux/user/actions';
@@ -21,6 +22,7 @@ const DeleteAccountResult = () => {
     const userState = useSelector((state: RootState) => state.user);
     const dispatch = useDispatch();
     const { token } = useParams<{ token: string }>();
+    const history = useHistory();
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -40,16 +42,26 @@ const DeleteAccountResult = () => {
                         classes.paper
                 }}
             >
-
                 {userState.delete.status === ActionStatus.Request &&
                     <div className={mainClasses.progress}>
                         <CircularProgress />
                     </div>
                 }
                 {userState.delete.status === ActionStatus.Success &&
-                    <Typography>
-                        {t('delete-account-success-message')}
-                    </Typography>
+                    <>
+                        <Typography>
+                            {t('delete-account-success-message')}
+                        </Typography>
+                        <Button
+                            type="button"
+                            variant="contained"
+                            color="secondary"
+                            className={classes.button}
+                            onClick={() => { history.push('/login') }}
+                        >
+                            {t('Go to Login Page')}
+                        </Button>
+                    </>
                 }
             </Dialog>
         </div>

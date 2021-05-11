@@ -5,6 +5,7 @@ import { authActions } from '../../redux/auth/actions';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
 import { useHistory } from "react-router-dom";
+import { DisconnectedActionStatus } from '../../redux/auth/types';
 
 interface Props {
     children: React.ReactElement;
@@ -28,7 +29,7 @@ const PrivateRoute = ({ children, ...rest }: Props) => {
         <Route
             {...rest}
             render={() =>
-                authState.status === ActionStatus.Success ?
+                (authState.status === ActionStatus.Success || authState.status === DisconnectedActionStatus.Disconnected) ?
                     children :
                     <Redirect to={{ pathname: "/login", state: { from } }} />
             }

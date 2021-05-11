@@ -130,7 +130,7 @@ const styles = makeStyles((theme) =>
       width: '182px',
     },
     logoMain: {
-      
+
       display: 'block',
       position: 'relative',
       opacity: 1,
@@ -139,14 +139,23 @@ const styles = makeStyles((theme) =>
       display: 'block',
       position: 'relative',
       opacity: 1,
-      transition:'opacity 200ms linear'
+      transition: 'opacity 200ms linear'
     },
     logoVisible: {
-      
+
       display: 'block',
       position: 'relative',
       opacity: 1,
-      transition:'opacity 200ms linear'
+      transition: 'opacity 200ms linear'
+    },
+    connectionLostContent: {
+      display: "flex",
+      textAlign: "center",
+      flexDirection: "column",
+      fontWeight: 700,
+      justifyContent: "center",
+      color: "#333333",
+      filter: "drop-shadow(1px 1px 5px #ffffff88) drop-shadow(-1px -1px 5px #ffffff88) drop-shadow(-1px 1px 5px #fff) drop-shadow(1px -1px 5px #fff)"
     }
   }),
 );

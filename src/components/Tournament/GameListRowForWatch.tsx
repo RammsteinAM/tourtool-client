@@ -3,10 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { DBGameData, FetchedTournamentForView } from '../../types/entities';
 import { getMultipleSetScores } from '../../utils/scoreUtils';
-import GameListEnterScoreButton from './GameListEnterScoreButton';
-import { getNormalizedGames } from '../../utils/arrayUtils';
+import ScheduleIcon from '@material-ui/icons/Schedule';
 import { CircularProgress } from '@material-ui/core';
-import gameListRowStyles from './gameListRowStyles';
+import gameListRowForWatchStyles from './gameListRowForWatchStyles';
 import { useTranslation } from "react-i18next";
 interface Props {
     tournamentData: FetchedTournamentForView;
@@ -15,30 +14,17 @@ interface Props {
 }
 
 const GameListRowForWatch = ({ tournamentData, gameKey, normalizedPlayers }: Props) => {
-    // const [scoresOpen, setScoresOpen] = useState<boolean>(false);
-    // const [stateChanged, setStateChanged] = useState<boolean>(false);
-    // const [numberOfAdditionalGames, setNumberOfAdditionalGames] = useState<number>(0);
-    // const fetchedTournamentsData = useSelector((state: RootState) => state.entities.fetchedTournaments.data);
-    // const scoresRef = useRef<any>();
-    // const enterScoreContentRef = useRef<any>(null);
-    // const fetchedGames = useSelector((state: RootState) => state.games.data);
-    // const tournamentGames = fetchedGames[tournamentId];
-    // const normalizedGames = getNormalizedGames(tournamentGames);
     const normalizedGames = tournamentData.games.reduce((acc: { [index: string]: DBGameData }, val: DBGameData) => {
         if (!val.index) {
             return acc;
         }
         acc[val.index] = val;
-        // val.scores1 && acc[val.index].scores1 = val.scores1;
         return acc;
     }, {})
-    // const dispatch = useDispatch();
-    const classes = gameListRowStyles();
+
+    const classes = gameListRowForWatchStyles();
 
     const { t } = useTranslation();
-    // if (!normalizedGames || !fetchedTournamentsData[tournamentId]) {
-    //     return null;
-    // }
 
     const player1 = normalizedGames[gameKey]?.player1;
     const player2 = normalizedGames[gameKey]?.player2;
@@ -82,10 +68,10 @@ const GameListRowForWatch = ({ tournamentData, gameKey, normalizedPlayers }: Pro
                 <div className={classes.gameRowP1}>{player1Name}</div>
                 <div className={classes.scoreContainer} id={`toggle-score-button-${gameKey}`}>
                     {typeof score1 !== 'number' || typeof score2 !== 'number' ?
-                        <div className={classes.enterResultButton}>
-                            {t('KEKWait')}
+                        <div className={classes.emptyScoreConteiner}>
+                            <ScheduleIcon style={{ fontSize: 24 }} />
                         </div> :
-                        <div className={classes.enterScoreButtonScoreDisplay}>
+                        <div className={classes.scoreDisplay}>
                             <span className={score1 > score2 || score1 === score2 ? classes.winningScoreLeft : ''}>{score1}</span>
                             <span> : </span>
                             <span className={score1 < score2 || score1 === score2 ? classes.winningScoreRight : ''}>{score2}</span>
@@ -94,6 +80,18 @@ const GameListRowForWatch = ({ tournamentData, gameKey, normalizedPlayers }: Pro
                 </div>
                 <div className={classes.gameRowP2}>{player2Name}</div>
             </div>
+            {scores1 && scores2 && scores1.length > 1 && scores2.length > 1 && scores1.length === scores2.length &&
+                <div className={classes.addtitionalScoresDisplay} title={t('Sets')}>{
+                    [...Array(scores1.length).keys()].map((i) => {
+                        return <div className={classes.addtitionalScoreItem}>
+                            <span>{scores1[i]}</span>
+                            <span> : </span>
+                            <span>{scores2[i]}</span>
+                        </div>
+                    })
+                }
+                </div>
+            }
         </div>
     )
 }

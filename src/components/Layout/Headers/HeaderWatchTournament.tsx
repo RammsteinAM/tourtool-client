@@ -28,7 +28,6 @@ interface Props {
     zoomSlider?: boolean;
     fullScreenButton?: boolean;
     printButton?: boolean;
-    tournamentSidebar?: boolean;
     icon?: React.ReactNode;
 }
 
@@ -90,13 +89,11 @@ const HeaderWatchTournament = (props: Props) => {
             {props.zoomSlider &&
                 <HeaderSlider onChange={handleZoomSliderChange} defaultValue={settingsState.eliminationScale ? settingsState.eliminationScale * 100 : 100} />
             }
-            {props.tournamentSidebar &&
-                <Tooltip title={settingsState.tournamentSidebar ? `${t("Hide Standings")}` : `${t("Show Standings")}`}>
-                    <IconButton className={classes.iconButton} aria-label="toggle-standings" onClick={handleToggleTournamentSidebarButton}>
-                        <ListIcon />
-                    </IconButton>
-                </Tooltip>
-            }
+            <Tooltip title={settingsState.tournamentSidebar ? `${t("Hide Standings")}` : `${t("Show Standings")}`}>
+                <IconButton className={classes.iconButton} aria-label="toggle-standings" onClick={handleToggleTournamentSidebarButton}>
+                    <ListIcon />
+                </IconButton>
+            </Tooltip>
             <Tooltip title={`${t("Print")}`}>
                 <IconButton className={classes.iconButton} aria-label="print" onClick={handlePrint}>
                     <PrintIcon />

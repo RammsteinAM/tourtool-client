@@ -49,7 +49,7 @@ export const requestDeleteReset = actionCreator<RequestDeleteResetActionParams>(
 
 export const deleteRequest = actionCreator<DeleteRequestActionParams>(USER_DELETE_REQUEST);
 
-export const deleteSuccess = payloadedActionCreator<DeleteSuccessActionParams>(USER_DELETE_SUCCESS);
+export const deleteSuccess = actionCreator<DeleteSuccessActionParams>(USER_DELETE_SUCCESS);
 
 export const deleteFailure = payloadedActionCreator<DeleteFailureActionParams>(USER_DELETE_FAILURE);
 
@@ -58,7 +58,6 @@ export const resetUser = actionCreator<UserResetActionParams>(USER_RESET);
 const updateUser = (data: UserUpdateReqData) => {
     return (dispatch: Dispatch) => {
         dispatch(updateRequest());
-
         userServices.update(data)
             .then(
                 (res: AxiosResponse<ResponseData<UserStateData>>) => {
@@ -66,8 +65,10 @@ const updateUser = (data: UserUpdateReqData) => {
                     dispatch(userUpdateSuccess(res.data));
                     toast.success(i18n.t('Changes saved'))
                 },
-                (error: AxiosError) => {
-                    dispatch(updateFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(updateFailure({ error, message }));
                 }
             );
     };
@@ -81,8 +82,10 @@ const deleteUserEmailRequest = () => {
                 (res: AxiosResponse<ResponseData<UserStateData>>) => {
                     dispatch(requestDeleteSuccess(res.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(requestDeleteFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(requestDeleteFailure({ error, message }));
                 }
             );
     };
@@ -94,11 +97,14 @@ const deleteUser = (token: string) => {
         userServices.deleteAccount(token)
             .then(
                 (res: AxiosResponse<ResponseData<UserStateData>>) => {
-                    dispatch(deleteSuccess(res.data));
+                    dispatch(deleteSuccess());
+                    dispatch(logout())
                     clearCookieAndStorage();
                 },
-                (error: AxiosError) => {
-                    dispatch(updateFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(deleteFailure({ error, message }));
                 }
             );
     };

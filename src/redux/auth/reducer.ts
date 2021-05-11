@@ -1,11 +1,12 @@
 import { ActionStatus } from "../../types/main";
 import { clearCookieAndStorage } from "../../utils/authUtils";
-import { AuthActionParams, AuthReducerState } from "./types";
 import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
   LOGIN_RESET,
+  CONNECTED,
+  DISCONNECTED,
   USER_UPDATE_SUCCESS,
   FORGOT_PASSWORD_REQUEST,
   FORGOT_PASSWORD_SUCCESS,
@@ -15,6 +16,7 @@ import {
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAILURE,
   LOGOUT,
+  AuthActionParams, AuthReducerState, DisconnectedActionStatus
 } from "./types";
 
 const forgotPasswordInitialState = {
@@ -74,8 +76,20 @@ const reducer = (state: AuthReducerState = initialState, action: AuthActionParam
     case LOGIN_FAILURE: {
       return {
         ...state,
-        status: ActionStatus.Failure,
+        status: ActionStatus.Success,
         ...action.payload
+      };
+    }
+    case CONNECTED: {
+      return {
+        ...state,
+        status: ActionStatus.Success,
+      };
+    }
+    case DISCONNECTED: {
+      return {
+        ...state,
+        status: DisconnectedActionStatus.Disconnected,
       };
     }
     case FORGOT_PASSWORD_REQUEST: {

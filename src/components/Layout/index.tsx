@@ -17,6 +17,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import CloseIcon from '@material-ui/icons/Close';
+import Backdrop from '@material-ui/core/Backdrop';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { ActionStatus } from '../../types/main';
@@ -25,12 +26,14 @@ import { ReactComponent as LogoBig1 } from '../../resources/icons/logoBig1.svg';
 import { ReactComponent as LogoBig2 } from '../../resources/icons/logoBig2.svg';
 import Settings from '../Settings/Settings';
 import Profile from '../Profile/Profile';
+import ErrorIcon from '@material-ui/icons/Error';
 import { authActions } from '../../redux/auth/actions';
 import Main from './Main';
 import { Route, Switch } from 'react-router-dom';
-import layoutStyles from './layoutStyles';
 import Players from '../Tournament/Players';
+import EliminationSettings from '../Settings/EliminationSettings';
 import LastManStandingSettings from '../Settings/LastManStandingSettings';
+import layoutStyles from './layoutStyles';
 
 const initialRightClick = {
   mouseX: null,
@@ -46,10 +49,10 @@ enum SidePanelState {
 
 interface Props {
   children: ReactElement,
+  disconnected?: boolean;
 }
 
 const Layout = (props: Props) => {
-  const classes = layoutStyles();
   const [open, setOpen] = React.useState<boolean>(false);
   const [logoExpanded, setLogoExpanded] = React.useState<boolean>(false);
   const [rightClick, setRightClick] = React.useState<{
@@ -63,6 +66,7 @@ const Layout = (props: Props) => {
   const fullScreen = useSelector((state: RootState) => state.settings.fullScreen);
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const classes = layoutStyles();
 
   const handleDrawerClick = () => {
     setOpen(!open);
@@ -136,6 +140,9 @@ const Layout = (props: Props) => {
       case SidePanelState.Settings:
         return (
           <Switch>
+            <Route exact path="/elimination/:tournamentId">
+              <EliminationSettings />
+            </Route>
             <Route exact path="/lms/:tournamentId">
               <LastManStandingSettings />
             </Route>
@@ -287,6 +294,14 @@ const Layout = (props: Props) => {
         <MenuItem onClick={handleProfileMenuItemClick}>{t('User Profile')}</MenuItem>
         <MenuItem onClick={handleLogoutMenuItemClick}>{t('Logout')}</MenuItem>
       </Menu>
+      <Backdrop open={!!props.disconnected} className={classes.backdrop}>
+        <div className={classes.connectionLostContent}>
+          <div>
+            <ErrorIcon style={{ fontSize: 50 }} />
+          </div>
+          <div>{t('connection-lost')}</div>
+        </div>
+      </Backdrop>
     </div>
   );
 }

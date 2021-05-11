@@ -80,17 +80,18 @@ const reducer = (state: UserReducerState = initialState, action: UserActionParam
       return {
         ...state,
         delete: {
+          ...state.delete,
           status: ActionStatus.Success,
-          ...action.payload
         }
       };
     }
     case USER_DELETE_FAILURE: {
       return {
         ...state,
-        delete: {
+        delete: {          
+          ...state.delete,
           status: ActionStatus.Failure,
-          ...action.payload
+          error: action.payload?.error
         }
       };
     }

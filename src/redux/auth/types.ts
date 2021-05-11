@@ -8,6 +8,8 @@ const LOGIN_REQUEST = "LOGIN_REQUEST";
 const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 const LOGIN_FAILURE = "LOGIN_FAILURE";
 const LOGIN_RESET = "LOGIN_RESET";
+const CONNECTED = "CONNECTED";
+const DISCONNECTED = "DISCONNECTED";
 const FORGOT_PASSWORD_REQUEST = "FORGOT_PASSWORD_REQUEST";
 const FORGOT_PASSWORD_SUCCESS = "FORGOT_PASSWORD_SUCCESS";
 const FORGOT_PASSWORD_FAILURE = "FORGOT_PASSWORD_FAILURE";
@@ -23,6 +25,8 @@ export {
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
     LOGIN_RESET,
+    CONNECTED,
+    DISCONNECTED,
     FORGOT_PASSWORD_REQUEST,
     FORGOT_PASSWORD_SUCCESS,
     FORGOT_PASSWORD_FAILURE,
@@ -44,12 +48,18 @@ export interface AuthReducerAdditionalData {
     loginCheck: DatalessState;
 }
 
-export type AuthReducerState = AppState<UserStateData> & AuthReducerAdditionalData;
+export enum DisconnectedActionStatus {
+    Disconnected = "DISCONNECTED"
+}
+
+export type AuthReducerState = AppState<UserStateData, DisconnectedActionStatus> & AuthReducerAdditionalData;
 
 export type LoginRequestActionParams = PayloadedAction<typeof LOGIN_REQUEST, {data: UserLoginReqData} | null>;
 export type LoginSuccessActionParams = PayloadedAction<typeof LOGIN_SUCCESS, ResponseData<UserStateData> | null>;
 export type LoginFailureActionParams = PayloadedAction<typeof LOGIN_FAILURE, ResponseError | null>;
 export type LoginResetActionParams = Action<typeof LOGIN_RESET>;
+export type ConnectedActionParams = Action<typeof CONNECTED>;
+export type DisconnectedActionParams = Action<typeof DISCONNECTED>;
 export type ForgotPasswordRequestActionParams = Action<typeof FORGOT_PASSWORD_REQUEST>;
 export type ForgotPasswordSuccessActionParams = PayloadedAction<typeof FORGOT_PASSWORD_SUCCESS, AppState<UserStateData> | null>;
 export type ForgotPasswordFailureActionParams = PayloadedAction<typeof FORGOT_PASSWORD_FAILURE, ResponseError | null>;
@@ -64,6 +74,8 @@ export type AuthActionParams =
     LoginSuccessActionParams |
     LoginFailureActionParams |
     LoginResetActionParams |
+    ConnectedActionParams |
+    DisconnectedActionParams |
     ForgotPasswordRequestActionParams |
     ForgotPasswordSuccessActionParams |
     ForgotPasswordFailureActionParams |

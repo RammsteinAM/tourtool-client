@@ -46,12 +46,6 @@ const Profile = (props: Props) => {
     setSubmitting(userState.update.status === ActionStatus.Request);
   }, [userState.update.status]);
 
-  useEffect(() => {
-    if (userState.delete.status === ActionStatus.Success) {
-      history.push('/delete-account-success')
-    };
-  }, [userState.update.status]);
-
   const handleLogout = () => {
     dispatch(authActions.logout());
   }

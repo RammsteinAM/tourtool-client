@@ -41,8 +41,10 @@ const getTournamentGames = (tournamentId: number) => {
                 (res: AxiosResponse<ResponseData<FetchedGames>>) => {
                     res?.data?.data && dispatch(getGamesSuccess(res.data.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(getGamesFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(getGamesFailure({ error, message }));
                 }
             );
     };
@@ -56,8 +58,10 @@ const createGames = (data: GamesCreationReqData) => {
                 (res: AxiosResponse<ResponseData<FetchedGames>>) => {
                     res?.data?.data && dispatch(createGamesSuccess(res.data.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(createGamesFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(createGamesFailure({ error, message }));
                 }
             );
     };
@@ -71,8 +75,10 @@ const createNextLMSRound = (tournamentId: number) => {
                 (res: AxiosResponse<ResponseData<FetchedGames>>) => {
                     res?.data?.data && dispatch(createGamesSuccess(res.data.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(createGamesFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(createGamesFailure({ error, message }));
                 }
             );
     };
@@ -86,8 +92,10 @@ const editGame = (data: GameUpdateReqData) => {
                 (res: AxiosResponse<ResponseData<FetchedGameData>>) => {
                     res?.data?.data && dispatch(updateGameSuccess(res.data.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(updateGameFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(updateGameFailure({ error, message }));
                 }
             );
     };
@@ -107,8 +115,10 @@ const editGameAndNextGames = (data: GameUpdateReqData) => {
                         }
                     }                    
                 },
-                (error: AxiosError) => {
-                    dispatch(updateGamesFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(updateGamesFailure({ error, message }));
                 }
             );
     };

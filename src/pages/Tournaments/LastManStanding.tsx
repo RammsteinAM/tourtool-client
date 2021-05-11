@@ -146,7 +146,6 @@ const LastManStanding = (props: Props) => {
     };
 
     const handleToggleShareTournament = (event: React.ChangeEvent<HTMLInputElement>) => {
-        debugger
         if (!fetchedTournamentData.shareId) {
             dispatch(watchTournamentActions.giveTournamentShareAccess(fetchedTournamentData.id));
             return;
@@ -157,7 +156,8 @@ const LastManStanding = (props: Props) => {
     const handleClickCopyLink = (e: React.MouseEvent) => {
         e.stopPropagation();
         if (shareLinkRef.current) {
-            navigator.clipboard.writeText(shareLinkRef.current.value);
+            shareLinkRef.current.select();
+            document.execCommand('copy');
             toast.success(t('Link Copied'));
         }
     }
@@ -199,12 +199,11 @@ const LastManStanding = (props: Props) => {
                                     id="standard-adornment-password"
                                     className={classes.shareLinkTextField}
                                     fullWidth
-                                    value={`${origin}/view-tournament/${fetchedTournamentData.shareId}`}
+                                    value={`${origin}/watch/${fetchedTournamentData.shareId}`}
                                     inputRef={shareLinkRef}
                                     onClick={() => {
                                         if (shareLinkRef && shareLinkRef.current) {
                                             shareLinkRef.current.select();
-                                            navigator.clipboard.writeText(shareLinkRef.current.value)
                                         }
                                     }}
                                     endAdornment={

@@ -49,7 +49,7 @@ import {
 import { UserStateData, UserUpdateReqData } from "../../types/user";
 import { loginSuccess } from "../auth/actions";
 import { ResponseData } from "../../types/main";
-import { FetchedGameData, FetchedPlayer, FetchedPlayers, FetchedTournament, FetchedTournaments, GameUpdateReqData, TournamentCreationReqData, TournamentImportReqData, TournamentUpdateReqData } from "../../types/entities";
+import { FetchedPlayer, FetchedPlayers, FetchedTournament, FetchedTournaments, GameUpdateReqData, TournamentCreationReqData, TournamentImportReqData, TournamentUpdateReqData } from "../../types/entities";
 import { createGamesSuccess, getGamesSuccess } from "../games/actions";
 import { gameServices } from "../../services/game";
 
@@ -120,8 +120,10 @@ const getTournaments = () => {
                 (res: AxiosResponse<ResponseData<FetchedTournaments>>) => {
                     res?.data?.data && dispatch(getTournamentsSuccess(res.data.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(getTournamentsFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(getTournamentsFailure({ error, message }));
                 }
             );
     };
@@ -135,8 +137,10 @@ const getPlayers = () => {
                 (res: AxiosResponse<ResponseData<FetchedPlayers>>) => {
                     res?.data?.data && dispatch(getPlayersSuccess(res.data.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(getPlayersFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(getPlayersFailure({ error, message }));
                 }
             );
     };
@@ -152,8 +156,10 @@ const getTournament = (id: number) => {
                     data && dispatch(getTournamentSuccess(data));
                     data?.games && dispatch(getGamesSuccess({ [data.id]: data.games }))
                 },
-                (error: AxiosError) => {
-                    dispatch(createTournamentFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(createTournamentFailure({ error, message }));
                 }
             );
     };
@@ -169,8 +175,10 @@ const createTournament = (data: TournamentCreationReqData) => {
                     data && dispatch(createTournamentSuccess(data));
                     data?.games && dispatch(createGamesSuccess({ [data.id]: data.games }))
                 },
-                (error: AxiosError) => {
-                    dispatch(createTournamentFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(createTournamentFailure({ error, message }));
                 }
             );
     };
@@ -184,8 +192,10 @@ const editTournament = (data: TournamentUpdateReqData) => {
                 (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
                     res?.data?.data && dispatch(updateTournamentSuccess(res.data.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(updateTournamentFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(updateTournamentFailure({ error, message }));
                 }
             );
     };
@@ -199,8 +209,10 @@ const deleteTournament = (id: number) => {
                 (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
                     res?.data?.data && dispatch(deleteTournamentSuccess(res.data.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(deleteTournamentFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(deleteTournamentFailure({ error, message }));
                 }
             );
     };
@@ -208,7 +220,7 @@ const deleteTournament = (id: number) => {
 
 const importTournament = (data: TournamentImportReqData) => {
     return (dispatch: Dispatch) => {
-        dispatch(createTournamentRequest());
+        // dispatch(createTournamentRequest());
         tournamentServices.importTournament(data)
             .then(
                 (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
@@ -218,8 +230,8 @@ const importTournament = (data: TournamentImportReqData) => {
                         getPlayers()(dispatch);
                     }
                 },
-                (error: AxiosError) => {
-                    dispatch(createTournamentFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    // dispatch(createTournamentFailure({ error: error.name, message: error.message }));
                 }
             );
     };
@@ -233,8 +245,10 @@ const createPlayer = (name: string) => {
                 (res: AxiosResponse<ResponseData<FetchedPlayer>>) => {
                     res?.data?.data && dispatch(createPlayerSuccess(res.data.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(createPlayerFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(createPlayerFailure({ error, message }));
                 }
             );
     };
@@ -248,8 +262,10 @@ const createPlayers = (names: string[]) => {
                 (res: AxiosResponse) => {
                     res?.data?.data && res.data.data.length > 0 && dispatch(createPlayersSuccess(res.data.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(createPlayersFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(createPlayersFailure({ error, message }));
                 }
             );
     };
@@ -265,8 +281,10 @@ const update = (data: UserUpdateReqData) => {
                     dispatch(loginSuccess(res.data));
                     dispatch(updatePlayersSuccess(res.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(updatePlayersFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(updatePlayersFailure({ error, message }));
                 }
             );
     };
@@ -280,8 +298,10 @@ const editGameAndNextGames = (data: GameUpdateReqData) => {
                 (res: AxiosResponse<ResponseData<FetchedTournament>>) => {
                     res?.data?.data && dispatch(updateTournamentGamesSuccess(res.data.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(updateTournamentGamesFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(updateTournamentGamesFailure({ error, message }));
                 }
             );
     };

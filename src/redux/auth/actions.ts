@@ -7,9 +7,6 @@ import {
     LoginFailureActionParams,
     LoginRequestActionParams,
     LoginSuccessActionParams,
-    // LoginCheckFailureActionParams,
-    // LoginCheckRequestActionParams,
-    // LoginCheckSuccessActionParams,
     ForgotPasswordRequestActionParams,
     ForgotPasswordSuccessActionParams,
     ForgotPasswordFailureActionParams,
@@ -22,9 +19,8 @@ import {
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
     LOGIN_RESET,
-    // LOGIN_CHECK_REQUEST,
-    // LOGIN_CHECK_FAILURE,
-    // LOGIN_CHECK_SUCCESS,
+    CONNECTED,
+    DISCONNECTED,
     FORGOT_PASSWORD_REQUEST,
     FORGOT_PASSWORD_SUCCESS,
     FORGOT_PASSWORD_FAILURE,
@@ -36,7 +32,9 @@ import {
     LOGOUT,
     ForgotPasswordReqData,
     ForgotPasswordResetActionParams,
-    LoginResetActionParams
+    LoginResetActionParams,
+    ConnectedActionParams,
+    DisconnectedActionParams
 } from "./types"
 import { userServices } from "../../services/user";
 import { AxiosError, AxiosResponse } from "axios";
@@ -50,6 +48,10 @@ export const loginSuccess = payloadedActionCreator<LoginSuccessActionParams>(LOG
 export const loginFailure = payloadedActionCreator<LoginFailureActionParams>(LOGIN_FAILURE);
 
 export const loginReset = actionCreator<LoginResetActionParams>(LOGIN_RESET);
+
+export const connected = actionCreator<ConnectedActionParams>(CONNECTED);
+
+export const disconnected = actionCreator<DisconnectedActionParams>(DISCONNECTED);
 
 export const forgotPasswordRequest = actionCreator<ForgotPasswordRequestActionParams>(FORGOT_PASSWORD_REQUEST);
 
@@ -72,7 +74,6 @@ export const logout = actionCreator<LogoutActionParams>(LOGOUT);
 const login = (data: UserLoginReqData) => {
     return (dispatch: Dispatch<AuthActionParams>) => {
         dispatch(loginRequest({ data: { ...data } }));
-
         userServices.login(data)
             .then(
                 (res: AxiosResponse<ResponseData<UserLoginResData>>) => {
@@ -86,8 +87,10 @@ const login = (data: UserLoginReqData) => {
                         dispatch(loginSuccess(res.data));
                     }
                 },
-                (error: AxiosError) => {
-                    dispatch(loginFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(loginFailure({ error, message }));
                 }
             );
     };
@@ -105,9 +108,27 @@ const loginCheck = () => {
                     }
                     dispatch(loginSuccess(res?.data));
                 },
-                (error: AxiosError) => {
+                (err: AxiosError) => {
                     localStorage.removeItem('refreshToken');
-                    // dispatch(loginReset());
+                }
+            );
+    };
+}
+
+const checkOrGetAccessToken = () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    return (dispatch: Dispatch<AuthActionParams>) => {
+        refreshToken && userServices.checkOrGetAccessToken({ refreshToken })
+            .then(
+                (res: AxiosResponse<ResponseData<UserLoginCheckResData>>) => {
+                    if (res && res.status === 200 && res.data?.data?.accessToken) {
+                        const cookies = new Cookies();
+                        cookies.set('x-auth-token', res.data.data.accessToken, { path: '/' });
+                    }
+                    dispatch(connected());
+                },
+                (err: AxiosError) => {
+                    dispatch(disconnected());
                 }
             );
     };
@@ -125,8 +146,10 @@ const googleLogin = (token: string) => {
                     localStorage.setItem('refreshToken', res.data.data!.refreshToken!);
                     dispatch(loginSuccess(res.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(loginFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(loginFailure({ error, message }));
                 }
             );
     };
@@ -144,9 +167,10 @@ const facebookLogin = (token: string) => {
                     localStorage.setItem('refreshToken', res.data.data!.refreshToken!);
                     dispatch(loginSuccess(res.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(loginFailure({ error: error.name, message: error.message }));
-                    //dispatch(alertActions.error(error.toString()));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(loginFailure({ error, message }));
                 }
             );
     };
@@ -160,11 +184,11 @@ const forgotPassword = (data: ForgotPasswordReqData) => {
             .then(
                 (res: AxiosResponse) => {
                     dispatch(forgotPasswordSuccess(res.data));
-                    //history.push(from);
                 },
-                (error: AxiosError) => {
-                    dispatch(forgotPasswordFailure({ error: error.name, message: error.message }));
-                    //dispatch(alertActions.error(error.toString()));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(forgotPasswordFailure({ error, message }));
                 }
             );
     };
@@ -179,8 +203,10 @@ const resetPassword = (data: UserPasswordResetReqData) => {
                 (res: AxiosResponse) => {
                     dispatch(resetPasswordSuccess(res.data));
                 },
-                (error: AxiosError) => {
-                    dispatch(resetPasswordFailure({ error: error.name, message: error.message }));
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    dispatch(resetPasswordFailure({ error, message }));
                 }
             );
     };
@@ -189,6 +215,7 @@ const resetPassword = (data: UserPasswordResetReqData) => {
 export const authActions = {
     login,
     loginCheck,
+    checkOrGetAccessToken,
     googleLogin,
     facebookLogin,
     forgotPassword,

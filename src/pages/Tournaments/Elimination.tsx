@@ -75,7 +75,7 @@ const Elimination = () => {
                 >
                     {[...Array(Math.round(numberOfColumns)).keys()].map(key => {
                         const colNumber = key + 1;
-                        const numberOfGames = firstRoundGameNumber / (2 ** (colNumber - 1));
+                        const numberOfGames = Math.ceil(firstRoundGameNumber / (2 ** (colNumber - 1)));
                         return (
                             <EliminationColumn
                                 key={key}

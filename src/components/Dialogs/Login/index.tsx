@@ -43,7 +43,7 @@ const LoginDialog = (props: Props) => {
         history.push('/');
     };
 
-    useEffect(() => {
+    useEffect(() => {        
         if (authState.status === ActionStatus.Failure && authState.error === ErrorNames.UserNotVerified) {
             setContent(LoginDialogState.NotVerified)
         }

@@ -1,16 +1,10 @@
-import { actionCreator, payloadedActionCreator } from "../helpers";
+import { payloadedActionCreator } from "../helpers";
 import { Dispatch } from "redux";
 import {
     SET_WATCH_DATA,
     SET_SHARE_ID,
-    TOGGLE_TOURNAMENT_SHARE_REQUEST,
-    TOGGLE_TOURNAMENT_SHARE_SUCCESS,
-    TOGGLE_TOURNAMENT_SHARE_FAILURE,
     SetWatchTournamentActionParams,
     SetTournamentShareIdActionParams,
-    ToggleTournamentShareRequestActionParams,
-    ToggleTournamentShareSuccessActionParams,
-    ToggleTournamentShareFailureActionParams
 } from "./types";
 import { AxiosError, AxiosResponse } from "axios";
 import { ResponseData } from "../../types/main";
@@ -29,8 +23,10 @@ const giveTournamentShareAccess = (id: number) => {
                 (res: AxiosResponse<ResponseData<{ shareId: string }>>) => {
                     res?.data?.data && dispatch(toggleTournamentShare({ id, shareId: res.data.data.shareId }));
                 },
-                (error: AxiosError) => {
-                    toast.error(error.message)
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    toast.error(message)
                 }
             );
     };
@@ -43,8 +39,10 @@ const revokeTournamentShareAccess = (id: number) => {
                 (res: AxiosResponse<ResponseData>) => {
                     dispatch(toggleTournamentShare({ id, shareId: '' }));
                 },
-                (error: AxiosError) => {
-                    toast.error(error.message)
+                (err: AxiosError) => {
+                    const error = err.response?.data.error;
+                    const message = err.response?.data.message;
+                    toast.error(message)
                 }
             );
     };

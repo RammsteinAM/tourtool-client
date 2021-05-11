@@ -35,6 +35,19 @@ const styles = makeStyles((theme) =>
     },
     formTextField: {
       marginBottom: 12,
+      '& .MuiFormLabel-asterisk': {
+        display: 'none',
+      },
+      '& .MuiInputLabel-root': {
+        fontSize: '14px',
+        fontWeight: '400',
+      },
+      '& .MuiInput-underline:hover:before': {
+        borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
+      },
+    },
+    formTextFieldSmall: {
+      marginBottom: 12,
       width: 60,
       '& .MuiFormLabel-asterisk': {
         display: 'none',

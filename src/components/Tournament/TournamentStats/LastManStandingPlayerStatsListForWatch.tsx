@@ -18,18 +18,17 @@ import TournamentStatsSettingsList from './TournamentStatsSettingsList';
 
 interface Props {
     playerData: Players;
+    normalizedPlayers: { [id: number]: string },
     bttvMode?: boolean;
 }
 
-const LastManStandingPlayerStatsList = (props: Props) => {
+const LastManStandingPlayerStatsListForWatch = (props: Props) => {
     const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
-    const fetchedPlayers = useSelector((state: RootState) => state.entities.fetchedPlayers.data);
     const statsColOrder = useSelector((state: RootState) => state.settings.tournamentSidebarColumnOrder) || ['name', 'numberOfGames', 'lives'];
     const statsEnabledColumns = useSelector((state: RootState) => state.settings.tournamentSidebarEnabledColumns) || ['name', 'numberOfGames', 'lives'];
     const dispatch = useDispatch();
     const classes = lastManStandingStyles();
     const { t } = useTranslation();
-    const normalizedPlayers = getNormalizedParticipants(fetchedPlayers);
 
     const statNames: { [key in LMSColOrderKeys]: string } = {
         name: t('LMSStatsCol_Player'),
@@ -67,10 +66,10 @@ const LastManStandingPlayerStatsList = (props: Props) => {
         return playersArr?.map((player, i) => {
             let name = '';
             if (typeof player.id === 'number') {
-                name = normalizedPlayers[player.id].name;
+                name = props.normalizedPlayers[player.id];
             }
             if (typeof player.id === 'object') {
-                name = `${normalizedPlayers[player.id[0]].name} / ${normalizedPlayers[player.id[1]].name}`
+                name = `${props.normalizedPlayers[player.id[0]]} / ${props.normalizedPlayers[player.id[1]]}`
             }
             return (
                 <LastManStandingPlayerStatsRow
@@ -144,4 +143,4 @@ const LastManStandingPlayerStatsList = (props: Props) => {
     )
 }
 
-export default LastManStandingPlayerStatsList
+export default LastManStandingPlayerStatsListForWatch

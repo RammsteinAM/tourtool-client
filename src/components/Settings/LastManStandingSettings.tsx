@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import LanguageSelect from '../LanguageSelect';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -8,23 +8,18 @@ import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from 'react-redux';
-import FormSubheader from '../FormComponents/FormSubheader';
 import { RootState } from '../../redux/store';
 import { useParams } from 'react-router-dom';
 import { formMinMaxValues } from '../../utils/constants';
 import { entityActions } from '../../redux/tournamentEntities/actions';
 import clsx from 'clsx';
+import { debounce } from 'lodash';
 import settingsStyles from './settingsStyles';
 
-interface Props {
-
-}
-
-const LastManStandingSettings = (props: Props) => {
-  const [tournamentName, setTournamentName] = useState<string>('')
+const LastManStandingSettings = () => {
+  const [tournamentName, setTournamentName] = useState<string>('');  
+  const [numberOfGoals, setNumberOfGoals] = useState<number>();
   const entityState = useSelector((state: RootState) => state.entities);
-  const settingsState = useSelector((state: RootState) => state.settings);
-  const fetchedGames = useSelector((state: RootState) => state.games.data);
   const dispatch = useDispatch();
   const { tournamentId: tournamentIdString } = useParams<{ tournamentId: string }>();
   const tournamentId = parseInt(tournamentIdString, 10);
@@ -37,6 +32,11 @@ const LastManStandingSettings = (props: Props) => {
       setTournamentName(fetchedTournamentData.name)
     }
   }, [fetchedTournamentData])
+
+  const delayedEditTournament = useCallback(
+    debounce((numberOfGoals) => dispatch(entityActions.editTournament({ id: tournamentId, numberOfGoals })), 1000),
+    [fetchedTournamentData.numberOfGoals]
+  );
 
   if (!fetchedTournamentData) {
     return <CircularProgress />
@@ -64,6 +64,8 @@ const LastManStandingSettings = (props: Props) => {
     value = Math.round(value);
     if (fetchedTournamentData.numberOfGoals !== value) {
       dispatch(entityActions.editTournament({ id: tournamentId, numberOfGoals: value }));
+      setNumberOfGoals(value)
+      delayedEditTournament(value)
     }
   }
 
@@ -81,7 +83,6 @@ const LastManStandingSettings = (props: Props) => {
     }
   }
 
-
   return (
     <>
       <InputLabel className={classes.label}>{t('Tournament Name')}</InputLabel>
@@ -91,36 +92,37 @@ const LastManStandingSettings = (props: Props) => {
           name="tournamentName"
           onChange={handleTournamentNameEdit}
           onBlur={changeTournamentName}
+          fullWidth
           inputProps={{ min: `${formMinMaxValues.minGoals}`, max: `${formMinMaxValues.maxGoals}`, step: "1" }}
           value={tournamentName}
           autoComplete="off"
-          //disabled={formState.goals === GoalValues.Quick}
           className={classes.formTextField}
         />
       </div>
-      <InputLabel className={classes.label}>{t('Goals')}</InputLabel>
-      <div className={classes.formBlock}>
-        <span className={classes.formLabel}>{t('Goals to Win')}</span>
-        <FormControlLabel
-          // disabled={!formState.goals}
-          value={fetchedTournamentData.numberOfGoals}
-          label={t('Goal', { count: fetchedTournamentData.numberOfGoals })}
-          classes={{ label: classes.formTextFieldSuffix }}
-          control={
-            <TextField
-              id="numberOfGoals"
-              type="number"
-              name="numberOfGoals"
-              onChange={handleNumberOfGoalsChange}
-              inputProps={{ min: `${formMinMaxValues.minGoals}`, max: `${formMinMaxValues.maxGoals}`, step: "1" }}
-              //defaultValue={formState.numberOfGoals}
-              autoComplete="off"
-              //disabled={formState.goals === GoalValues.Quick}
-              className={classes.formTextField}
+      {(fetchedTournamentData.numberOfGoals && fetchedTournamentData.numberOfGoals > 0) ?
+        <>
+          <InputLabel className={classes.label}>{t('Goals')}</InputLabel>
+          <div className={classes.formBlock}>
+            <span className={classes.formLabel}>{t('Goals to Win')}</span>
+            <FormControlLabel
+              value={fetchedTournamentData.numberOfGoals}
+              label={t('Goal', { count: fetchedTournamentData.numberOfGoals })}
+              classes={{ label: classes.formTextFieldSuffix }}
+              control={
+                <TextField
+                  id="numberOfGoals"
+                  type="number"
+                  name="numberOfGoals"
+                  onChange={handleNumberOfGoalsChange}
+                  inputProps={{ min: `${formMinMaxValues.minGoals}`, max: `${formMinMaxValues.maxGoals}`, step: "1" }}
+                  autoComplete="off"
+                  className={classes.formTextFieldSmall}
+                />
+              }
             />
-          }
-        />
-      </div>
+          </div>
+        </> : null
+      }
       <InputLabel className={classes.label}>{t('Points')}</InputLabel>
       <div className={classes.formBlock}>
         <span className={classes.formLabel}>{t('Points for Win')}</span>

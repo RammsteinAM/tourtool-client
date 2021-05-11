@@ -7,10 +7,10 @@ export interface ReduxState {
 }
 
 export type ReduxStore = Store<ReduxState>;
-export interface DatalessState {
-    status: ActionStatus;
+export interface DatalessState<A = ActionStatus> {
+    status: ActionStatus | A;
     error?: string;
 }
-export default interface AppState<T> extends DatalessState {
+export default interface AppState<T, A = ActionStatus> extends DatalessState<A> {
     data: T;
 }

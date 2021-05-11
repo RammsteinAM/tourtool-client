@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import PrivateRoute from './components/Routes/PrivateRoute';
 import Layout from './components/Layout';
@@ -27,6 +27,7 @@ import i18n from "./utils/i18n";
 import { HttpError } from './utils/error';
 import TournamentResult from './components/Tournament/EliminationResult';
 import WatchTournament from './pages/Tournaments/WatchTournament';
+import { DisconnectedActionStatus } from './redux/auth/types';
 
 axios.interceptors.response.use(undefined, (err) => {
   if (err.response.status === 403 || err.response.data.error === 'InvalidTokenError') {
@@ -42,22 +43,57 @@ axios.interceptors.response.use(undefined, (err) => {
   else {
     const resData = err?.response?.data;
     toast.error(i18n.t(`ERROR_${resData?.error}`));
-    throw new Error();
+    throw err
   }
 });
 
 const App = () => {
+  const [disconnected, setDisconnected] = useState<boolean>(false)
   const dispatch = useDispatch();
   const authState = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (authState.status === ActionStatus.Initial) {
+    if (authState.status === ActionStatus.Initial || authState.status === DisconnectedActionStatus.Disconnected) {
       dispatch(authActions.loginCheck());
     }
   }, [])
+
+  useEffect(() => {
+    if (authState.status !== ActionStatus.Success) {
+      return;
+    }
+    const interval = setInterval(() => {
+      dispatch(authActions.checkOrGetAccessToken());
+    }, 120000);
+
+    return () => {
+      clearInterval(interval);
+    }
+  }, [authState.status])
+
+  useEffect(() => {
+    if (authState.status !== DisconnectedActionStatus.Disconnected) {
+      return;
+    }
+    const interval = setInterval(() => {
+        dispatch(authActions.checkOrGetAccessToken());
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+    }
+  }, [authState.status])
+
+  useEffect(() => {  
+    const dc = authState.status === DisconnectedActionStatus.Disconnected  ;
+    if (dc !== disconnected) {
+      setDisconnected(dc)
+    }
+  }, [authState.status])
+
   return (
     <BrowserRouter>
-      <Layout>
+      <Layout disconnected={disconnected}>
         <Switch>
           <PrivateRoute exact path="/tournament/new">
             <TournamentTypeSelect />
@@ -95,10 +131,10 @@ const App = () => {
           <PublicRoute exact path="/verify-email/:token">
             <EmailVerificationResult />
           </PublicRoute>
-          <PublicRoute exact path="/delete-account/:token">
+          <Route exact path="/delete-account/:token">
             <DeleteAccountResult />
-          </PublicRoute>
-          <Route exact path="/view-tournament/:tournamentShareId">
+          </Route>
+          <Route exact path="/watch/:tournamentShareId">
             <WatchTournament />
           </Route>
           <Route path="/">
