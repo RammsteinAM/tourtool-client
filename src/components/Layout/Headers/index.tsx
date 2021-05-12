@@ -139,7 +139,10 @@ const Header = (props: Props) => {
                         />
                     </Route>
                     <Route exact path="/watch/:tournamentShareId">
-                        <HeaderWatchTournament />
+                        <HeaderWatchTournament tournamentSidebar />
+                    </Route>
+                    <Route exact path="/watch/:tournamentShareId/result">
+                        <HeaderWatchTournament backToTournament />
                     </Route>
                     <Route path="/">
                         <HeaderHome />

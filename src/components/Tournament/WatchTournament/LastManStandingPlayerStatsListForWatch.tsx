@@ -7,14 +7,14 @@ import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
 import CloseIcon from '@material-ui/icons/Close';
 import clsx from 'clsx';
-import LastManStandingPlayerStatsRow from './LastManStandingPlayerStatsRow';
+import LastManStandingPlayerStatsRow from '../TournamentStats/LastManStandingPlayerStatsRow';
 import { Players } from '../../../pages/Tournaments/LastManStanding';
 import { updateSettings } from '../../../redux/settings/actions';
-import lastManStandingStyles from './lastManStandingStyles';
+import lastManStandingStyles from '../TournamentStats/lastManStandingStyles';
 import { LMSColOrderKeys } from '../../../types/entities';
 import { getNormalizedParticipants } from '../../../utils/arrayUtils';
 import { useParams } from 'react-router-dom';
-import TournamentStatsSettingsList from './TournamentStatsSettingsList';
+import TournamentStatsSettingsList from '../TournamentStats/TournamentStatsSettingsList';
 
 interface Props {
     playerData: Players;

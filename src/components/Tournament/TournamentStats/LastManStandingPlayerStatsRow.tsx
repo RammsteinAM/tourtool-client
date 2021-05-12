@@ -23,8 +23,9 @@ const LastManStandingPlayerStatsRow = (props: Props) => {
         <tr className={classes.lmsStatsTr}>
             <td className={clsx(classes.lmsStatsTd, classes.lmsStatsTdPlacement)}>{props.placement}</td>
             {props.colOrderedKeys.map((key: LMSColOrderKeys) => {
-                if (key === 'lives') {
-                    if (props[key] === 0) {
+                const value = props[key];
+                if (key === 'lives' && typeof value === 'number') {
+                    if (value <= 0) {
                         return (
                             <td className={classes.lmsStatsTd} style={{ verticalAlign: 'bottom' }} key={key}>
                                 {!props.bttvMode ?
@@ -40,20 +41,20 @@ const LastManStandingPlayerStatsRow = (props: Props) => {
                     if (props.bttvMode) {
                         return (
                             <td className={classes.lmsStatsTd} style={{ verticalAlign: 'bottom' }} key={key}>
-                                <img width='auto' height={21} src={props[key] === 1 ? monkaW : Okayge} title={props[key] === 1 ? 'monkaW' : 'Okayge'} />
-                                <span style={{ verticalAlign: 'super' }}> {props[key]}</span>
+                                <img width='auto' height={21} src={value === 1 ? monkaW : Okayge} title={value === 1 ? 'monkaW' : 'Okayge'} />
+                                <span style={{ verticalAlign: 'super' }}> {value}</span>
                             </td>
                         )
                     }
                 }
-                if (key === 'averagePoints') {
+                if (key === 'averagePoints' && typeof value === 'number') {
                     return <td className={classes.lmsStatsTd} key={key}>
-                        {props[key]?.toFixed(2)}
+                        {value?.toFixed(2)}
                     </td>
                 }
-                return (props[key] || typeof props[key] === 'number') &&
+                return (value || typeof value === 'number') &&
                     <td className={clsx(classes.lmsStatsTd, { [classes.lmsStatsTdPlayer]: key === 'name' })} key={key}>
-                        {props[key]}
+                        {value}
                     </td>
             })}
         </tr>

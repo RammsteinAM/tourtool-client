@@ -27,7 +27,8 @@ import { WatchTournamentReducerState } from '../../../redux/watchTournament/type
 interface Props {
     zoomSlider?: boolean;
     fullScreenButton?: boolean;
-    printButton?: boolean;
+    tournamentSidebar?: boolean;
+    backToTournament?: boolean;
     icon?: React.ReactNode;
 }
 
@@ -65,6 +66,11 @@ const HeaderWatchTournament = (props: Props) => {
         window.print();
     }
 
+    const handleBackButton = () => {
+        const path = history.location.pathname.substring(0, history.location.pathname.lastIndexOf('/'))
+        history.push(path);
+    }
+
     if (!watchTournamentData) {
         return null;
     }
@@ -86,14 +92,21 @@ const HeaderWatchTournament = (props: Props) => {
             <Typography variant="h6" noWrap className={classes.tournamentName}>
                 {watchTournamentData.name}
             </Typography>
+            {props.backToTournament &&
+                <Tooltip title={`${t("Return to the Tournament")}`}>
+                    <IconButton className={classes.iconButton} aria-label="back" onClick={handleBackButton}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                </Tooltip>
+            }
             {props.zoomSlider &&
                 <HeaderSlider onChange={handleZoomSliderChange} defaultValue={settingsState.eliminationScale ? settingsState.eliminationScale * 100 : 100} />
             }
-            <Tooltip title={settingsState.tournamentSidebar ? `${t("Hide Standings")}` : `${t("Show Standings")}`}>
+            {props.tournamentSidebar ? <Tooltip title={settingsState.tournamentSidebar ? `${t("Hide Standings")}` : `${t("Show Standings")}`}>
                 <IconButton className={classes.iconButton} aria-label="toggle-standings" onClick={handleToggleTournamentSidebarButton}>
                     <ListIcon />
                 </IconButton>
-            </Tooltip>
+            </Tooltip> : null}
             <Tooltip title={`${t("Print")}`}>
                 <IconButton className={classes.iconButton} aria-label="print" onClick={handlePrint}>
                     <PrintIcon />

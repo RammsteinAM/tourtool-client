@@ -18,11 +18,11 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import Switch from '@material-ui/core/Switch';
-import Tooltip from '@material-ui/core/Tooltip'
+import Tooltip from '@material-ui/core/Tooltip';
 import SortIcon from '@material-ui/icons/Sort';
 import ShareIcon from '@material-ui/icons/Share';
 import { splitGameKey } from '../../utils/stringUtils';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { gameActions } from '../../redux/games/actions';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import SearchField from '../../components/SearchField';
@@ -58,7 +58,7 @@ const LastManStanding = (props: Props) => {
     const settingsState = useSelector((state: RootState) => state.settings);
     const fetchedGames = useSelector((state: RootState) => state.games.data);
     const shareLinkRef = useRef<HTMLInputElement>(null);
-    // const tournamentShareId = useSelector((state: RootState) => state.watchTournament.data.shareId);
+    const history = useHistory();
     const dispatch = useDispatch();
     const classes = lastManStandingStyles();
     const { tournamentId: tournamentIdString } = useParams<{ tournamentId: string }>();
@@ -110,7 +110,7 @@ const LastManStanding = (props: Props) => {
     }
 
     const handleShowResult = () => {
-
+        history.push(`${history.location.pathname}/result`)
     }
 
     const validateRoundComplete = () => {
@@ -183,7 +183,7 @@ const LastManStanding = (props: Props) => {
                         <Tooltip title={`${t("Share Tournament Watch Link")}`}>
                             <div className={classes.shareContainer}>
                                 <div className={classes.shareIconContainer}>
-                                    <ShareIcon className={classes.icon} />
+                                    <ShareIcon />
                                 </div>
                                 <Switch
                                     checked={!!fetchedTournamentData.shareId}

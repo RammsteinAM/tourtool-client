@@ -248,6 +248,49 @@ const styles = makeStyles((theme) => ({
     eliminationSnackbarButton: {
         color: '#ffffff'
     },
+    shareContainer: {
+        position: 'fixed',
+        top: '70px',
+        right: '12px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end'
+    },
+    shareToggleContainer: {
+        display: "flex",
+        alignItems: "center",
+    },
+    shareIconContainer: {
+        display: "flex",
+    },
+    shareLinkInputContainer: {
+        opacity: 0.4,
+        width: '120px',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        transition: 'opacity 0.25s, width 0.25s',
+        '&:hover': {
+            opacity: 1,
+            width: '330px',
+        },
+    },
+    shareLinkTextField: {
+        height: '30px',
+        minWidth: '100px',
+        maxWidth: '400px',
+        borderRadius: 15,
+        fontSize: 11,
+        paddingLeft: 10,
+        paddingRight: 5,
+        color: '#ffffff',
+        backgroundColor: '#333333',
+        '&:before': {
+            content: 'none'
+        },
+        '&:after': {
+            content: 'none'
+        }
+    }
 }));
 
 export default styles;

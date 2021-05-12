@@ -25,7 +25,6 @@ const mainStyles = makeStyles((theme) => ({
     },
     button: {
         margin: theme.spacing(3, 2, 2),
-        //height: '35px',
         minWidth: '100px',
         borderRadius: '2px',
         '&:hover': {
@@ -66,6 +65,12 @@ const mainStyles = makeStyles((theme) => ({
         '&:hover.MuiInput-underline:before': {
             borderBottom: '1px solid rgba(0, 0, 0, 0.42)',
         },
+    },
+    centerScreen: {
+        height: "calc(100vh - 140px)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
     }
 }));
 

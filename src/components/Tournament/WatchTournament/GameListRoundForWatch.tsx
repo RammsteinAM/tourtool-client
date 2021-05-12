@@ -1,12 +1,11 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
 import { useTranslation } from "react-i18next";
-import GameListRow from '../../components/Tournament/GameListRow';
-import { FetchedPlayer, FetchedTournamentForView } from '../../types/entities';
-import gameListRowStyles from './gameListRowStyles';
-import { splitGameKey } from '../../utils/stringUtils';
+import { FetchedPlayer, FetchedTournamentForView } from '../../../types/entities';
+import { splitGameKey } from '../../../utils/stringUtils';
 import GameListRowForWatch from './GameListRowForWatch';
+import { RootState } from '../../../redux/store';
+import gameListRowStyles from '../gameListRowStyles';
 
 interface Props {
     tournamentData: FetchedTournamentForView;

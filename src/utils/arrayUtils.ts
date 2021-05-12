@@ -1,4 +1,4 @@
-import { FetchedGameData, FetchedPlayer, StateParticipant, StateParticipants } from "../types/entities";
+import { DBGameData, FetchedGameData, FetchedPlayer, PlayersWithName, StateParticipant, StateParticipants } from "../types/entities";
 import { Nullable } from "../types/main";
 
 export const shuffleArray = <A>(array: A[]): A[] => {
@@ -74,6 +74,16 @@ export const getNormalizedGames = (fetchedGames: FetchedGameData[]): { [index: s
     }
     acc[val.index] = val;
     // val.scores1 && acc[val.index].scores1 = val.scores1;
+    return acc;
+  }, {})
+}
+
+export const getNormalizedGamesForWatch = (fetchedGames: DBGameData<PlayersWithName>[]): { [index: string]: DBGameData<PlayersWithName> } => {
+  return fetchedGames?.reduce((acc: { [index: string]: DBGameData<PlayersWithName> }, val: DBGameData<PlayersWithName>) => {
+    if (!val.index) {
+      return acc;
+    }
+    acc[val.index] = val;
     return acc;
   }, {})
 }

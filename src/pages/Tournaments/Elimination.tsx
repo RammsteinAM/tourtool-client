@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { splitGameKey } from '../../utils/stringUtils';
@@ -12,6 +12,17 @@ import SnackbarContent from '@material-ui/core/SnackbarContent';
 import { entityActions } from '../../redux/tournamentEntities/actions';
 import { gameActions } from '../../redux/games/actions';
 import { useTranslation } from "react-i18next";
+import Tooltip from '@material-ui/core/Tooltip';
+import Switch from '@material-ui/core/Switch';
+import ShareIcon from '@material-ui/icons/Share';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControl from '@material-ui/core/FormControl';
+import IconButton from '@material-ui/core/IconButton';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import { watchTournamentActions } from '../../redux/watchTournament/actions';
+import toast from '../../components/IndependentSnackbar';
 import tournamentStyles from './tournamentStyles';
 
 const Elimination = () => {
@@ -20,6 +31,7 @@ const Elimination = () => {
     const dispatch = useDispatch();
     const entityState = useSelector((state: RootState) => state.entities);
     const settingsState = useSelector((state: RootState) => state.settings);
+    const shareLinkRef = useRef<HTMLInputElement>(null);
     const classes = tournamentStyles();
     const history = useHistory();
     const { t } = useTranslation();
@@ -55,6 +67,23 @@ const Elimination = () => {
 
     if (!tournamentGames) {
         return null;
+    }
+
+    const handleToggleShareTournament = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (!fetchedTournament.shareId) {
+            dispatch(watchTournamentActions.giveTournamentShareAccess(fetchedTournament.id));
+            return;
+        }
+        dispatch(watchTournamentActions.revokeTournamentShareAccess(fetchedTournament.id));
+    };
+
+    const handleClickCopyLink = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (shareLinkRef.current) {
+            shareLinkRef.current.select();
+            document.execCommand('copy');
+            toast.success(t('Link Copied'));
+        }
     }
 
     const games = getNormalizedGames(tournamentGames);
@@ -112,6 +141,48 @@ const Elimination = () => {
                     />
                 </div>
             }
+            <div className={classes.shareContainer}>
+                <Tooltip title={`${t("Share Tournament Watch Link")}`}>
+                    <div className={classes.shareToggleContainer}>
+                        <div className={classes.shareIconContainer}>
+                            <ShareIcon style={!!fetchedTournament.shareId ? {color: '#8ebd5e'} : {color: '#888888'}} />
+                        </div>
+                        <Switch
+                            checked={!!fetchedTournament.shareId}
+                            onChange={handleToggleShareTournament}
+                            name="checkedB"
+                            color="primary"
+                        />
+                    </div>
+                </Tooltip>
+                {fetchedTournament.shareId &&
+                    <FormControl className={classes.shareLinkInputContainer}>
+                        <Input
+                            id="standard-adornment-password"
+                            className={classes.shareLinkTextField}
+                            fullWidth
+                            value={`${origin}/watch/${fetchedTournament.shareId}`}
+                            inputRef={shareLinkRef}
+                            onClick={() => {
+                                if (shareLinkRef && shareLinkRef.current) {
+                                    shareLinkRef.current.select();
+                                }
+                            }}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        size="small"
+                                        onClick={handleClickCopyLink}
+                                    >
+                                        <FileCopyIcon style={{ fontSize: 20, color: '#c5c8cb' }} />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
+                }
+            </div>
         </>
     )
 }

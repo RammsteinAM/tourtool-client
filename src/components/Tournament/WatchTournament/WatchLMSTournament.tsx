@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { RootState } from '../../../redux/store';
 import { useTranslation } from "react-i18next";
-import { FetchedTournamentForView } from '../../types/entities';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
-import GameListRoundForWatch from '../../components/Tournament/GameListRoundForWatch';
-import LastManStandingPlayerStatsListForWatch from '../../components/Tournament/TournamentStats/LastManStandingPlayerStatsListForWatch';
-import { getNormalizedParticipants, multiDimensionalUnique } from '../../utils/arrayUtils';
-import lastManStandingStyles from './lastManStandingStyles';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip'
 import SortIcon from '@material-ui/icons/Sort';
-import { splitGameKey } from '../../utils/stringUtils';
-import SearchField from '../../components/SearchField';
-import useKonamiCode from '../../hooks/Konami';
-import { updateSettings } from '../../redux/settings/actions';
-import { calculatePlayersDataWithStatsForWatch } from '../../helpers/tournamentHelpers';
+import { splitGameKey } from '../../../utils/stringUtils';
+import SearchField from '../../../components/SearchField';
+import useKonamiCode from '../../../hooks/Konami';
+import { updateSettings } from '../../../redux/settings/actions';
+import { calculatePlayersDataWithStatsForWatch } from '../../../helpers/tournamentHelpers';
+import { FetchedTournamentForView } from '../../../types/entities';
+import { useHistory } from 'react-router-dom';
+import LastManStandingPlayerStatsListForWatch from './LastManStandingPlayerStatsListForWatch';
+import GameListRoundForWatch from './GameListRoundForWatch';
+import lastManStandingStyles from '../../../pages/Tournaments/lastManStandingStyles';
 
 export interface Players {
     [key: string]: {
@@ -42,18 +42,17 @@ const WatchLMSTournament = ({ data }: Props) => {
     const bttvMode = useKonamiCode()
     const settingsState = useSelector((state: RootState) => state.settings);
     const dispatch = useDispatch();
-    const classes = lastManStandingStyles();
+    const history = useHistory();
     const { t } = useTranslation();
+    const classes = lastManStandingStyles();
 
-
-    
-        const normalizedPlayers = data.players && data.players.reduce((acc: { [id: number]: string }, val) => {
-            if (!val.id || !val.name) {
-                return acc;
-            }
-            acc[val.id] = val.name;
+    const normalizedPlayers = data.players && data.players.reduce((acc: { [id: number]: string }, val) => {
+        if (!val.id || !val.name) {
             return acc;
-        }, {});
+        }
+        acc[val.id] = val.name;
+        return acc;
+    }, {});
 
     useEffect(() => {
         const playerData = data && normalizedPlayers && calculatePlayersDataWithStatsForWatch(data, normalizedPlayers);
@@ -67,7 +66,7 @@ const WatchLMSTournament = ({ data }: Props) => {
     const tournamentGameRounds = data.games && [...new Set(data.games.map(game => splitGameKey(game.index).round))]
 
     const handleShowResult = () => {
-
+        history.push(`${history.location.pathname}/result`);
     }
 
     const searchActionCallback = (value: string) => {

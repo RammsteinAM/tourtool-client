@@ -51,7 +51,13 @@ const getPlayersInitialData = (tournamentPlayers: FetchedPlayers, tournamentData
     }
 }
 
-export const calculatePlayersDataWithStats = (tournamentData: FetchedTournament, gameData: FetchedGameData[], players: FetchedPlayers, normalizedPlayers: { [id: number]: FetchedPlayer }, isDYP: boolean): Players => {
+export const calculatePlayersDataWithStats = (
+    tournamentData: FetchedTournament,
+    gameData: FetchedGameData[],
+    players: FetchedPlayers,
+    normalizedPlayers: { [id: number]: FetchedPlayer },
+    isDYP: boolean
+): Players => {
     const pointsForWin = tournamentData?.pointsForWin;
     const pointsForDraw = tournamentData?.pointsForDraw;
     const tournamentPlayers = players.filter(p => tournamentData.players && tournamentData.players.indexOf(p.id) >= 0)

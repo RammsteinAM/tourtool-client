@@ -25,9 +25,10 @@ import { userServices } from './services/user';
 import toast from './components/IndependentSnackbar';
 import i18n from "./utils/i18n";
 import { HttpError } from './utils/error';
-import TournamentResult from './components/Tournament/EliminationResult';
-import WatchTournament from './pages/Tournaments/WatchTournament';
+import TournamentResult from './components/Tournament/TournamentResult';
 import { DisconnectedActionStatus } from './redux/auth/types';
+import WatchTournamentResults from './components/Tournament/WatchTournament/WatchTournamentResults';
+import WatchTournament from './components/Tournament/WatchTournament/WatchTournament';
 
 axios.interceptors.response.use(undefined, (err) => {
   if (err.response.status === 403 || err.response.data.error === 'InvalidTokenError') {
@@ -136,6 +137,9 @@ const App = () => {
           </Route>
           <Route exact path="/watch/:tournamentShareId">
             <WatchTournament />
+          </Route>
+          <Route exact path="/watch/:tournamentShareId/result">
+            <WatchTournamentResults />
           </Route>
           <Route path="/">
             <Home />

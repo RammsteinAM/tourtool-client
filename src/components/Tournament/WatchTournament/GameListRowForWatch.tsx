@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { DBGameData, FetchedTournamentForView } from '../../types/entities';
-import { getMultipleSetScores } from '../../utils/scoreUtils';
+import { RootState } from '../../../redux/store';
+import { DBGameData, FetchedTournamentForView } from '../../../types/entities';
+import { getMultipleSetScores } from '../../../utils/scoreUtils';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import { CircularProgress } from '@material-ui/core';
 import gameListRowForWatchStyles from './gameListRowForWatchStyles';
